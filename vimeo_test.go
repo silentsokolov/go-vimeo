@@ -256,21 +256,21 @@ func TestDo_ioWriter(t *testing.T) {
 }
 
 func TestPagination_GetPage(t *testing.T) {
-	p := paginationImp{Page: 1}
+	p := pagination{Page: 1}
 	if page := p.GetPage(); page != 1 {
 		t.Errorf("pagination GetPage is %v, want %v", page, 1)
 	}
 }
 
 func TestPagination_GetTotal(t *testing.T) {
-	p := paginationImp{Total: 1}
+	p := pagination{Total: 1}
 	if total := p.GetTotal(); total != 1 {
 		t.Errorf("pagination GetTotal is %v, want %v", total, 1)
 	}
 }
 
 func TestPagination_GetPaging(t *testing.T) {
-	p := paginationImp{
+	p := pagination{
 		Paging: paging{
 			Next:  "/page=3",
 			Prev:  "/page=1",
@@ -298,8 +298,7 @@ func TestPagination_GetPaging(t *testing.T) {
 }
 
 func TestResponse_setPaging(t *testing.T) {
-	// p := make()
-	p := paginationImp{
+	p := pagination{
 		Page:  1,
 		Total: 10,
 		Paging: paging{

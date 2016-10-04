@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	libraryVersion   = "0.0.1"
+	libraryVersion   = "0.2.0"
 	defaultBaseURL   = "https://api.vimeo.com/"
 	defaultUserAgent = "go-vimeo/" + libraryVersion
 
@@ -31,6 +31,7 @@ type Client struct {
 
 	// Services used for communicating with the API
 	Categories     *CategoriesService
+	Channels       *ChannelsService
 	ContentRatings *ContentRatingsService
 }
 
@@ -50,6 +51,7 @@ func NewClient(httpClient *http.Client) *Client {
 
 	c := &Client{client: httpClient, BaseURL: baseURL, UserAgent: defaultUserAgent}
 	c.Categories = &CategoriesService{client: c}
+	c.Channels = &ChannelsService{client: c}
 	c.ContentRatings = &ContentRatingsService{client: c}
 	return c
 }
@@ -80,6 +82,10 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	req, err := http.NewRequest(method, u.String(), buf)
 	if err != nil {
 		return nil, err
+	}
+
+	if body != nil {
+		req.Header.Set("Content-Type", "application/json")
 	}
 
 	req.Header.Set("Accept", mediaTypeVersion)
@@ -129,7 +135,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	return response, err
 }
 
-type pagination interface {
+type paginator interface {
 	GetPage() int
 	GetTotal() int
 	GetPaging() (string, string, string, string)
@@ -142,25 +148,25 @@ type paging struct {
 	Last  string `json:"last,omitempty"`
 }
 
-type paginationImp struct {
+type pagination struct {
 	Total  int    `json:"total,omitempty"`
 	Page   int    `json:"page,omitempty"`
 	Paging paging `json:"paging,omitempty"`
 }
 
 // GetPage returns the current page number.
-func (p paginationImp) GetPage() int {
+func (p pagination) GetPage() int {
 	return p.Page
 }
 
 // GetTotal returns the total number of pages.
-func (p paginationImp) GetTotal() int {
+func (p pagination) GetTotal() int {
 	return p.Total
 }
 
 // GetPaging returns the data pagination presented as relative references.
 // In the following procedure: next, previous, first, last page.
-func (p paginationImp) GetPaging() (string, string, string, string) {
+func (p pagination) GetPaging() (string, string, string, string) {
 	return p.Paging.Next, p.Paging.Prev, p.Paging.First, p.Paging.Last
 }
 
@@ -177,7 +183,7 @@ type Response struct {
 	LastPage   string
 }
 
-func (r *Response) setPaging(p pagination) {
+func (r *Response) setPaging(p paginator) {
 	r.Page = p.GetPage()
 	r.TotalPages = p.GetTotal()
 	r.NextPage, r.PrevPage, r.FirstPage, r.LastPage = p.GetPaging()

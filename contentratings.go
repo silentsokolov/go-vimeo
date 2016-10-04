@@ -8,7 +8,7 @@ type ContentRatingsService service
 
 type contentRatingList struct {
 	Data []*ContentRating `json:"data"`
-	paginationImp
+	pagination
 }
 
 // ContentRating represents a content rating.

@@ -13,9 +13,9 @@ import (
 // Vimeo API docs: https://developer.vimeo.com/api/endpoints/categories
 type CategoriesService service
 
-type categoryList struct {
+type dataListCategory struct {
 	Data []*Category `json:"data"`
-	paginationImp
+	pagination
 }
 
 // Category represents a category.
@@ -84,7 +84,7 @@ func (s *CategoriesService) List(opt *ListCategoryOptions) ([]*Category, *Respon
 		return nil, nil, err
 	}
 
-	categories := &categoryList{}
+	categories := &dataListCategory{}
 
 	resp, err := s.client.Do(req, categories)
 	if err != nil {
@@ -116,26 +116,6 @@ func (s *CategoriesService) Get(cat string) (*Category, *Response, error) {
 	return category, resp, err
 }
 
-type channelList struct {
-	Data []*Channel `json:"data"`
-	paginationImp
-}
-
-// Category represents a channel.
-type Channel struct {
-	URI          string    `json:"uri,omitempty"`
-	Name         string    `json:"name,omitempty"`
-	Description  string    `json:"description,omitempty"`
-	Link         string    `json:"link,omitempty"`
-	CreatedTime  time.Time `json:"created_time,omitempty"`
-	ModifiedTime time.Time `json:"modified_time,omitempty"`
-	User         *User     `json:"user,omitempty"`
-	Pictures     *Pictures `json:"pictures,omitempty"`
-	Header       *Header   `json:"header,omitempty"`
-	Privacy      *Privacy  `json:"privacy,omitempty"`
-	ResourceKey  string    `json:"resource_key,omitempty"`
-}
-
 // Privacy internal object provides access to privacy.
 type Privacy struct {
 	View     string `json:"view,omitempty"`
@@ -148,26 +128,6 @@ type Privacy struct {
 	Add      bool   `json:"add"`
 }
 
-// User represents a user.
-type User struct {
-	URI         string    `json:"uri,omitempty"`
-	Name        string    `json:"name,omitempty"`
-	Link        string    `json:"link,omitempty"`
-	Location    string    `json:"location,omitempty"`
-	Bio         string    `json:"bio,omitempty"`
-	CreatedTime time.Time `json:"created_time,omitempty"`
-	Account     string    `json:"account,omitempty"`
-	Pictures    *Pictures `json:"pictures,omitempty"`
-	ResourceKey string    `json:"resource_key,omitempty"`
-}
-
-// ListChannelOptions specifies the optional parameters to the
-// CategoriesService.ListChannel method.
-type ListChannelOptions struct {
-	Query string `url:"query,omitempty"`
-	ListOptions
-}
-
 // ListChannel lists the channel for an category.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/channels
@@ -178,26 +138,14 @@ func (s *CategoriesService) ListChannel(cat string, opt *ListChannelOptions) ([]
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest("GET", u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
+	channels, resp, err := listChannel(s.client, u, opt)
 
-	channels := &channelList{}
-
-	resp, err := s.client.Do(req, channels)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	resp.setPaging(channels)
-
-	return channels.Data, resp, err
+	return channels, resp, err
 }
 
-type groupList struct {
+type dataListGroup struct {
 	Data []*Group `json:"data,omitempty"`
-	paginationImp
+	pagination
 }
 
 // Group represents a group.
@@ -237,7 +185,7 @@ func (s *CategoriesService) ListGroup(cat string, opt *ListGroupOptions) ([]*Gro
 		return nil, nil, err
 	}
 
-	groups := &groupList{}
+	groups := &dataListGroup{}
 
 	resp, err := s.client.Do(req, groups)
 	if err != nil {
@@ -249,9 +197,9 @@ func (s *CategoriesService) ListGroup(cat string, opt *ListGroupOptions) ([]*Gro
 	return groups.Data, resp, err
 }
 
-type videoList struct {
+type dataListVideo struct {
 	Data []*Video `json:"data,omitempty"`
-	paginationImp
+	pagination
 }
 
 // Embed internal object provides access to HTML embed code.
@@ -358,7 +306,7 @@ type Video struct {
 
 // GetID returns the numeric identifier (ID) of the video.
 func (v Video) GetID() int {
-	l := strings.SplitN(v.Link, "/", -1)
+	l := strings.SplitN(v.URI, "/", -1)
 	ID, _ := strconv.Atoi(l[len(l)-1])
 	return ID
 }
@@ -367,7 +315,10 @@ func (v Video) GetID() int {
 // CategoriesService.ListVideo method.
 type ListVideoOptions struct {
 	Query            string `url:"query,omitempty"`
+	Filter           string `url:"filter,omitempty"`
 	FilterEmbeddable string `url:"filter_embeddable,omitempty"`
+	Sort             string `url:"sort,omitempty"`
+	Direction        string `url:"direction,omitempty"`
 	ListOptions
 }
 
@@ -386,7 +337,7 @@ func (s *CategoriesService) ListVideo(cat string, opt *ListVideoOptions) ([]*Vid
 		return nil, nil, err
 	}
 
-	videos := &videoList{}
+	videos := &dataListVideo{}
 
 	resp, err := s.client.Do(req, videos)
 	if err != nil {
@@ -401,8 +352,8 @@ func (s *CategoriesService) ListVideo(cat string, opt *ListVideoOptions) ([]*Vid
 // GetVideo specific video by category name and video ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/videos/%7Bvideo_id%7D
-func (s *CategoriesService) GetVideo(cat string, ID int) (*Video, *Response, error) {
-	u := fmt.Sprintf("categories/%s/videos/%d", cat, ID)
+func (s *CategoriesService) GetVideo(cat string, vid int) (*Video, *Response, error) {
+	u := fmt.Sprintf("categories/%s/videos/%d", cat, vid)
 
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
