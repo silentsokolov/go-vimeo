@@ -41,3 +41,49 @@ func main() {
     cats, _, err := client.Categories.List(opt)
 }
 ```
+
+
+### Pagination ###
+
+```go
+import "golang.org/x/oauth2"
+
+func main() {
+    client := ...
+
+    // Specific optional parameters
+    opt := &vimeo.VideoListOptions{
+        ListOptions: vimeo.ListOptions{Page: 1, PerPage: 2},
+    }
+
+    cats, resp, err := client.Categories.List(opt)
+    fmt.Println("Current page: %d", resp.Page)
+	fmt.Println("Next page: %d", resp.NextPage)
+	fmt.Println("Prev page: %d", resp.PrevPage)
+	fmt.Println("Total pages: %d", resp.TotalPages)
+}
+```
+
+
+### Created/Updated request ###
+
+```go
+import "golang.org/x/oauth2"
+
+func main() {
+    client := ...
+
+    // Specific request instance
+    req := &vimeo.ChannelRequest{
+        Name:        "My Channel",
+        Description: "Awesome",
+        Privacy:     "anybody",
+    }
+
+    ch, _, err := client.Channels.Create(req)
+
+    if err != nil {
+        fmt.Println(ch)
+    }
+}
+```
