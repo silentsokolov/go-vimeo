@@ -56,11 +56,13 @@ func main() {
         ListOptions: vimeo.ListOptions{Page: 1, PerPage: 2},
     }
 
-    cats, resp, err := client.Categories.List(opt)
-    fmt.Println("Current page: %d", resp.Page)
-	fmt.Println("Next page: %d", resp.NextPage)
-	fmt.Println("Prev page: %d", resp.PrevPage)
-	fmt.Println("Total pages: %d", resp.TotalPages)
+    // Any "List" request
+    _, resp, _ := client.Categories.List(opt)
+
+    fmt.Printf("Current page: %d", resp.Page)
+	fmt.Printf("Next page: %d", resp.NextPage)
+	fmt.Printf("Prev page: %d", resp.PrevPage)
+	fmt.Printf("Total pages: %d", resp.TotalPages)
 }
 ```
 
@@ -80,10 +82,8 @@ func main() {
         Privacy:     "anybody",
     }
 
-    ch, _, err := client.Channels.Create(req)
+    ch, _, _ := client.Channels.Create(req)
 
-    if err != nil {
-        fmt.Println(ch)
-    }
+    fmt.Println(ch)
 }
 ```
