@@ -17,7 +17,7 @@ type dataListChannel struct {
 	pagination
 }
 
-// Category represents a channel.
+// Channel represents a channel.
 type Channel struct {
 	URI          string    `json:"uri,omitempty"`
 	Name         string    `json:"name,omitempty"`
@@ -47,7 +47,7 @@ type ListChannelOptions struct {
 	ListOptions
 }
 
-// GetID returns the numeric identifier (ID) of the channel.
+// GetID returns the identifier (ID) of the channel.
 func (c Channel) GetID() string {
 	l := strings.SplitN(c.URI, "/", -1)
 	id := l[len(l)-1]

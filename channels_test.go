@@ -197,7 +197,7 @@ func TestChannelsService_ListVideo(t *testing.T) {
 	}
 }
 
-func TestCChannelsService_GetVideo(t *testing.T) {
+func TestChannelsService_GetVideo(t *testing.T) {
 	setup()
 	defer teardown()
 

@@ -1,6 +1,6 @@
 package vimeo
 
-// CreativeCommonsService handles communication with the content ratings related
+// CreativeCommonsService handles communication with the creative commons related
 // methods of the Vimeo API.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/endpoints/creativecommons
@@ -11,7 +11,7 @@ type creativeCommonList struct {
 	pagination
 }
 
-// CreativeCommon represents a content rating.
+// CreativeCommon represents a creative common.
 type CreativeCommon struct {
 	Code string `json:"code,omitempty"`
 	Name string `json:"name,omitempty"`

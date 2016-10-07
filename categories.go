@@ -143,34 +143,7 @@ func (s *CategoriesService) ListChannel(cat string, opt *ListChannelOptions) ([]
 	return channels, resp, err
 }
 
-type dataListGroup struct {
-	Data []*Group `json:"data,omitempty"`
-	pagination
-}
-
-// Group represents a group.
-type Group struct {
-	URI          string    `json:"uri,omitempty"`
-	Name         string    `json:"name,omitempty"`
-	Description  string    `json:"description,omitempty"`
-	Link         string    `json:"link,omitempty"`
-	CreatedTime  time.Time `json:"created_time,omitempty"`
-	ModifiedTime time.Time `json:"modified_time,omitempty"`
-	Privacy      *Privacy  `json:"privacy,omitempty"`
-	Pictures     *Pictures `json:"pictures,omitempty"`
-	Header       *Header   `json:"header,omitempty"`
-	User         *User     `json:"user,omitempty"`
-	ResourceKey  string    `json:"resource_key,omitempty"`
-}
-
-// ListGroupOptions specifies the optional parameters to the
-// CategoriesService.ListGroup method.
-type ListGroupOptions struct {
-	Query string `url:"query,omitempty"`
-	ListOptions
-}
-
-// ListGroup lists the channel for an category.
+// ListGroup lists the group for an category.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/groups
 func (s *CategoriesService) ListGroup(cat string, opt *ListGroupOptions) ([]*Group, *Response, error) {
@@ -180,21 +153,9 @@ func (s *CategoriesService) ListGroup(cat string, opt *ListGroupOptions) ([]*Gro
 		return nil, nil, err
 	}
 
-	req, err := s.client.NewRequest("GET", u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
+	groups, resp, err := listGroup(s.client, u, opt)
 
-	groups := &dataListGroup{}
-
-	resp, err := s.client.Do(req, groups)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	resp.setPaging(groups)
-
-	return groups.Data, resp, err
+	return groups, resp, err
 }
 
 type dataListVideo struct {

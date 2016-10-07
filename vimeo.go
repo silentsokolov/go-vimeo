@@ -34,6 +34,8 @@ type Client struct {
 	Channels        *ChannelsService
 	ContentRatings  *ContentRatingsService
 	CreativeCommons *CreativeCommonsService
+	Groups          *GroupsService
+	Languages       *LanguagesService
 }
 
 type service struct {
@@ -55,6 +57,8 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Channels = &ChannelsService{client: c}
 	c.ContentRatings = &ContentRatingsService{client: c}
 	c.CreativeCommons = &CreativeCommonsService{client: c}
+	c.Groups = &GroupsService{client: c}
+	c.Languages = &LanguagesService{client: c}
 	return c
 }
 
