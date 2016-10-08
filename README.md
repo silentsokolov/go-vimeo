@@ -60,8 +60,8 @@ func main() {
     _, resp, _ := client.Categories.List(opt)
 
     fmt.Printf("Current page: %d", resp.Page)
-	fmt.Printf("Next page: %d", resp.NextPage)
-	fmt.Printf("Prev page: %d", resp.PrevPage)
+	fmt.Printf("Next page: %s", resp.NextPage)
+	fmt.Printf("Prev page: %s", resp.PrevPage)
 	fmt.Printf("Total pages: %d", resp.TotalPages)
 }
 ```

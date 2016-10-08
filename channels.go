@@ -81,12 +81,7 @@ func listChannel(c *Client, url string, opt *ListChannelOptions) ([]*Channel, *R
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/channels
 func (s *ChannelsService) List(opt *ListChannelOptions) ([]*Channel, *Response, error) {
-	u, err := addOptions("channels", opt)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	channels, resp, err := listChannel(s.client, u, opt)
+	channels, resp, err := listChannel(s.client, "channels", opt)
 
 	return channels, resp, err
 }
@@ -166,26 +161,9 @@ func (s *ChannelsService) Delete(ch string) (*Response, error) {
 // Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/users
 func (s *ChannelsService) ListUser(ch string, opt *ListUserOptions) ([]*User, *Response, error) {
 	u := fmt.Sprintf("channels/%s/users", ch)
-	u, err := addOptions(u, opt)
-	if err != nil {
-		return nil, nil, err
-	}
+	users, resp, err := listUser(s.client, u, opt)
 
-	req, err := s.client.NewRequest("GET", u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	users := &dataListUser{}
-
-	resp, err := s.client.Do(req, users)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	resp.setPaging(users)
-
-	return users.Data, resp, err
+	return users, resp, err
 }
 
 // ListVideo lists the video for an channel.
@@ -193,26 +171,9 @@ func (s *ChannelsService) ListUser(ch string, opt *ListUserOptions) ([]*User, *R
 // Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/videos
 func (s *ChannelsService) ListVideo(ch string, opt *ListVideoOptions) ([]*Video, *Response, error) {
 	u := fmt.Sprintf("channels/%s/videos", ch)
-	u, err := addOptions(u, opt)
-	if err != nil {
-		return nil, nil, err
-	}
+	videos, resp, err := listVideo(s.client, u, opt)
 
-	req, err := s.client.NewRequest("GET", u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	videos := &dataListVideo{}
-
-	resp, err := s.client.Do(req, videos)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	resp.setPaging(videos)
-
-	return videos.Data, resp, err
+	return videos, resp, err
 }
 
 // GetVideo specific video by channel name and video ID.
@@ -220,17 +181,7 @@ func (s *ChannelsService) ListVideo(ch string, opt *ListVideoOptions) ([]*Video,
 // Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/videos/%7Bvideo_id%7D
 func (s *ChannelsService) GetVideo(ch string, vid int) (*Video, *Response, error) {
 	u := fmt.Sprintf("channels/%s/videos/%d", ch, vid)
-	req, err := s.client.NewRequest("GET", u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	video := &Video{}
-
-	resp, err := s.client.Do(req, video)
-	if err != nil {
-		return nil, resp, err
-	}
+	video, resp, err := getVideo(s.client, u)
 
 	return video, resp, err
 }
@@ -240,10 +191,7 @@ func (s *ChannelsService) GetVideo(ch string, vid int) (*Video, *Response, error
 // Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/videos/%7Bvideo_id%7D
 func (s *ChannelsService) DeleteVideo(ch string, vid int) (*Response, error) {
 	u := fmt.Sprintf("channels/%s/videos/%d", ch, vid)
-	req, err := s.client.NewRequest("DELETE", u, nil)
-	if err != nil {
-		return nil, err
-	}
+	resp, err := deleteVideo(s.client, u)
 
-	return s.client.Do(req, nil)
+	return resp, err
 }

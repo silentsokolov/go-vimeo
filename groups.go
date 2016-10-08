@@ -81,12 +81,7 @@ func listGroup(c *Client, url string, opt *ListGroupOptions) ([]*Group, *Respons
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/groups
 func (s *GroupsService) List(opt *ListGroupOptions) ([]*Group, *Response, error) {
-	u, err := addOptions("groups", opt)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	groups, resp, err := listGroup(s.client, u, opt)
+	groups, resp, err := listGroup(s.client, "groups", opt)
 
 	return groups, resp, err
 }
@@ -147,26 +142,9 @@ func (s *GroupsService) Delete(gr string) (*Response, error) {
 // Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/users
 func (s *GroupsService) ListUser(gr string, opt *ListUserOptions) ([]*User, *Response, error) {
 	u := fmt.Sprintf("groups/%s/users", gr)
-	u, err := addOptions(u, opt)
-	if err != nil {
-		return nil, nil, err
-	}
+	users, resp, err := listUser(s.client, u, opt)
 
-	req, err := s.client.NewRequest("GET", u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	users := &dataListUser{}
-
-	resp, err := s.client.Do(req, users)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	resp.setPaging(users)
-
-	return users.Data, resp, err
+	return users, resp, err
 }
 
 // ListVideo lists the video for an group.
@@ -174,26 +152,9 @@ func (s *GroupsService) ListUser(gr string, opt *ListUserOptions) ([]*User, *Res
 // Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/videos
 func (s *GroupsService) ListVideo(gr string, opt *ListVideoOptions) ([]*Video, *Response, error) {
 	u := fmt.Sprintf("groups/%s/videos", gr)
-	u, err := addOptions(u, opt)
-	if err != nil {
-		return nil, nil, err
-	}
+	videos, resp, err := listVideo(s.client, u, opt)
 
-	req, err := s.client.NewRequest("GET", u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	videos := &dataListVideo{}
-
-	resp, err := s.client.Do(req, videos)
-	if err != nil {
-		return nil, resp, err
-	}
-
-	resp.setPaging(videos)
-
-	return videos.Data, resp, err
+	return videos, resp, err
 }
 
 // GetVideo specific video by group name and video ID.
@@ -201,17 +162,7 @@ func (s *GroupsService) ListVideo(gr string, opt *ListVideoOptions) ([]*Video, *
 // Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/videos/%7Bvideo_id%7D
 func (s *GroupsService) GetVideo(gr string, vid int) (*Video, *Response, error) {
 	u := fmt.Sprintf("groups/%s/videos/%d", gr, vid)
-	req, err := s.client.NewRequest("GET", u, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	video := &Video{}
-
-	resp, err := s.client.Do(req, video)
-	if err != nil {
-		return nil, resp, err
-	}
+	video, resp, err := getVideo(s.client, u)
 
 	return video, resp, err
 }
@@ -221,10 +172,7 @@ func (s *GroupsService) GetVideo(gr string, vid int) (*Video, *Response, error) 
 // Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/videos/%7Bvideo_id%7D
 func (s *GroupsService) DeleteVideo(gr string, vid int) (*Response, error) {
 	u := fmt.Sprintf("groups/%s/videos/%d", gr, vid)
-	req, err := s.client.NewRequest("DELETE", u, nil)
-	if err != nil {
-		return nil, err
-	}
+	resp, err := deleteVideo(s.client, u)
 
-	return s.client.Do(req, nil)
+	return resp, err
 }
