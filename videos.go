@@ -16,15 +16,6 @@ type Embed struct {
 	HTML string `json:"html,omitempty"`
 }
 
-// Tag represents a tag.
-type Tag struct {
-	URI         string `json:"uri,omitempty"`
-	Name        string `json:"name,omitempty"`
-	Tag         string `json:"tag,omitempty"`
-	Canonical   string `json:"canonical,omitempty"`
-	ResourceKey string `json:"resource_key,omitempty"`
-}
-
 // Stats internal object provides access to video statistic.
 type Stats struct {
 	Plays int `json:"plays,omitempty"`

@@ -261,7 +261,7 @@ type dataListFeed struct {
 	pagination
 }
 
-// Feed represents a tag.
+// Feed represents a feed.
 type Feed struct {
 	URI  string `json:"uri,omitempty"`
 	Clip *Video `json:"clip,omitempty"`
