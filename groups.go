@@ -167,7 +167,7 @@ func (s *GroupsService) GetVideo(gr string, vid int) (*Video, *Response, error) 
 	return video, resp, err
 }
 
-// Delete specific video by group name and video ID.
+// DeleteVideo specific video by group name and video ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/videos/%7Bvideo_id%7D
 func (s *GroupsService) DeleteVideo(gr string, vid int) (*Response, error) {

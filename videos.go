@@ -1,10 +1,17 @@
 package vimeo
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 	"time"
 )
+
+// VideosService handles communication with the tag related
+// methods of the Vimeo API.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/endpoints/videos
+type VideosService service
 
 type dataListVideo struct {
 	Data []*Video `json:"data,omitempty"`
@@ -69,7 +76,7 @@ type EmbedSettings struct {
 	OverlayEmailCaptureConfirmation string   `json:"overlay_email_capture_confirmation,omitempty"`
 }
 
-// Logos internal object present settings.
+// EmbedPresets internal object present settings.
 type EmbedPresets struct {
 	URI      string         `json:"uri,omitempty"`
 	Name     string         `json:"name,omitempty"`
@@ -102,6 +109,77 @@ type Video struct {
 	Status        string        `json:"status,omitempty"`
 	ResourceKey   string        `json:"resource_key,omitempty"`
 	EmbedPresets  *EmbedPresets `json:"embed_presets,omitempty"`
+}
+
+// TitleRequest a request to edit an embed settings.
+type TitleRequest struct {
+	Owner    string `json:"owner,omitempty"`
+	Portrait string `json:"portrait,omitempty"`
+	Name     string `json:"name,omitempty"`
+}
+
+// RatingTVRequest a request to edit video.
+type RatingTVRequest struct {
+	Rating string `json:"rating,omitempty"`
+	Reason string `json:"reason,omitempty"`
+}
+
+// RatingMPAARequest a request to edit video.
+type RatingMPAARequest struct {
+	Rating string `json:"rating,omitempty"`
+	Reason string `json:"reason,omitempty"`
+}
+
+// TitleRequest a request to edit an embed settings.
+type RatingsRequest struct {
+	RatingTVRequest   string `json:"tv,omitempty"`
+	RatingMPAARequest string `json:"mpaa,omitempty"`
+}
+
+// ExtraLinksRequest a request to edit video.
+type ExtraLinksRequest struct {
+	IMDB           string `json:"imdb,omitempty"`
+	RottenTomatoes string `json:"rotten_tomatoes,omitempty"`
+}
+
+// EmbedRequest a request to edit an embed settings.
+type EmbedRequest struct {
+	Buttons                         *Buttons           `json:"buttons,omitempty"`
+	Logos                           *Logos             `json:"logos,omitempty"`
+	Outro                           string             `json:"outro,omitempty"`
+	Portrait                        string             `json:"portrait,omitempty"`
+	Title                           *TitleRequest      `json:"title,omitempty"`
+	ByLine                          string             `json:"byline,omitempty"`
+	Badge                           bool               `json:"badge"`
+	ByLineBadge                     bool               `json:"byline_badge"`
+	CollectionsButton               bool               `json:"collections_button"`
+	PlayBar                         bool               `json:"playbar"`
+	Volume                          bool               `json:"volume"`
+	FullscreenButton                bool               `json:"fullscreen_button"`
+	ScalingButton                   bool               `json:"scaling_button"`
+	Autoplay                        bool               `json:"autoplay"`
+	Autopause                       bool               `json:"autopause"`
+	Loop                            bool               `json:"loop"`
+	Color                           string             `json:"color,omitempty"`
+	Link                            bool               `json:"link"`
+	RatingsRequest                  *RatingsRequest    `json:"ratings,omitempty"`
+	ExtraLinks                      *ExtraLinksRequest `json:"external_links,omitempty"`
+	OverlayEmailCapture             int                `json:"overlay_email_capture,omitempty"`
+	OverlayEmailCaptureText         string             `json:"overlay_email_capture_text,omitempty"`
+	OverlayEmailCaptureConfirmation string             `json:"overlay_email_capture_confirmation,omitempty"`
+}
+
+// VideoRequest represents a request to edit an video.
+type VideoRequest struct {
+	Name          string        `json:"name,omitempty"`
+	Description   string        `json:"description,omitempty"`
+	License       string        `json:"license,omitempty"`
+	Privacy       *Privacy      `json:"privacy,omitempty"`
+	Password      string        `json:"password,omitempty"`
+	ReviewLink    bool          `json:"review_link"`
+	Locale        string        `json:"locale,omitempty"`
+	ContentRating []string      `json:"content_rating,omitempty"`
+	Embed         *EmbedRequest `json:"embed,omitempty"`
 }
 
 // GetID returns the numeric identifier (ID) of the video.
@@ -169,4 +247,62 @@ func deleteVideo(c *Client, url string) (*Response, error) {
 	}
 
 	return c.Do(req, nil)
+}
+
+// List lists the videos.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos
+func (s *VideosService) List(opt *ListVideoOptions) ([]*Video, *Response, error) {
+	videos, resp, err := listVideo(s.client, "videos", opt)
+
+	return videos, resp, err
+}
+
+// Get specific video by ID.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D
+func (s *VideosService) Get(vid int) (*Video, *Response, error) {
+	u := fmt.Sprintf("videos/%d", vid)
+	video, resp, err := getVideo(s.client, u)
+
+	return video, resp, err
+}
+
+// Edit specific video by ID.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D
+func (s *VideosService) Edit(vid int, r *VideoRequest) (*Video, *Response, error) {
+	u := fmt.Sprintf("videos/%d", vid)
+	req, err := s.client.NewRequest("PATCH", u, r)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	video := &Video{}
+	resp, err := s.client.Do(req, video)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return video, resp, nil
+}
+
+// Delete specific video by ID.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D
+func (s *VideosService) Delete(vid int) (*Response, error) {
+	u := fmt.Sprintf("videos/%d", vid)
+	resp, err := deleteVideo(s.client, u)
+
+	return resp, err
+}
+
+// ListCategory lists the video category.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/categories
+func (s *VideosService) ListCategory(vid int, opt *ListCategoryOptions) ([]*Category, *Response, error) {
+	u := fmt.Sprintf("videos/%d/categories", vid)
+	catogories, resp, err := listCategory(s.client, u, opt)
+
+	return catogories, resp, err
 }

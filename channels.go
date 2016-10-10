@@ -77,7 +77,7 @@ func listChannel(c *Client, url string, opt *ListChannelOptions) ([]*Channel, *R
 	return channels.Data, resp, err
 }
 
-// ListChannel lists the channel for an category.
+// List lists the channel for an category.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/channels
 func (s *ChannelsService) List(opt *ListChannelOptions) ([]*Channel, *Response, error) {
@@ -186,7 +186,7 @@ func (s *ChannelsService) GetVideo(ch string, vid int) (*Video, *Response, error
 	return video, resp, err
 }
 
-// Delete specific video by channel name and video ID.
+// DeleteVideo specific video by channel name and video ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/videos/%7Bvideo_id%7D
 func (s *ChannelsService) DeleteVideo(ch string, vid int) (*Response, error) {

@@ -15,6 +15,7 @@ type Privacy struct {
 	Comment  string `json:"comment,omitempty"`
 	Forums   string `json:"forums,omitempty"`
 	Invite   string `json:"invite,omitempty"`
+	Embed    string `json:"embed,omitempty"`
 	Download bool   `json:"download"`
 	Add      bool   `json:"add"`
 }
