@@ -439,3 +439,119 @@ func TestVideosService_DeleteCredit(t *testing.T) {
 		t.Errorf("Videos.DeleteCredit returned unexpected error: %v", err)
 	}
 }
+
+func TestVideosService_ListPictures(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/pictures", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"data": [{"uri": "Test"}]}`)
+	})
+
+	pictures, _, err := client.Videos.ListPictures(1)
+	if err != nil {
+		t.Errorf("Videos.ListPictures returned unexpected error: %v", err)
+	}
+
+	want := []*Pictures{{URI: "Test"}}
+	if !reflect.DeepEqual(pictures, want) {
+		t.Errorf("Videos.ListPictures returned %+v, want %+v", pictures, want)
+	}
+}
+
+func TestVideosService_CreatePictures(t *testing.T) {
+	setup()
+	defer teardown()
+
+	input := &PicturesRequest{
+		Active: true,
+	}
+
+	mux.HandleFunc("/videos/1/pictures", func(w http.ResponseWriter, r *http.Request) {
+		v := &PicturesRequest{}
+		json.NewDecoder(r.Body).Decode(v)
+
+		testMethod(t, r, "POST")
+		if !reflect.DeepEqual(v, input) {
+			t.Errorf("Videos.CreatePictures body is %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"uri": "name"}`)
+	})
+
+	pictures, _, err := client.Videos.CreatePictures(1, input)
+	if err != nil {
+		t.Errorf("Videos.CreatePictures returned unexpected error: %v", err)
+	}
+
+	want := &Pictures{URI: "name"}
+	if !reflect.DeepEqual(pictures, want) {
+		t.Errorf("Videos.CreatePictures returned %+v, want %+v", pictures, want)
+	}
+}
+
+func TestVideosService_GetPictures(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/pictures/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"uri": "Test"}`)
+	})
+
+	pictures, _, err := client.Videos.GetPictures(1, 1)
+	if err != nil {
+		t.Errorf("Videos.GetPictures returned unexpected error: %v", err)
+	}
+
+	want := &Pictures{URI: "Test"}
+	if !reflect.DeepEqual(pictures, want) {
+		t.Errorf("Videos.GetPictures returned %+v, want %+v", pictures, want)
+	}
+}
+
+func TestVideosService_EditPictures(t *testing.T) {
+	setup()
+	defer teardown()
+
+	input := &PicturesRequest{
+		Active: true,
+	}
+
+	mux.HandleFunc("/videos/1/pictures/1", func(w http.ResponseWriter, r *http.Request) {
+		v := &PicturesRequest{}
+		json.NewDecoder(r.Body).Decode(v)
+
+		testMethod(t, r, "PATCH")
+		if !reflect.DeepEqual(v, input) {
+			t.Errorf("Videos.EditPictures body is %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"uri": "name"}`)
+	})
+
+	pictures, _, err := client.Videos.EditPictures(1, 1, input)
+	if err != nil {
+		t.Errorf("Videos.EditPictures returned unexpected error: %v", err)
+	}
+
+	want := &Pictures{URI: "name"}
+	if !reflect.DeepEqual(pictures, want) {
+		t.Errorf("Videos.EditPictures returned %+v, want %+v", pictures, want)
+	}
+}
+
+func TestVideosService_DeletePictures(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/pictures/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Videos.DeletePictures(1, 1)
+	if err != nil {
+		t.Errorf("Videos.DeletePictures returned unexpected error: %v", err)
+	}
+}

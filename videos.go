@@ -306,3 +306,13 @@ func (s *VideosService) ListCategory(vid int, opt *ListCategoryOptions) ([]*Cate
 
 	return catogories, resp, err
 }
+
+// LikeList lists users who liked this video.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/likes
+func (s *VideosService) LikeList(vid int, opt *ListUserOptions) ([]*User, *Response, error) {
+	u := fmt.Sprintf("videos/%d/likes", vid)
+	users, resp, err := listUser(s.client, u, opt)
+
+	return users, resp, err
+}

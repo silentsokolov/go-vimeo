@@ -11,8 +11,9 @@ type dataListCredit struct {
 type Credit struct {
 	URI   string `json:"uri,omitempty"`
 	Name  string `json:"name,omitempty"`
-	Email string `json:"email,omitempty"`
-	// TODO: need full struct
+	Role  string `json:"role,omitempty"`
+	User  *User  `json:"user,omitempty"`
+	Video *Video `json:"user,omitempty"`
 }
 
 // ListCreditOptions specifies the optional parameters to the ListCredit method.

@@ -26,32 +26,6 @@ type Category struct {
 	ResourceKey           string         `json:"resource_key,omitempty"`
 }
 
-// Pictures internal object provides access to pictures.
-type Pictures struct {
-	URI         string         `json:"uri,omitempty"`
-	Active      bool           `json:"active"`
-	Type        string         `json:"type,omitempty"`
-	Sizes       []*PictureSize `json:"sizes,omitempty"`
-	ResourceKey string         `json:"resource_key,omitempty"`
-}
-
-// PictureSize internal object provides access to picture size.
-type PictureSize struct {
-	Width              int    `json:"width,omitempty"`
-	Height             int    `json:"height,omitempty"`
-	Link               string `json:"link,omitempty"`
-	LinkWithPlayButton string `json:"link_with_play_button,omitempty"`
-}
-
-// PictureSize internal object provides access to header pictures.
-type Header struct {
-	URI         string         `json:"uri,omitempty"`
-	Active      bool           `json:"active"`
-	Type        string         `json:"type,omitempty"`
-	Sizes       []*PictureSize `json:"sizes,omitempty"`
-	ResourceKey string         `json:"resource_key,omitempty"`
-}
-
 // SubCategory internal object provides access to subcategory in category.
 type SubCategory struct {
 	URI  string `json:"URI,omitempty"`

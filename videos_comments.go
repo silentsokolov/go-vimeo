@@ -25,7 +25,7 @@ type ListCommentOptions struct {
 	ListOptions
 }
 
-// CommentRequest represents a request to create/edit an video.
+// CommentRequest represents a request to create/edit an comment.
 type CommentRequest struct {
 	Text string `json:"text,omitempty"`
 }
