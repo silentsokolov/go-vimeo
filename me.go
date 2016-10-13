@@ -576,14 +576,14 @@ func (s *MeService) ListPreset(opt *ListPresetOptions) ([]*Preset, *Response, er
 // GetPreset get preset by name.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/me/presets/%7Bpreset_id%7D
-func (s *MeService) GetPreset(p string) (*Portfolio, *Response, error) {
-	u := fmt.Sprintf("me/presets/%s", p)
+func (s *MeService) GetPreset(p int) (*Preset, *Response, error) {
+	u := fmt.Sprintf("me/presets/%d", p)
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	portf := &Portfolio{}
+	portf := &Preset{}
 
 	resp, err := s.client.Do(req, portf)
 	if err != nil {

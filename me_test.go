@@ -760,12 +760,12 @@ func TestMeService_GetPreset(t *testing.T) {
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	preset, _, err := client.Me.GetPreset("1")
+	preset, _, err := client.Me.GetPreset(1)
 	if err != nil {
 		t.Errorf("Me.GetPreset returned unexpected error: %v", err)
 	}
 
-	want := &Portfolio{Name: "Test"}
+	want := &Preset{Name: "Test"}
 	if !reflect.DeepEqual(preset, want) {
 		t.Errorf("Me.GetPreset returned %+v, want %+v", preset, want)
 	}

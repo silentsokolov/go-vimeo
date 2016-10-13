@@ -555,3 +555,99 @@ func TestVideosService_DeletePictures(t *testing.T) {
 		t.Errorf("Videos.DeletePictures returned unexpected error: %v", err)
 	}
 }
+
+func TestVideosService_GetPreset(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/presets/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	preset, _, err := client.Videos.GetPreset(1, 1)
+	if err != nil {
+		t.Errorf("Videos.GetPreset returned unexpected error: %v", err)
+	}
+
+	want := &Preset{Name: "Test"}
+	if !reflect.DeepEqual(preset, want) {
+		t.Errorf("Videos.GetPreset returned %+v, want %+v", preset, want)
+	}
+}
+
+func TestVideosService_AssignPreset(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/presets/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Videos.AssignPreset(1, 1)
+	if err != nil {
+		t.Errorf("Videos.AssignPreset returned unexpected error: %v", err)
+	}
+}
+
+func TestVideosService_UnassignPreset(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/presets/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Videos.UnassignPreset(1, 1)
+	if err != nil {
+		t.Errorf("Videos.UnassignPreset returned unexpected error: %v", err)
+	}
+}
+
+func TestVideosService_ListDomain(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/privacy/domains", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"data": [{"uri": "Test"}]}`)
+	})
+
+	domains, _, err := client.Videos.ListDomain(1)
+	if err != nil {
+		t.Errorf("Videos.ListDomain returned unexpected error: %v", err)
+	}
+
+	want := []*Domain{{URI: "Test"}}
+	if !reflect.DeepEqual(domains, want) {
+		t.Errorf("Videos.ListDomain returned %+v, want %+v", domains, want)
+	}
+}
+
+func TestVideosService_AllowDomain(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/privacy/domains/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Videos.AllowDomain(1, "1")
+	if err != nil {
+		t.Errorf("Videos.AllowDomain returned unexpected error: %v", err)
+	}
+}
+
+func TestVideosService_DisallowDomain(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/privacy/domains/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Videos.DisallowDomain(1, "1")
+	if err != nil {
+		t.Errorf("Videos.DisallowDomain returned unexpected error: %v", err)
+	}
+}

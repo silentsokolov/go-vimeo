@@ -316,3 +316,108 @@ func (s *VideosService) LikeList(vid int, opt *ListUserOptions) ([]*User, *Respo
 
 	return users, resp, err
 }
+
+// GetPreset get preset by name.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/presets/%7Bpreset_id%7D
+func (s *VideosService) GetPreset(vid int, p int) (*Preset, *Response, error) {
+	u := fmt.Sprintf("videos/%d/presets/%d", vid, p)
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	portf := &Preset{}
+
+	resp, err := s.client.Do(req, portf)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return portf, resp, err
+}
+
+// AssignPreset embed preset by name.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/presets/%7Bpreset_id%7D
+func (s *VideosService) AssignPreset(vid int, p int) (*Response, error) {
+	u := fmt.Sprintf("videos/%d/presets/%d", vid, p)
+	req, err := s.client.NewRequest("PUT", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// UnassignPreset embed preset by name.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/presets/%7Bpreset_id%7D
+func (s *VideosService) UnassignPreset(vid int, p int) (*Response, error) {
+	u := fmt.Sprintf("videos/%d/presets/%d", vid, p)
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+type dataListDomain struct {
+	Data []*Domain `json:"data,omitempty"`
+	pagination
+}
+
+// Domain represents a domain.
+type Domain struct {
+	URI  string `json:"uri,omitempty"`
+	Name string `json:"name,omitempty"`
+}
+
+// ListDomain lists the domains.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/domains
+func (s *VideosService) ListDomain(vid int) ([]*Domain, *Response, error) {
+	u := fmt.Sprintf("videos/%d/privacy/domains", vid)
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	domains := &dataListDomain{}
+
+	resp, err := s.client.Do(req, domains)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	resp.setPaging(domains)
+
+	return domains.Data, resp, err
+}
+
+// AllowDomain embedding on a domain.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/domains/%7Bdomain%7D
+func (s *VideosService) AllowDomain(vid int, d string) (*Response, error) {
+	u := fmt.Sprintf("videos/%d/privacy/domains/%s", vid, d)
+	req, err := s.client.NewRequest("PUT", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// DisallowDomain embedding on a domain.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/domains/%7Bdomain%7D
+func (s *VideosService) DisallowDomain(vid int, d string) (*Response, error) {
+	u := fmt.Sprintf("videos/%d/privacy/domains/%s", vid, d)
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
