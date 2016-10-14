@@ -195,7 +195,7 @@ func (s *MeService) ListCategory(opt *ListCategoryOptions) ([]*Category, *Respon
 	return categories, resp, err
 }
 
-// UnsubscribeCategory subscribe category current user.
+// SubscribeCategory subscribe category current user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/me/categories/%7Bcategory%7D
 func (s *MeService) SubscribeCategory(cat string) (*Response, error) {
@@ -299,7 +299,7 @@ func (s *MeService) Feed(opt *ListFeedOptions) ([]*Feed, *Response, error) {
 	return feed.Data, resp, err
 }
 
-// Follower lists the followers.
+// ListFollower lists the followers.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/users
 func (s *MeService) ListFollower(opt *ListUserOptions) ([]*User, *Response, error) {
@@ -308,7 +308,7 @@ func (s *MeService) ListFollower(opt *ListUserOptions) ([]*User, *Response, erro
 	return users, resp, err
 }
 
-// Followed lists the following.
+// ListFollowed lists the following.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/me/following
 func (s *MeService) ListFollowed(opt *ListUserOptions) ([]*User, *Response, error) {
@@ -509,7 +509,7 @@ func (s *MeService) ProtfolioListVideo(p string, opt *ListVideoOptions) ([]*Vide
 	return videos, resp, err
 }
 
-// ProtfolioListVideo get specific video by portfolio name and video ID.
+// ProtfolioGetVideo get specific video by portfolio name and video ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/me/portfolios/%7Bportfolio_id%7D/videos/%7Bvideo_id%7D
 func (s *MeService) ProtfolioGetVideo(p string, vid int) (*Video, *Response, error) {

@@ -7,7 +7,7 @@ type dataListCredit struct {
 	pagination
 }
 
-// Creadit represents a creadit.
+// Credit represents a creadit.
 type Credit struct {
 	URI   string `json:"uri,omitempty"`
 	Name  string `json:"name,omitempty"`

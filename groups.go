@@ -77,7 +77,7 @@ func listGroup(c *Client, url string, opt *ListGroupOptions) ([]*Group, *Respons
 	return groups.Data, resp, err
 }
 
-// ListGroup lists the group.
+// List lists the group.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/groups
 func (s *GroupsService) List(opt *ListGroupOptions) ([]*Group, *Response, error) {

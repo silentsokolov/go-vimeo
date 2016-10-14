@@ -130,7 +130,7 @@ type RatingMPAARequest struct {
 	Reason string `json:"reason,omitempty"`
 }
 
-// TitleRequest a request to edit an embed settings.
+// RatingsRequest a request to edit an embed settings.
 type RatingsRequest struct {
 	RatingTVRequest   string `json:"tv,omitempty"`
 	RatingMPAARequest string `json:"mpaa,omitempty"`
@@ -414,6 +414,55 @@ func (s *VideosService) AllowDomain(vid int, d string) (*Response, error) {
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/domains/%7Bdomain%7D
 func (s *VideosService) DisallowDomain(vid int, d string) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/privacy/domains/%s", vid, d)
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// ListUser list the all allowed users
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/users
+func (s *VideosService) ListUser(vid int) ([]*User, *Response, error) {
+	u := fmt.Sprintf("videos/%d/privacy/users", vid)
+	users, resp, err := listUser(s.client, u, nil)
+
+	return users, resp, err
+}
+
+// AllowUsers allow users to view this video.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/users
+func (s *VideosService) AllowUsers(vid int) (*Response, error) {
+	u := fmt.Sprintf("videos/%d/privacy/users", vid)
+	req, err := s.client.NewRequest("PUT", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// AllowUser allow users to view this video.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/users/%7Buser_id%7D
+func (s *VideosService) AllowUser(vid int, uid string) (*Response, error) {
+	u := fmt.Sprintf("videos/%d/privacy/users/%s", vid, uid)
+	req, err := s.client.NewRequest("PUT", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// DisallowUser disallow user from viewing this video.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/users/%7Buser_id%7D
+func (s *VideosService) DisallowUser(vid int, uid string) (*Response, error) {
+	u := fmt.Sprintf("videos/%d/privacy/users/%s", vid, uid)
 	req, err := s.client.NewRequest("DELETE", u, nil)
 	if err != nil {
 		return nil, err

@@ -24,7 +24,7 @@ type PictureSize struct {
 	LinkWithPlayButton string `json:"link_with_play_button,omitempty"`
 }
 
-// PictureSize internal object provides access to header pictures.
+// Header internal object provides access to header pictures.
 type Header struct {
 	URI         string         `json:"uri,omitempty"`
 	Active      bool           `json:"active"`

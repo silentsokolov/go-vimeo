@@ -651,3 +651,65 @@ func TestVideosService_DisallowDomain(t *testing.T) {
 		t.Errorf("Videos.DisallowDomain returned unexpected error: %v", err)
 	}
 }
+
+func TestVideosService_ListUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/privacy/users", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	users, _, err := client.Videos.ListUser(1)
+	if err != nil {
+		t.Errorf("Videos.ListUser returned unexpected error: %v", err)
+	}
+
+	want := []*User{{Name: "Test"}}
+	if !reflect.DeepEqual(users, want) {
+		t.Errorf("Videos.ListUser returned %+v, want %+v", users, want)
+	}
+}
+
+func TestVideosService_AllowUsers(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/privacy/users", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Videos.AllowUsers(1)
+	if err != nil {
+		t.Errorf("Videos.AllowUsers returned unexpected error: %v", err)
+	}
+}
+
+func TestVideosService_AllowUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/privacy/users/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Videos.AllowUser(1, "1")
+	if err != nil {
+		t.Errorf("Videos.AllowDomain returned unexpected error: %v", err)
+	}
+}
+
+func TestVideosService_DisallowUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/privacy/users/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Videos.DisallowUser(1, "1")
+	if err != nil {
+		t.Errorf("Videos.DisallowUser returned unexpected error: %v", err)
+	}
+}

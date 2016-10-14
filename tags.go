@@ -17,7 +17,7 @@ type Tag struct {
 	ResourceKey string `json:"resource_key,omitempty"`
 }
 
-// GetVideo specific tag by name.
+// Get specific tag by name.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/tags/%7Bword%7D
 func (s *TagsService) Get(t string) (*Tag, *Response, error) {
