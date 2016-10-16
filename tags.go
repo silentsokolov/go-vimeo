@@ -8,6 +8,11 @@ import "fmt"
 // Vimeo API docs: https://developer.vimeo.com/api/endpoints/tags
 type TagsService service
 
+type dataListTag struct {
+	Data []*Tag `json:"data"`
+	pagination
+}
+
 // Tag represents a tag.
 type Tag struct {
 	URI         string `json:"uri,omitempty"`
@@ -17,22 +22,46 @@ type Tag struct {
 	ResourceKey string `json:"resource_key,omitempty"`
 }
 
-// Get specific tag by name.
-//
-// Vimeo API docs: https://developer.vimeo.com/api/playground/tags/%7Bword%7D
-func (s *TagsService) Get(t string) (*Tag, *Response, error) {
-	u := fmt.Sprintf("tags/%s", t)
-	req, err := s.client.NewRequest("GET", u, nil)
+func listTag(c *Client, url string) ([]*Tag, *Response, error) {
+	req, err := c.NewRequest("GET", url, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	categories := &dataListTag{}
+
+	resp, err := c.Do(req, categories)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	resp.setPaging(categories)
+
+	return categories.Data, resp, err
+}
+
+func getTag(c *Client, url string) (*Tag, *Response, error) {
+	req, err := c.NewRequest("GET", url, nil)
 	if err != nil {
 		return nil, nil, err
 	}
 
 	tag := &Tag{}
 
-	resp, err := s.client.Do(req, tag)
+	resp, err := c.Do(req, tag)
 	if err != nil {
 		return nil, resp, err
 	}
+
+	return tag, resp, err
+}
+
+// Get specific tag by name.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/tags/%7Bword%7D
+func (s *TagsService) Get(t string) (*Tag, *Response, error) {
+	u := fmt.Sprintf("tags/%s", t)
+	tag, resp, err := getTag(s.client, u)
 
 	return tag, resp, err
 }

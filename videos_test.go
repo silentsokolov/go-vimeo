@@ -713,3 +713,71 @@ func TestVideosService_DisallowUser(t *testing.T) {
 		t.Errorf("Videos.DisallowUser returned unexpected error: %v", err)
 	}
 }
+
+func TestVideosService_ListTag(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/tags", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"data": [{"uri": "Test"}]}`)
+	})
+
+	tags, _, err := client.Videos.ListTag(1)
+	if err != nil {
+		t.Errorf("Videos.ListTag returned unexpected error: %v", err)
+	}
+
+	want := []*Tag{{URI: "Test"}}
+	if !reflect.DeepEqual(tags, want) {
+		t.Errorf("Videos.ListTag returned %+v, want %+v", tags, want)
+	}
+}
+
+func TestVideosService_GetTag(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/tags/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	tag, _, err := client.Videos.GetTag(1, "1")
+	if err != nil {
+		t.Errorf("Videos.GetTag returned unexpected error: %v", err)
+	}
+
+	want := &Tag{Name: "Test"}
+	if !reflect.DeepEqual(tag, want) {
+		t.Errorf("Videos.GetTag returned %+v, want %+v", tag, want)
+	}
+}
+
+func TestVideosService_AssignTag(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/tags/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Videos.AssignTag(1, "1")
+	if err != nil {
+		t.Errorf("Videos.AssignTag returned unexpected error: %v", err)
+	}
+}
+
+func TestVideosService_UnassignTag(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/tags/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Videos.UnassignTag(1, "1")
+	if err != nil {
+		t.Errorf("Videos.UnassignTag returned unexpected error: %v", err)
+	}
+}

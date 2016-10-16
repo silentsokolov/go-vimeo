@@ -15,11 +15,11 @@ func main() {
     client := vimeo.NewClient(nil)
 
     // Specific optional parameters
-    opt := &vimeo.VideoListOptions{
-        ListOptions: vimeo.ListOptions{Page: 1, PerPage: 2},
-    }
+	opt := &vimeo.ListCategoryOptions{
+		ListOptions: vimeo.ListOptions{Page: 1, PerPage: 2},
+	}
 
-    cats, _, err := client.Categories.List(opt)
+	cats, _, err := client.Categories.List(opt)
 }
 ```
 
@@ -38,7 +38,7 @@ func main() {
 
     client := vimeo.NewClient(tc)
 
-    cats, _, err := client.Categories.List(opt)
+    cats, _, err := client.Categories.List(nil)
 }
 ```
 
@@ -52,17 +52,17 @@ func main() {
     client := ...
 
     // Specific optional parameters
-    opt := &vimeo.VideoListOptions{
-        ListOptions: vimeo.ListOptions{Page: 1, PerPage: 2},
-    }
+	opt := &vimeo.ListCategoryOptions{
+		ListOptions: vimeo.ListOptions{Page: 2, PerPage: 2},
+	}
 
-    // Any "List" request
-    _, resp, _ := client.Categories.List(opt)
+	// Any "List" request
+	_, resp, _ := client.Categories.List(opt)
 
-    fmt.Printf("Current page: %d", resp.Page)
-	fmt.Printf("Next page: %s", resp.NextPage)
-	fmt.Printf("Prev page: %s", resp.PrevPage)
-	fmt.Printf("Total pages: %d", resp.TotalPages)
+	fmt.Printf("Current page: %d\n", resp.Page)
+	fmt.Printf("Next page: %s\n", resp.NextPage)
+	fmt.Printf("Prev page: %s\n", resp.PrevPage)
+	fmt.Printf("Total pages: %d\n", resp.TotalPages)
 }
 ```
 

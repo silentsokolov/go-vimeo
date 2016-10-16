@@ -470,3 +470,49 @@ func (s *VideosService) DisallowUser(vid int, uid string) (*Response, error) {
 
 	return s.client.Do(req, nil)
 }
+
+// ListTag list a video's tags
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/tags
+func (s *VideosService) ListTag(vid int) ([]*Tag, *Response, error) {
+	u := fmt.Sprintf("videos/%d/tags", vid)
+	tags, resp, err := listTag(s.client, u)
+
+	return tags, resp, err
+}
+
+// GetTag specific tag by name.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/tags/%7Bword%7D
+func (s *VideosService) GetTag(vid int, t string) (*Tag, *Response, error) {
+	u := fmt.Sprintf("videos/%d/tags/%s", vid, t)
+	tag, resp, err := getTag(s.client, u)
+
+	return tag, resp, err
+}
+
+// AssignTag specific tag by name.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/tags/%7Bword%7D
+func (s *VideosService) AssignTag(vid int, t string) (*Response, error) {
+	u := fmt.Sprintf("videos/%d/tags/%s", vid, t)
+	req, err := s.client.NewRequest("PUT", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// UnassignTag specific tag by name.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/tags/%7Bword%7D
+func (s *VideosService) UnassignTag(vid int, t string) (*Response, error) {
+	u := fmt.Sprintf("videos/%d/tags/%s", vid, t)
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
