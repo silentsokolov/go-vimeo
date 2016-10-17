@@ -516,3 +516,13 @@ func (s *VideosService) UnassignTag(vid int, t string) (*Response, error) {
 
 	return s.client.Do(req, nil)
 }
+
+// ListRelatedVideo lists the related video.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/videos
+func (s *VideosService) ListRelatedVideo(vid int, opt *ListVideoOptions) ([]*Video, *Response, error) {
+	u := fmt.Sprintf("videos/%d/videos", vid)
+	videos, resp, err := listVideo(s.client, u, opt)
+
+	return videos, resp, err
+}

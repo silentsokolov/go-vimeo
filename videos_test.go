@@ -781,3 +781,146 @@ func TestVideosService_UnassignTag(t *testing.T) {
 		t.Errorf("Videos.UnassignTag returned unexpected error: %v", err)
 	}
 }
+
+func TestVideosService_ListTextTrack(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/texttracks", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	textTrack, _, err := client.Videos.ListTextTrack(1)
+	if err != nil {
+		t.Errorf("Videos.ListTextTrack returned unexpected error: %v", err)
+	}
+
+	want := []*TextTrack{{Name: "Test"}}
+	if !reflect.DeepEqual(textTrack, want) {
+		t.Errorf("Videos.ListTextTrack returned %+v, want %+v", textTrack, want)
+	}
+}
+
+func TestVideosService_AddTextTrack(t *testing.T) {
+	setup()
+	defer teardown()
+
+	input := &TextTrackRequest{
+		Name: "name",
+	}
+
+	mux.HandleFunc("/videos/1/texttracks", func(w http.ResponseWriter, r *http.Request) {
+		v := &TextTrackRequest{}
+		json.NewDecoder(r.Body).Decode(v)
+
+		testMethod(t, r, "POST")
+		if !reflect.DeepEqual(v, input) {
+			t.Errorf("Videos.AddTextTrack body is %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"name": "name"}`)
+	})
+
+	textTrack, _, err := client.Videos.AddTextTrack(1, input)
+	if err != nil {
+		t.Errorf("Videos.AddTextTrack returned unexpected error: %v", err)
+	}
+
+	want := &TextTrack{Name: "name"}
+	if !reflect.DeepEqual(textTrack, want) {
+		t.Errorf("Videos.AddTextTrack returned %+v, want %+v", textTrack, want)
+	}
+}
+
+func TestVideosService_GetTextTrack(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/texttracks/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"uri": "Test"}`)
+	})
+
+	textTrack, _, err := client.Videos.GetTextTrack(1, 1)
+	if err != nil {
+		t.Errorf("Videos.GetTextTrack returned unexpected error: %v", err)
+	}
+
+	want := &TextTrack{URI: "Test"}
+	if !reflect.DeepEqual(textTrack, want) {
+		t.Errorf("Videos.GetTextTrack returned %+v, want %+v", textTrack, want)
+	}
+}
+
+func TestVideosService_EditTextTrack(t *testing.T) {
+	setup()
+	defer teardown()
+
+	input := &TextTrackRequest{
+		Name: "name",
+	}
+
+	mux.HandleFunc("/videos/1/texttracks/1", func(w http.ResponseWriter, r *http.Request) {
+		v := &TextTrackRequest{}
+		json.NewDecoder(r.Body).Decode(v)
+
+		testMethod(t, r, "PATCH")
+		if !reflect.DeepEqual(v, input) {
+			t.Errorf("Videos.EditTextTrack body is %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"name": "name"}`)
+	})
+
+	textTrack, _, err := client.Videos.EditTextTrack(1, 1, input)
+	if err != nil {
+		t.Errorf("Videos.EditTextTrack returned unexpected error: %v", err)
+	}
+
+	want := &TextTrack{Name: "name"}
+	if !reflect.DeepEqual(textTrack, want) {
+		t.Errorf("Videos.EditTextTrack returned %+v, want %+v", textTrack, want)
+	}
+}
+
+func TestVideosService_DeleteTextTrack(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/texttracks/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Videos.DeleteTextTrack(1, 1)
+	if err != nil {
+		t.Errorf("Videos.DeleteTextTrack returned unexpected error: %v", err)
+	}
+}
+
+func TestVideosService_ListRelatedVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/videos/1/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Videos.ListRelatedVideo(1, opt)
+	if err != nil {
+		t.Errorf("Videos.ListRelatedVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Videos.ListRelatedVideo returned %+v, want %+v", videos, want)
+	}
+}

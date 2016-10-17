@@ -117,7 +117,7 @@ func (s *VideosService) EditCredit(vid int, cid int, r *CreditRequest) (*Credit,
 	return credit, resp, nil
 }
 
-// DeleteCredit delete specific credit by name.
+// DeleteCredit delete specific credit by ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/credits/%7Bcredit_id%7D
 func (s *VideosService) DeleteCredit(vid int, cid int) (*Response, error) {
