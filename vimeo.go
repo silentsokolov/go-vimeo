@@ -39,6 +39,7 @@ type Client struct {
 	Me              *MeService
 	Tags            *TagsService
 	Videos          *VideosService
+	Users           *UsersService
 }
 
 type service struct {
@@ -65,6 +66,7 @@ func NewClient(httpClient *http.Client) *Client {
 	c.Me = &MeService{client: c}
 	c.Tags = &TagsService{client: c}
 	c.Videos = &VideosService{client: c}
+	c.Users = &UsersService{client: c}
 	return c
 }
 

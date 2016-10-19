@@ -1,6 +1,15 @@
 package vimeo
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
+
+// UsersService handles communication with the users related
+// methods of the Vimeo API.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/endpoints/users
+type UsersService service
 
 type dataListUser struct {
 	Data []*User `json:"data"`
@@ -65,4 +74,66 @@ func listUser(c *Client, url string, opt *ListUserOptions) ([]*User, *Response, 
 	resp.setPaging(users)
 
 	return users.Data, resp, err
+}
+
+// Search users.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/users
+func (s *UsersService) Search(opt *ListUserOptions) ([]*User, *Response, error) {
+	users, resp, err := listUser(s.client, "users", opt)
+
+	return users, resp, err
+}
+
+// Get show one user.
+// Passing the empty string will authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D
+func (s *UsersService) Get(uid string) (*User, *Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me")
+	} else {
+		u = fmt.Sprintf("users/%s", uid)
+	}
+
+	req, err := s.client.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	user := &User{}
+
+	resp, err := s.client.Do(req, user)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return user, resp, err
+}
+
+// Edit one user.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D
+func (s *UsersService) Edit(uid string, r *UserRequest) (*User, *Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me")
+	} else {
+		u = fmt.Sprintf("users/%s", uid)
+	}
+
+	req, err := s.client.NewRequest("PATCH", u, r)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	user := &User{}
+	resp, err := s.client.Do(req, user)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return user, resp, nil
 }

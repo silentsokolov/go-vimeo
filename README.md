@@ -87,3 +87,22 @@ func main() {
     fmt.Println(ch)
 }
 ```
+
+
+### Where "Me" service? ###
+
+The "Me" service repeats the "Users" service, passing the empty string will authenticated user.
+
+```go
+import "golang.org/x/oauth2"
+
+func main() {
+    client := ...
+
+    // Call /me API method.
+    // Return current authenticated user.
+    me, _, _ := client.Users.Get("")
+
+    fmt.Println(me)
+}
+```

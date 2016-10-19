@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-// VideosService handles communication with the tag related
+// VideosService handles communication with the videos related
 // methods of the Vimeo API.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/endpoints/videos
