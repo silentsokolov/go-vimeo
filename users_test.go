@@ -136,3 +136,431 @@ func TestUsersService_Edit_authenticatedUser(t *testing.T) {
 		t.Errorf("Users.Edit returned %+v, want %+v", user, want)
 	}
 }
+
+func TestUsersService_ListAlbum(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/albums", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListAlbumOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	albums, _, err := client.Users.ListAlbum("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListAlbum returned unexpected error: %v", err)
+	}
+
+	want := []*Album{{Name: "Test"}}
+	if !reflect.DeepEqual(albums, want) {
+		t.Errorf("Users.ListAlbum returned %+v, want %+v", albums, want)
+	}
+}
+
+func TestUsersService_ListAlbum_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/albums", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListAlbumOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	albums, _, err := client.Users.ListAlbum("", opt)
+	if err != nil {
+		t.Errorf("Users.ListAlbum returned unexpected error: %v", err)
+	}
+
+	want := []*Album{{Name: "Test"}}
+	if !reflect.DeepEqual(albums, want) {
+		t.Errorf("Users.ListAlbum returned %+v, want %+v", albums, want)
+	}
+}
+
+func TestUsersService_CreateAlbum(t *testing.T) {
+	setup()
+	defer teardown()
+
+	input := &AlbumRequest{
+		Name:        "name",
+		Description: "desc",
+	}
+
+	mux.HandleFunc("/users/1/albums", func(w http.ResponseWriter, r *http.Request) {
+		v := &AlbumRequest{}
+		json.NewDecoder(r.Body).Decode(v)
+
+		testMethod(t, r, "POST")
+		if !reflect.DeepEqual(v, input) {
+			t.Errorf("Users.CreateAlbum body is %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"name": "name"}`)
+	})
+
+	album, _, err := client.Users.CreateAlbum("1", input)
+	if err != nil {
+		t.Errorf("Users.CreateAlbum returned unexpected error: %v", err)
+	}
+
+	want := &Album{Name: "name"}
+	if !reflect.DeepEqual(album, want) {
+		t.Errorf("Users.CreateAlbum returned %+v, want %+v", album, want)
+	}
+}
+
+func TestUsersService_CreateAlbum_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	input := &AlbumRequest{
+		Name:        "name",
+		Description: "desc",
+	}
+
+	mux.HandleFunc("/me/albums", func(w http.ResponseWriter, r *http.Request) {
+		v := &AlbumRequest{}
+		json.NewDecoder(r.Body).Decode(v)
+
+		testMethod(t, r, "POST")
+		if !reflect.DeepEqual(v, input) {
+			t.Errorf("Users.CreateAlbum body is %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"name": "name"}`)
+	})
+
+	album, _, err := client.Users.CreateAlbum("", input)
+	if err != nil {
+		t.Errorf("Users.CreateAlbum returned unexpected error: %v", err)
+	}
+
+	want := &Album{Name: "name"}
+	if !reflect.DeepEqual(album, want) {
+		t.Errorf("Users.CreateAlbum returned %+v, want %+v", album, want)
+	}
+}
+
+func TestUsersService_GetAlbum(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/albums/a", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	album, _, err := client.Users.GetAlbum("1", "a")
+	if err != nil {
+		t.Errorf("Users.GetAlbum returned unexpected error: %v", err)
+	}
+
+	want := &Album{Name: "Test"}
+	if !reflect.DeepEqual(album, want) {
+		t.Errorf("Users.GetAlbum returned %+v, want %+v", album, want)
+	}
+}
+
+func TestUsersService_GetAlbum_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/albums/a", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	album, _, err := client.Users.GetAlbum("", "a")
+	if err != nil {
+		t.Errorf("Users.GetAlbum returned unexpected error: %v", err)
+	}
+
+	want := &Album{Name: "Test"}
+	if !reflect.DeepEqual(album, want) {
+		t.Errorf("Users.GetAlbum returned %+v, want %+v", album, want)
+	}
+}
+
+func TestUsersService_EditAlbum(t *testing.T) {
+	setup()
+	defer teardown()
+
+	input := &AlbumRequest{
+		Name:        "name",
+		Description: "desc",
+		Privacy:     "anybody",
+	}
+
+	mux.HandleFunc("/users/1/albums/a", func(w http.ResponseWriter, r *http.Request) {
+		v := &AlbumRequest{}
+		json.NewDecoder(r.Body).Decode(v)
+
+		testMethod(t, r, "PATCH")
+		if !reflect.DeepEqual(v, input) {
+			t.Errorf("Users.EditAlbum body is %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"name": "name"}`)
+	})
+
+	album, _, err := client.Users.EditAlbum("1", "a", input)
+	if err != nil {
+		t.Errorf("Users.Edit returned unexpected error: %v", err)
+	}
+
+	want := &Album{Name: "name"}
+	if !reflect.DeepEqual(album, want) {
+		t.Errorf("Users.EditAlbum returned %+v, want %+v", album, want)
+	}
+}
+
+func TestUsersService_EditAlbum_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	input := &AlbumRequest{
+		Name:        "name",
+		Description: "desc",
+		Privacy:     "anybody",
+	}
+
+	mux.HandleFunc("/me/albums/a", func(w http.ResponseWriter, r *http.Request) {
+		v := &AlbumRequest{}
+		json.NewDecoder(r.Body).Decode(v)
+
+		testMethod(t, r, "PATCH")
+		if !reflect.DeepEqual(v, input) {
+			t.Errorf("Users.EditAlbum body is %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"name": "name"}`)
+	})
+
+	album, _, err := client.Users.EditAlbum("", "a", input)
+	if err != nil {
+		t.Errorf("Users.Edit returned unexpected error: %v", err)
+	}
+
+	want := &Album{Name: "name"}
+	if !reflect.DeepEqual(album, want) {
+		t.Errorf("Users.EditAlbum returned %+v, want %+v", album, want)
+	}
+}
+
+func TestUsersService_DeleteAlbum(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/albums/a", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.DeleteAlbum("1", "a")
+	if err != nil {
+		t.Errorf("Users.DeleteAlbum returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_DeleteAlbum_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/albums/a", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.DeleteAlbum("", "a")
+	if err != nil {
+		t.Errorf("Users.DeleteAlbum returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_AlbumListVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/albums/a/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.AlbumListVideo("1", "a", opt)
+	if err != nil {
+		t.Errorf("Users.AlbumListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.AlbumListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_AlbumListVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/albums/a/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.AlbumListVideo("", "a", opt)
+	if err != nil {
+		t.Errorf("Users.AlbumListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.AlbumListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_AlbumGetVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/albums/a/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	video, _, err := client.Users.AlbumGetVideo("1", "a", 1)
+	if err != nil {
+		t.Errorf("Users.AlbumGetVideo returned unexpected error: %v", err)
+	}
+
+	want := &Video{Name: "Test"}
+	if !reflect.DeepEqual(video, want) {
+		t.Errorf("Users.AlbumGetVideo returned %+v, want %+v", video, want)
+	}
+}
+
+func TestUsersService_AlbumGetVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/albums/a/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	video, _, err := client.Users.AlbumGetVideo("", "a", 1)
+	if err != nil {
+		t.Errorf("Users.AlbumGetVideo returned unexpected error: %v", err)
+	}
+
+	want := &Video{Name: "Test"}
+	if !reflect.DeepEqual(video, want) {
+		t.Errorf("Users.AlbumGetVideo returned %+v, want %+v", video, want)
+	}
+}
+
+func TestUsersService_AlbumDeleteVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/albums/a/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.AlbumDeleteVideo("1", "a", 1)
+	if err != nil {
+		t.Errorf("Users.AlbumDeleteVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_AlbumDeleteVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/albums/a/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.AlbumDeleteVideo("", "a", 1)
+	if err != nil {
+		t.Errorf("Users.AlbumDeleteVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_ListAppearance(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/appearances", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.ListAppearance("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListAppearance returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.ListAppearance returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_ListAppearance_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/appearances", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.ListAppearance("", opt)
+	if err != nil {
+		t.Errorf("Users.ListAppearance returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.ListAppearance returned %+v, want %+v", videos, want)
+	}
+}

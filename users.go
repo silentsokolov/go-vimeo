@@ -137,3 +137,20 @@ func (s *UsersService) Edit(uid string, r *UserRequest) (*User, *Response, error
 
 	return user, resp, nil
 }
+
+// ListAppearance all videos a user is credited in.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/appearances
+func (s *UsersService) ListAppearance(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/appearances")
+	} else {
+		u = fmt.Sprintf("users/%s/appearances", uid)
+	}
+
+	videos, resp, err := listVideo(s.client, u, opt)
+
+	return videos, resp, err
+}
