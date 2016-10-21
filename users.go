@@ -154,3 +154,117 @@ func (s *UsersService) ListAppearance(uid string, opt *ListVideoOptions) ([]*Vid
 
 	return videos, resp, err
 }
+
+// ListCategory list the subscribed category for user.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/categories
+func (s *UsersService) ListCategory(uid string, opt *ListCategoryOptions) ([]*Category, *Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/categories")
+	} else {
+		u = fmt.Sprintf("users/%s/categories", uid)
+	}
+
+	categories, resp, err := listCategory(s.client, u, opt)
+
+	return categories, resp, err
+}
+
+// SubscribeCategory subscribe category user.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/categories/%7Bcategory%7D
+func (s *UsersService) SubscribeCategory(uid string, cat string) (*Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/categories/%s", cat)
+	} else {
+		u = fmt.Sprintf("users/%s/categories/%s", uid, cat)
+	}
+
+	req, err := s.client.NewRequest("PUT", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// UnsubscribeCategory unsubscribe category current user.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/categories/%7Bcategory%7D
+func (s *UsersService) UnsubscribeCategory(uid string, cat string) (*Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/categories/%s", cat)
+	} else {
+		u = fmt.Sprintf("users/%s/categories/%s", uid, cat)
+	}
+
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// ListChannel list the subscribed channel for user.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/channels
+func (s *UsersService) ListChannel(uid string, opt *ListChannelOptions) ([]*Channel, *Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/channels")
+	} else {
+		u = fmt.Sprintf("users/%s/channels", uid)
+	}
+
+	categories, resp, err := listChannel(s.client, u, opt)
+
+	return categories, resp, err
+}
+
+// SubscribeChannel subscribe channel user.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/channels/%7Bchannel_id%7D
+func (s *UsersService) SubscribeChannel(uid string, ch string) (*Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/channels/%s", ch)
+	} else {
+		u = fmt.Sprintf("users/%s/channels/%s", uid, ch)
+	}
+
+	req, err := s.client.NewRequest("PUT", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// UnsubscribeChannel unsubscribe channel user.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/channels/%7Bchannel_id%7D
+func (s *UsersService) UnsubscribeChannel(uid string, ch string) (*Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/channels/%s", ch)
+	} else {
+		u = fmt.Sprintf("users/%s/channels/%s", uid, ch)
+	}
+
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}

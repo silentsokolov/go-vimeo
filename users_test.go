@@ -564,3 +564,223 @@ func TestUsersService_ListAppearance_authenticatedUser(t *testing.T) {
 		t.Errorf("Users.ListAppearance returned %+v, want %+v", videos, want)
 	}
 }
+
+func TestUsersService_ListCategory(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/categories", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListCategoryOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	categories, _, err := client.Users.ListCategory("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListCategory returned unexpected error: %v", err)
+	}
+
+	want := []*Category{{Name: "Test"}}
+	if !reflect.DeepEqual(categories, want) {
+		t.Errorf("Users.ListCategory returned %+v, want %+v", categories, want)
+	}
+}
+
+func TestUsersService_ListCategory_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/categories", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListCategoryOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	categories, _, err := client.Users.ListCategory("", opt)
+	if err != nil {
+		t.Errorf("Users.ListCategory returned unexpected error: %v", err)
+	}
+
+	want := []*Category{{Name: "Test"}}
+	if !reflect.DeepEqual(categories, want) {
+		t.Errorf("Users.ListCategory returned %+v, want %+v", categories, want)
+	}
+}
+
+func TestUsersService_SubscribeCategory(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/categories/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.SubscribeCategory("1", "1")
+	if err != nil {
+		t.Errorf("Users.SubscribeCategory returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_SubscribeCategory_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/categories/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.SubscribeCategory("", "1")
+	if err != nil {
+		t.Errorf("Users.SubscribeCategory returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_UnsubscribeCategory(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/categories/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.UnsubscribeCategory("1", "1")
+	if err != nil {
+		t.Errorf("Users.UnsubscribeCategory returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_UnsubscribeCategory_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/categories/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.UnsubscribeCategory("", "1")
+	if err != nil {
+		t.Errorf("Users.UnsubscribeCategory returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_ListChannel(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/channels", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListChannelOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	channels, _, err := client.Users.ListChannel("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListChannel returned unexpected error: %v", err)
+	}
+
+	want := []*Channel{{Name: "Test"}}
+	if !reflect.DeepEqual(channels, want) {
+		t.Errorf("Users.ListChannel returned %+v, want %+v", channels, want)
+	}
+}
+
+func TestUsersService_ListChannel_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/channels", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListChannelOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	channels, _, err := client.Users.ListChannel("", opt)
+	if err != nil {
+		t.Errorf("Users.ListChannel returned unexpected error: %v", err)
+	}
+
+	want := []*Channel{{Name: "Test"}}
+	if !reflect.DeepEqual(channels, want) {
+		t.Errorf("Users.ListChannel returned %+v, want %+v", channels, want)
+	}
+}
+
+func TestUsersService_SubscribeChannel(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/channels/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.SubscribeChannel("1", "1")
+	if err != nil {
+		t.Errorf("Users.SubscribeChannel returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_SubscribeChannel_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/channels/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.SubscribeChannel("", "1")
+	if err != nil {
+		t.Errorf("Users.SubscribeChannel returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_UnsubscribeChannel(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/channels/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.UnsubscribeChannel("1", "1")
+	if err != nil {
+		t.Errorf("Users.UnsubscribeChannel returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_UnsubscribeChannel_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/channels/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.UnsubscribeChannel("", "1")
+	if err != nil {
+		t.Errorf("Users.UnsubscribeChannel returned unexpected error: %v", err)
+	}
+}
