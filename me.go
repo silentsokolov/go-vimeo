@@ -256,23 +256,6 @@ func (s *MeService) UnsubscribeChannel(ch string) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-type dataListFeed struct {
-	Data []*Feed `json:"data"`
-	pagination
-}
-
-// Feed represents a feed.
-type Feed struct {
-	URI  string `json:"uri,omitempty"`
-	Clip *Video `json:"clip,omitempty"`
-}
-
-// ListFeedOptions specifies the optional parameters to the
-// Feed method.
-type ListFeedOptions struct {
-	ListOptions
-}
-
 // Feed lists the feed for an current user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/me/feed

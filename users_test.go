@@ -784,3 +784,221 @@ func TestUsersService_UnsubscribeChannel_authenticatedUser(t *testing.T) {
 		t.Errorf("Users.UnsubscribeChannel returned unexpected error: %v", err)
 	}
 }
+
+func TestUsersService_Feed(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/feed", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"uri": "/1"}]}`)
+	})
+
+	opt := &ListFeedOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	feed, _, err := client.Users.Feed("1", opt)
+	if err != nil {
+		t.Errorf("Users.Feed returned unexpected error: %v", err)
+	}
+
+	want := []*Feed{{URI: "/1"}}
+	if !reflect.DeepEqual(feed, want) {
+		t.Errorf("Users.Feed returned %+v, want %+v", feed, want)
+	}
+}
+
+func TestUsersService_Feed_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/feed", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"uri": "/1"}]}`)
+	})
+
+	opt := &ListFeedOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	feed, _, err := client.Users.Feed("", opt)
+	if err != nil {
+		t.Errorf("Users.Feed returned unexpected error: %v", err)
+	}
+
+	want := []*Feed{{URI: "/1"}}
+	if !reflect.DeepEqual(feed, want) {
+		t.Errorf("Users.Feed returned %+v, want %+v", feed, want)
+	}
+}
+
+func TestUsersService_ListFollower(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/followers", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListUserOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	users, _, err := client.Users.ListFollower("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListFollower returned unexpected error: %v", err)
+	}
+
+	want := []*User{{Name: "Test"}}
+	if !reflect.DeepEqual(users, want) {
+		t.Errorf("Users.ListFollower returned %+v, want %+v", users, want)
+	}
+}
+
+func TestUsersService_ListFollower_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/followers", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListUserOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	users, _, err := client.Users.ListFollower("", opt)
+	if err != nil {
+		t.Errorf("Users.ListFollower returned unexpected error: %v", err)
+	}
+
+	want := []*User{{Name: "Test"}}
+	if !reflect.DeepEqual(users, want) {
+		t.Errorf("Users.ListFollower returned %+v, want %+v", users, want)
+	}
+}
+
+func TestUsersService_ListFollowed(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/following", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListUserOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	users, _, err := client.Users.ListFollowed("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListFollowed returned unexpected error: %v", err)
+	}
+
+	want := []*User{{Name: "Test"}}
+	if !reflect.DeepEqual(users, want) {
+		t.Errorf("Users.ListFollowed returned %+v, want %+v", users, want)
+	}
+}
+
+func TestUsersService_ListFollowed_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/following", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListUserOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	users, _, err := client.Users.ListFollowed("", opt)
+	if err != nil {
+		t.Errorf("Users.ListFollowed returned unexpected error: %v", err)
+	}
+
+	want := []*User{{Name: "Test"}}
+	if !reflect.DeepEqual(users, want) {
+		t.Errorf("Users.ListFollowed returned %+v, want %+v", users, want)
+	}
+}
+
+func TestUsersService_FollowUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/following/2", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.FollowUser("1", "2")
+	if err != nil {
+		t.Errorf("Users.FollowUser returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_FollowUser_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/following/2", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.FollowUser("", "2")
+	if err != nil {
+		t.Errorf("Users.FollowUser returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_UnfollowUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/following/2", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.UnfollowUser("1", "2")
+	if err != nil {
+		t.Errorf("Users.UnfollowUser returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_UnfollowUser_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/following/2", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.UnfollowUser("", "2")
+	if err != nil {
+		t.Errorf("Users.UnfollowUser returned unexpected error: %v", err)
+	}
+}
