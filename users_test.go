@@ -1002,3 +1002,113 @@ func TestUsersService_UnfollowUser_authenticatedUser(t *testing.T) {
 		t.Errorf("Users.UnfollowUser returned unexpected error: %v", err)
 	}
 }
+
+func TestUsersService_ListGroup(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/groups", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListGroupOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	groups, _, err := client.Users.ListGroup("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListGroup returned unexpected error: %v", err)
+	}
+
+	want := []*Group{{Name: "Test"}}
+	if !reflect.DeepEqual(groups, want) {
+		t.Errorf("Users.ListGroup returned %+v, want %+v", groups, want)
+	}
+}
+
+func TestUsersService_ListGroup_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/groups", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListGroupOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	groups, _, err := client.Users.ListGroup("", opt)
+	if err != nil {
+		t.Errorf("Users.ListGroup returned unexpected error: %v", err)
+	}
+
+	want := []*Group{{Name: "Test"}}
+	if !reflect.DeepEqual(groups, want) {
+		t.Errorf("Users.ListGroup returned %+v, want %+v", groups, want)
+	}
+}
+
+func TestUsersService_JoinGroup(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/groups/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.JoinGroup("1", "1")
+	if err != nil {
+		t.Errorf("Users.JoinGroup returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_JoinGroup_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/groups/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.JoinGroup("", "1")
+	if err != nil {
+		t.Errorf("Users.JoinGroup returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_LeaveGroup(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/groups/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.LeaveGroup("1", "1")
+	if err != nil {
+		t.Errorf("Users.LeaveGroup returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_LeaveGroup_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/groups/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.LeaveGroup("", "1")
+	if err != nil {
+		t.Errorf("Users.LeaveGroup returned unexpected error: %v", err)
+	}
+}

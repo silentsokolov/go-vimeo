@@ -286,7 +286,7 @@ type ListFeedOptions struct {
 	ListOptions
 }
 
-// Feed lists the feed for an current user.
+// Feed lists the feed for an user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/feed
 func (s *UsersService) Feed(uid string, opt *ListFeedOptions) ([]*Feed, *Response, error) {
@@ -357,7 +357,7 @@ func (s *UsersService) ListFollowed(uid string, opt *ListUserOptions) ([]*User, 
 func (s *UsersService) FollowUser(uid string, fid string) (*Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("/me/following/%s", fid)
+		u = fmt.Sprintf("me/following/%s", fid)
 	} else {
 		u = fmt.Sprintf("users/%s/following/%s", uid, fid)
 	}
@@ -376,9 +376,63 @@ func (s *UsersService) FollowUser(uid string, fid string) (*Response, error) {
 func (s *UsersService) UnfollowUser(uid string, fid string) (*Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("/me/following/%s", fid)
+		u = fmt.Sprintf("me/following/%s", fid)
 	} else {
 		u = fmt.Sprintf("users/%s/following/%s", uid, fid)
+	}
+
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// ListGroup lists all joined groups.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/groups
+func (s *UsersService) ListGroup(uid string, opt *ListGroupOptions) ([]*Group, *Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/groups")
+	} else {
+		u = fmt.Sprintf("users/%s/groups", uid)
+	}
+
+	groups, resp, err := listGroup(s.client, u, opt)
+
+	return groups, resp, err
+}
+
+// JoinGroup join user to group.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/groups/%7Bgroup_id%7D
+func (s *UsersService) JoinGroup(uid string, gid string) (*Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/groups/%s", gid)
+	} else {
+		u = fmt.Sprintf("users/%s/groups/%s", uid, gid)
+	}
+
+	req, err := s.client.NewRequest("PUT", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// LeaveGroup leaved user from group.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/groups/%7Bgroup_id%7D
+func (s *UsersService) LeaveGroup(uid string, gid string) (*Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/groups/%s", gid)
+	} else {
+		u = fmt.Sprintf("users/%s/groups/%s", uid, gid)
 	}
 
 	req, err := s.client.NewRequest("DELETE", u, nil)
