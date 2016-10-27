@@ -1112,3 +1112,113 @@ func TestUsersService_LeaveGroup_authenticatedUser(t *testing.T) {
 		t.Errorf("Users.LeaveGroup returned unexpected error: %v", err)
 	}
 }
+
+func TestUsersService_ListLikedVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/likes", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.ListLikedVideo("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListLikedVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.ListLikedVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_ListLikedVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/likes", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.ListLikedVideo("", opt)
+	if err != nil {
+		t.Errorf("Users.ListLikedVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.ListLikedVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_LikeVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/likes/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.LikeVideo("1", 1)
+	if err != nil {
+		t.Errorf("Users.LikeVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_LikeVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/likes/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.LikeVideo("", 1)
+	if err != nil {
+		t.Errorf("Users.LikeVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_UnlikeVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/likes/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.UnlikeVideo("1", 1)
+	if err != nil {
+		t.Errorf("Users.UnlikeVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_UnlikeVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/likes/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.UnlikeVideo("", 1)
+	if err != nil {
+		t.Errorf("Users.UnlikeVideo returned unexpected error: %v", err)
+	}
+}
