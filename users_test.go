@@ -1222,3 +1222,275 @@ func TestUsersService_UnlikeVideo_authenticatedUser(t *testing.T) {
 		t.Errorf("Users.UnlikeVideo returned unexpected error: %v", err)
 	}
 }
+
+func TestUsersService_RemovePortrait(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/pictures/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.RemovePortrait("1", "1")
+	if err != nil {
+		t.Errorf("Users.RemovePortrait returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_RemovePortrait_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/pictures/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.RemovePortrait("", "1")
+	if err != nil {
+		t.Errorf("Users.RemovePortrait returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_ListPortfolio(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/portfolios", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListPortfolioOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	portfolios, _, err := client.Users.ListPortfolio("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListPortfolio returned unexpected error: %v", err)
+	}
+
+	want := []*Portfolio{{Name: "Test"}}
+	if !reflect.DeepEqual(portfolios, want) {
+		t.Errorf("Users.ListPortfolio returned %+v, want %+v", portfolios, want)
+	}
+}
+
+func TestUsersService_ListPortfolio_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/portfolios", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListPortfolioOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	portfolios, _, err := client.Users.ListPortfolio("", opt)
+	if err != nil {
+		t.Errorf("Users.ListPortfolio returned unexpected error: %v", err)
+	}
+
+	want := []*Portfolio{{Name: "Test"}}
+	if !reflect.DeepEqual(portfolios, want) {
+		t.Errorf("Users.ListPortfolio returned %+v, want %+v", portfolios, want)
+	}
+}
+
+func TestUsersService_GetProtfolio(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/portfolios/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	portfolio, _, err := client.Users.GetProtfolio("1", "1")
+	if err != nil {
+		t.Errorf("Users.GetProtfolio returned unexpected error: %v", err)
+	}
+
+	want := &Portfolio{Name: "Test"}
+	if !reflect.DeepEqual(portfolio, want) {
+		t.Errorf("Users.GetProtfolio returned %+v, want %+v", portfolio, want)
+	}
+}
+
+func TestUsersService_GetProtfolio_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/portfolios/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	portfolio, _, err := client.Users.GetProtfolio("", "1")
+	if err != nil {
+		t.Errorf("Users.GetProtfolio returned unexpected error: %v", err)
+	}
+
+	want := &Portfolio{Name: "Test"}
+	if !reflect.DeepEqual(portfolio, want) {
+		t.Errorf("Users.GetProtfolio returned %+v, want %+v", portfolio, want)
+	}
+}
+
+func TestUsersService_ProtfolioListVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/portfolios/1/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.ProtfolioListVideo("1", "1", opt)
+	if err != nil {
+		t.Errorf("Users.ProtfolioListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.ProtfolioListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_ProtfolioListVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/portfolios/1/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.ProtfolioListVideo("", "1", opt)
+	if err != nil {
+		t.Errorf("Users.ProtfolioListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.ProtfolioListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_ProtfolioGetVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/portfolios/1/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	video, _, err := client.Users.ProtfolioGetVideo("1", "1", 1)
+	if err != nil {
+		t.Errorf("Users.ProtfolioGetVideo returned unexpected error: %v", err)
+	}
+
+	want := &Video{Name: "Test"}
+	if !reflect.DeepEqual(video, want) {
+		t.Errorf("Users.ProtfolioGetVideo returned %+v, want %+v", video, want)
+	}
+}
+
+func TestUsersService_ProtfolioGetVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/portfolios/1/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	video, _, err := client.Users.ProtfolioGetVideo("", "1", 1)
+	if err != nil {
+		t.Errorf("Users.ProtfolioGetVideo returned unexpected error: %v", err)
+	}
+
+	want := &Video{Name: "Test"}
+	if !reflect.DeepEqual(video, want) {
+		t.Errorf("Users.ProtfolioGetVideo returned %+v, want %+v", video, want)
+	}
+}
+
+func TestUsersService_ProtfolioAddVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/portfolios/1/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.ProtfolioAddVideo("1", "1", 1)
+	if err != nil {
+		t.Errorf("Users.ProtfolioDeleteVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_ProtfolioAddVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/portfolios/1/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.ProtfolioAddVideo("", "1", 1)
+	if err != nil {
+		t.Errorf("Users.ProtfolioDeleteVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_ProtfolioDeleteVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/portfolios/1/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.ProtfolioDeleteVideo("1", "1", 1)
+	if err != nil {
+		t.Errorf("Users.ProtfolioDeleteVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_ProtfolioDeleteVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/portfolios/1/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.ProtfolioDeleteVideo("", "1", 1)
+	if err != nil {
+		t.Errorf("Users.ProtfolioDeleteVideo returned unexpected error: %v", err)
+	}
+}

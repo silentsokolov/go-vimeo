@@ -1,9 +1,6 @@
 package vimeo
 
-import (
-	"fmt"
-	"time"
-)
+import "fmt"
 
 // MeService handles communication with the me related
 // methods of the Vimeo API.
@@ -409,31 +406,6 @@ func (s *MeService) RemovePortrait(pid string) (*Response, error) {
 	}
 
 	return s.client.Do(req, nil)
-}
-
-type dataListPortfolio struct {
-	Data []*Portfolio `json:"data,omitempty"`
-	pagination
-}
-
-// Portfolio represents a portfolio.
-type Portfolio struct {
-	URI          string    `json:"uri,omitempty"`
-	Name         string    `json:"name,omitempty"`
-	Description  string    `json:"description,omitempty"`
-	Link         string    `json:"link,omitempty"`
-	CreatedTime  time.Time `json:"created_time,omitempty"`
-	ModifiedTime time.Time `json:"modified_time,omitempty"`
-	Sort         string    `json:"sort,omitempty"`
-}
-
-// ListPortfolioOptions specifies the optional parameters to the
-// ListPortfolio method.
-type ListPortfolioOptions struct {
-	Query     string `url:"query,omitempty"`
-	Sort      string `url:"sort,omitempty"`
-	Direction string `url:"direction,omitempty"`
-	ListOptions
 }
 
 // ListPortfolio lists the portfolio for an current user.

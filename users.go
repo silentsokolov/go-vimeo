@@ -445,7 +445,7 @@ func (s *UsersService) LeaveGroup(uid string, gid string) (*Response, error) {
 
 // ListLikedVideo all liked videos.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/me/likes
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/likes
 func (s *UsersService) ListLikedVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
@@ -461,7 +461,7 @@ func (s *UsersService) ListLikedVideo(uid string, opt *ListVideoOptions) ([]*Vid
 
 // LikeVideo like one video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/me/likes/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/likes/%7Bvideo_id%7D
 func (s *UsersService) LikeVideo(uid string, vid int) (*Response, error) {
 	var u string
 	if uid == "" {
@@ -480,13 +480,32 @@ func (s *UsersService) LikeVideo(uid string, vid int) (*Response, error) {
 
 // UnlikeVideo unlike one video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/me/likes/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/likes/%7Bvideo_id%7D
 func (s *UsersService) UnlikeVideo(uid string, vid int) (*Response, error) {
 	var u string
 	if uid == "" {
 		u = fmt.Sprintf("me/likes/%d", vid)
 	} else {
 		u = fmt.Sprintf("users/%s/likes/%d", uid, vid)
+	}
+
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// RemovePortrait removed specific a portrait.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/pictures/%7Bportraitset_id%7D
+func (s *UsersService) RemovePortrait(uid string, pid string) (*Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/pictures/%s", pid)
+	} else {
+		u = fmt.Sprintf("users/%s/pictures/%s", uid, pid)
 	}
 
 	req, err := s.client.NewRequest("DELETE", u, nil)
