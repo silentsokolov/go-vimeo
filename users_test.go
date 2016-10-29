@@ -1494,3 +1494,245 @@ func TestUsersService_ProtfolioDeleteVideo_authenticatedUser(t *testing.T) {
 		t.Errorf("Users.ProtfolioDeleteVideo returned unexpected error: %v", err)
 	}
 }
+
+func TestUsersService_ListPreset(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/presets", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListPresetOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	presets, _, err := client.Users.ListPreset("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListPreset returned unexpected error: %v", err)
+	}
+
+	want := []*Preset{{Name: "Test"}}
+	if !reflect.DeepEqual(presets, want) {
+		t.Errorf("Users.ListPreset returned %+v, want %+v", presets, want)
+	}
+}
+
+func TestUsersService_ListPreset_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/presets", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListPresetOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	presets, _, err := client.Users.ListPreset("", opt)
+	if err != nil {
+		t.Errorf("Users.ListPreset returned unexpected error: %v", err)
+	}
+
+	want := []*Preset{{Name: "Test"}}
+	if !reflect.DeepEqual(presets, want) {
+		t.Errorf("Users.ListPreset returned %+v, want %+v", presets, want)
+	}
+}
+
+func TestUsersService_GetPreset(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/presets/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	preset, _, err := client.Users.GetPreset("1", 1)
+	if err != nil {
+		t.Errorf("Users.GetPreset returned unexpected error: %v", err)
+	}
+
+	want := &Preset{Name: "Test"}
+	if !reflect.DeepEqual(preset, want) {
+		t.Errorf("Users.GetPreset returned %+v, want %+v", preset, want)
+	}
+}
+
+func TestUsersService_GetPreset_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/presets/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	preset, _, err := client.Users.GetPreset("", 1)
+	if err != nil {
+		t.Errorf("Users.GetPreset returned unexpected error: %v", err)
+	}
+
+	want := &Preset{Name: "Test"}
+	if !reflect.DeepEqual(preset, want) {
+		t.Errorf("Users.GetPreset returned %+v, want %+v", preset, want)
+	}
+}
+
+func TestUsersService_PresetListVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/presets/1/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.PresetListVideo("1", 1, opt)
+	if err != nil {
+		t.Errorf("Users.PresetListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.PresetListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_PresetListVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/presets/1/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.PresetListVideo("", 1, opt)
+	if err != nil {
+		t.Errorf("Users.PresetListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.PresetListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_ListVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.ListVideo("1", opt)
+	if err != nil {
+		t.Errorf("Users.ListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.ListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_ListVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.ListVideo("", opt)
+	if err != nil {
+		t.Errorf("Users.ListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.ListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_GetVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	video, _, err := client.Users.GetVideo("1", 1)
+	if err != nil {
+		t.Errorf("Users.GetVideo returned unexpected error: %v", err)
+	}
+
+	want := &Video{Name: "Test"}
+	if !reflect.DeepEqual(video, want) {
+		t.Errorf("Users.GetVideo returned %+v, want %+v", video, want)
+	}
+}
+
+func TestUsersService_GetVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	video, _, err := client.Users.GetVideo("", 1)
+	if err != nil {
+		t.Errorf("Users.GetVideo returned unexpected error: %v", err)
+	}
+
+	want := &Video{Name: "Test"}
+	if !reflect.DeepEqual(video, want) {
+		t.Errorf("Users.GetVideo returned %+v, want %+v", video, want)
+	}
+}

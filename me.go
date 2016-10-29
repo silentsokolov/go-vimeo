@@ -484,24 +484,6 @@ func (s *MeService) ProtfolioDeleteVideo(p string, vid int) (*Response, error) {
 	return resp, err
 }
 
-type dataListPreset struct {
-	Data []*Preset `json:"data,omitempty"`
-	pagination
-}
-
-// Preset represents a preset.
-type Preset struct {
-	URI  string `json:"uri,omitempty"`
-	Name string `json:"name,omitempty"`
-}
-
-// ListPresetOptions specifies the optional parameters to the
-// ListPreset method.
-type ListPresetOptions struct {
-	Query string `url:"query,omitempty"`
-	ListOptions
-}
-
 // ListPreset lists the preset for an current user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/me/presets

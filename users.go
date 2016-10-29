@@ -515,3 +515,35 @@ func (s *UsersService) RemovePortrait(uid string, pid string) (*Response, error)
 
 	return s.client.Do(req, nil)
 }
+
+// ListVideo lists the video for user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/videos
+func (s *UsersService) ListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/videos")
+	} else {
+		u = fmt.Sprintf("users/%s/videos", uid)
+	}
+
+	videos, resp, err := listVideo(s.client, u, opt)
+
+	return videos, resp, err
+}
+
+// GetVideo get specific video by video ID.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/videos
+func (s *UsersService) GetVideo(uid string, vid int) (*Video, *Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/videos/%d", vid)
+	} else {
+		u = fmt.Sprintf("users/%s/videos/%d", uid, vid)
+	}
+
+	video, resp, err := getVideo(s.client, u)
+
+	return video, resp, err
+}
