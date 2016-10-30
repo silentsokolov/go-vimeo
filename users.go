@@ -287,6 +287,7 @@ type ListFeedOptions struct {
 }
 
 // Feed lists the feed for an user.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/feed
 func (s *UsersService) Feed(uid string, opt *ListFeedOptions) ([]*Feed, *Response, error) {
@@ -320,6 +321,7 @@ func (s *UsersService) Feed(uid string, opt *ListFeedOptions) ([]*Feed, *Respons
 }
 
 // ListFollower lists the followers.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/followers
 func (s *UsersService) ListFollower(uid string, opt *ListUserOptions) ([]*User, *Response, error) {
@@ -336,6 +338,7 @@ func (s *UsersService) ListFollower(uid string, opt *ListUserOptions) ([]*User, 
 }
 
 // ListFollowed lists the following.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/following
 func (s *UsersService) ListFollowed(uid string, opt *ListUserOptions) ([]*User, *Response, error) {
@@ -352,6 +355,7 @@ func (s *UsersService) ListFollowed(uid string, opt *ListUserOptions) ([]*User, 
 }
 
 // FollowUser follow a user.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/following/%7Bfollow_user_id%7D
 func (s *UsersService) FollowUser(uid string, fid string) (*Response, error) {
@@ -371,6 +375,7 @@ func (s *UsersService) FollowUser(uid string, fid string) (*Response, error) {
 }
 
 // UnfollowUser unfollow a user.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/following/%7Bfollow_user_id%7D
 func (s *UsersService) UnfollowUser(uid string, fid string) (*Response, error) {
@@ -390,6 +395,7 @@ func (s *UsersService) UnfollowUser(uid string, fid string) (*Response, error) {
 }
 
 // ListGroup lists all joined groups.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/groups
 func (s *UsersService) ListGroup(uid string, opt *ListGroupOptions) ([]*Group, *Response, error) {
@@ -406,6 +412,7 @@ func (s *UsersService) ListGroup(uid string, opt *ListGroupOptions) ([]*Group, *
 }
 
 // JoinGroup join user to group.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/groups/%7Bgroup_id%7D
 func (s *UsersService) JoinGroup(uid string, gid string) (*Response, error) {
@@ -425,6 +432,7 @@ func (s *UsersService) JoinGroup(uid string, gid string) (*Response, error) {
 }
 
 // LeaveGroup leaved user from group.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/groups/%7Bgroup_id%7D
 func (s *UsersService) LeaveGroup(uid string, gid string) (*Response, error) {
@@ -444,6 +452,7 @@ func (s *UsersService) LeaveGroup(uid string, gid string) (*Response, error) {
 }
 
 // ListLikedVideo all liked videos.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/likes
 func (s *UsersService) ListLikedVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
@@ -460,6 +469,7 @@ func (s *UsersService) ListLikedVideo(uid string, opt *ListVideoOptions) ([]*Vid
 }
 
 // LikeVideo like one video.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/likes/%7Bvideo_id%7D
 func (s *UsersService) LikeVideo(uid string, vid int) (*Response, error) {
@@ -479,6 +489,7 @@ func (s *UsersService) LikeVideo(uid string, vid int) (*Response, error) {
 }
 
 // UnlikeVideo unlike one video.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/likes/%7Bvideo_id%7D
 func (s *UsersService) UnlikeVideo(uid string, vid int) (*Response, error) {
@@ -498,6 +509,7 @@ func (s *UsersService) UnlikeVideo(uid string, vid int) (*Response, error) {
 }
 
 // RemovePortrait removed specific a portrait.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/pictures/%7Bportraitset_id%7D
 func (s *UsersService) RemovePortrait(uid string, pid string) (*Response, error) {
@@ -517,6 +529,7 @@ func (s *UsersService) RemovePortrait(uid string, pid string) (*Response, error)
 }
 
 // ListVideo lists the video for user.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/videos
 func (s *UsersService) ListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
@@ -533,6 +546,7 @@ func (s *UsersService) ListVideo(uid string, opt *ListVideoOptions) ([]*Video, *
 }
 
 // GetVideo get specific video by video ID.
+// Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/videos
 func (s *UsersService) GetVideo(uid string, vid int) (*Video, *Response, error) {
@@ -546,4 +560,112 @@ func (s *UsersService) GetVideo(uid string, vid int) (*Video, *Response, error) 
 	video, resp, err := getVideo(s.client, u)
 
 	return video, resp, err
+}
+
+// WatchLaterListVideo lists the video.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/watchlater
+func (s *UsersService) WatchLaterListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/watchlater")
+	} else {
+		u = fmt.Sprintf("users/%s/watchlater", uid)
+	}
+
+	videos, resp, err := listVideo(s.client, u, opt)
+
+	return videos, resp, err
+}
+
+// WatchLaterGetVideo get specific video by video ID.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/watchlater/%7Bvideo_id%7D
+func (s *UsersService) WatchLaterGetVideo(uid string, vid int) (*Video, *Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/watchlater/%d", vid)
+	} else {
+		u = fmt.Sprintf("users/%s/watchlater/%d", uid, vid)
+	}
+
+	video, resp, err := getVideo(s.client, u)
+
+	return video, resp, err
+}
+
+// WatchLaterAddVideo add video to watch later list.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/watchlater/%7Bvideo_id%7D
+func (s *UsersService) WatchLaterAddVideo(uid string, vid int) (*Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/watchlater/%d", vid)
+	} else {
+		u = fmt.Sprintf("users/%s/watchlater/%d", uid, vid)
+	}
+
+	req, err := s.client.NewRequest("PUT", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// WatchLaterDeleteVideo delete video from watch later list.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/watchlater/%7Bvideo_id%7D
+func (s *UsersService) WatchLaterDeleteVideo(uid string, vid int) (*Response, error) {
+	var u string
+	if uid == "" {
+		u = fmt.Sprintf("me/watchlater/%d", vid)
+	} else {
+		u = fmt.Sprintf("users/%s/watchlater/%d", uid, vid)
+	}
+
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// WatchedListVideo lists the video.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/me/watched/videos
+func (s *UsersService) WatchedListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+	videos, resp, err := listVideo(s.client, "me/watched/videos", opt)
+
+	return videos, resp, err
+}
+
+// ClearWatchedList delete all video from watch history.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/me/watchlater/%7Bvideo_id%7D
+func (s *UsersService) ClearWatchedList(uid string) (*Response, error) {
+	req, err := s.client.NewRequest("DELETE", "me/watched/videos", nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
+}
+
+// WatchedDeleteVideo delete specific video from watch history.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/me/watched/videos/%7Bvideo_id%7D
+func (s *UsersService) WatchedDeleteVideo(uid string, vid int) (*Response, error) {
+	u := fmt.Sprintf("me/watched/videos/%d", vid)
+	req, err := s.client.NewRequest("DELETE", u, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return s.client.Do(req, nil)
 }

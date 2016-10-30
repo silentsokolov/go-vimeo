@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	libraryVersion   = "0.7.0"
+	libraryVersion   = "0.8.0"
 	defaultBaseURL   = "https://api.vimeo.com/"
 	defaultUserAgent = "go-vimeo/" + libraryVersion
 
@@ -36,7 +36,6 @@ type Client struct {
 	CreativeCommons *CreativeCommonsService
 	Groups          *GroupsService
 	Languages       *LanguagesService
-	Me              *MeService
 	Tags            *TagsService
 	Videos          *VideosService
 	Users           *UsersService
@@ -63,7 +62,6 @@ func NewClient(httpClient *http.Client) *Client {
 	c.CreativeCommons = &CreativeCommonsService{client: c}
 	c.Groups = &GroupsService{client: c}
 	c.Languages = &LanguagesService{client: c}
-	c.Me = &MeService{client: c}
 	c.Tags = &TagsService{client: c}
 	c.Videos = &VideosService{client: c}
 	c.Users = &UsersService{client: c}

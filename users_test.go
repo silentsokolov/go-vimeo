@@ -1736,3 +1736,208 @@ func TestUsersService_GetVideo_authenticatedUser(t *testing.T) {
 		t.Errorf("Users.GetVideo returned %+v, want %+v", video, want)
 	}
 }
+
+func TestUsersService_WatchLaterListVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/watchlater", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.WatchLaterListVideo("1", opt)
+	if err != nil {
+		t.Errorf("Users.WatchLaterListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.WatchLaterListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_WatchLaterListVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/watchlater", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.WatchLaterListVideo("", opt)
+	if err != nil {
+		t.Errorf("Users.WatchLaterListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.WatchLaterListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_WatchLaterGetVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/watchlater/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	video, _, err := client.Users.WatchLaterGetVideo("1", 1)
+	if err != nil {
+		t.Errorf("Users.WatchLaterGetVideo returned unexpected error: %v", err)
+	}
+
+	want := &Video{Name: "Test"}
+	if !reflect.DeepEqual(video, want) {
+		t.Errorf("Users.WatchLaterGetVideo returned %+v, want %+v", video, want)
+	}
+}
+
+func TestUsersService_WatchLaterGetVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/watchlater/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	video, _, err := client.Users.WatchLaterGetVideo("", 1)
+	if err != nil {
+		t.Errorf("Users.WatchLaterGetVideo returned unexpected error: %v", err)
+	}
+
+	want := &Video{Name: "Test"}
+	if !reflect.DeepEqual(video, want) {
+		t.Errorf("Users.WatchLaterGetVideo returned %+v, want %+v", video, want)
+	}
+}
+
+func TestUsersService_WatchLaterAddVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/watchlater/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.WatchLaterAddVideo("1", 1)
+	if err != nil {
+		t.Errorf("Users.WatchLaterAddVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_WatchLaterAddVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/watchlater/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.WatchLaterAddVideo("", 1)
+	if err != nil {
+		t.Errorf("Users.WatchLaterAddVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_WatchLaterDeleteVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/watchlater/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.WatchLaterDeleteVideo("1", 1)
+	if err != nil {
+		t.Errorf("Users.WatchLaterDeleteVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_WatchLaterDeleteVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/watchlater/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.WatchLaterDeleteVideo("", 1)
+	if err != nil {
+		t.Errorf("Users.WatchLaterDeleteVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_WatchedListVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/watched/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		testFormValues(t, r, values{
+			"page":     "1",
+			"per_page": "2",
+		})
+		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
+	})
+
+	opt := &ListVideoOptions{
+		ListOptions: ListOptions{Page: 1, PerPage: 2},
+	}
+	videos, _, err := client.Users.WatchedListVideo("", opt)
+	if err != nil {
+		t.Errorf("Users.WatchedListVideo returned unexpected error: %v", err)
+	}
+
+	want := []*Video{{Name: "Test"}}
+	if !reflect.DeepEqual(videos, want) {
+		t.Errorf("Users.WatchedListVideo returned %+v, want %+v", videos, want)
+	}
+}
+
+func TestUsersService_ClearWatchedList(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/watched/videos", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.ClearWatchedList("")
+	if err != nil {
+		t.Errorf("Users.ClearWatchedList returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_WatchedDeleteVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/watched/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+	})
+
+	_, err := client.Users.WatchedDeleteVideo("", 1)
+	if err != nil {
+		t.Errorf("Users.WatchedDeleteVideo returned unexpected error: %v", err)
+	}
+}
