@@ -62,7 +62,7 @@ type AlbumRequest struct {
 func (s *UsersService) ListAlbum(uid string, opt *ListAlbumOptions) ([]*Album, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/albums")
+		u = "me/albums"
 	} else {
 		u = fmt.Sprintf("users/%s/albums", uid)
 	}
@@ -96,7 +96,7 @@ func (s *UsersService) ListAlbum(uid string, opt *ListAlbumOptions) ([]*Album, *
 func (s *UsersService) CreateAlbum(uid string, r *AlbumRequest) (*Album, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/albums")
+		u = "me/albums"
 	} else {
 		u = fmt.Sprintf("users/%s/albums", uid)
 	}

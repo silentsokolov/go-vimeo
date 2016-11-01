@@ -92,7 +92,7 @@ func (s *UsersService) Search(opt *ListUserOptions) ([]*User, *Response, error) 
 func (s *UsersService) Get(uid string) (*User, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me")
+		u = "me"
 	} else {
 		u = fmt.Sprintf("users/%s", uid)
 	}
@@ -119,7 +119,7 @@ func (s *UsersService) Get(uid string) (*User, *Response, error) {
 func (s *UsersService) Edit(uid string, r *UserRequest) (*User, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me")
+		u = "me"
 	} else {
 		u = fmt.Sprintf("users/%s", uid)
 	}
@@ -145,7 +145,7 @@ func (s *UsersService) Edit(uid string, r *UserRequest) (*User, *Response, error
 func (s *UsersService) ListAppearance(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/appearances")
+		u = "me/appearances"
 	} else {
 		u = fmt.Sprintf("users/%s/appearances", uid)
 	}
@@ -162,7 +162,7 @@ func (s *UsersService) ListAppearance(uid string, opt *ListVideoOptions) ([]*Vid
 func (s *UsersService) ListCategory(uid string, opt *ListCategoryOptions) ([]*Category, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/categories")
+		u = "me/categories"
 	} else {
 		u = fmt.Sprintf("users/%s/categories", uid)
 	}
@@ -219,7 +219,7 @@ func (s *UsersService) UnsubscribeCategory(uid string, cat string) (*Response, e
 func (s *UsersService) ListChannel(uid string, opt *ListChannelOptions) ([]*Channel, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/channels")
+		u = "me/channels"
 	} else {
 		u = fmt.Sprintf("users/%s/channels", uid)
 	}
@@ -293,7 +293,7 @@ type ListFeedOptions struct {
 func (s *UsersService) Feed(uid string, opt *ListFeedOptions) ([]*Feed, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/feed")
+		u = "me/feed"
 	} else {
 		u = fmt.Sprintf("users/%s/feed", uid)
 	}
@@ -327,7 +327,7 @@ func (s *UsersService) Feed(uid string, opt *ListFeedOptions) ([]*Feed, *Respons
 func (s *UsersService) ListFollower(uid string, opt *ListUserOptions) ([]*User, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/followers")
+		u = "me/followers"
 	} else {
 		u = fmt.Sprintf("users/%s/followers", uid)
 	}
@@ -344,7 +344,7 @@ func (s *UsersService) ListFollower(uid string, opt *ListUserOptions) ([]*User, 
 func (s *UsersService) ListFollowed(uid string, opt *ListUserOptions) ([]*User, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/following")
+		u = "me/following"
 	} else {
 		u = fmt.Sprintf("users/%s/following", uid)
 	}
@@ -401,7 +401,7 @@ func (s *UsersService) UnfollowUser(uid string, fid string) (*Response, error) {
 func (s *UsersService) ListGroup(uid string, opt *ListGroupOptions) ([]*Group, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/groups")
+		u = "me/groups"
 	} else {
 		u = fmt.Sprintf("users/%s/groups", uid)
 	}
@@ -458,7 +458,7 @@ func (s *UsersService) LeaveGroup(uid string, gid string) (*Response, error) {
 func (s *UsersService) ListLikedVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/likes")
+		u = "me/likes"
 	} else {
 		u = fmt.Sprintf("users/%s/likes", uid)
 	}
@@ -535,7 +535,7 @@ func (s *UsersService) RemovePortrait(uid string, pid string) (*Response, error)
 func (s *UsersService) ListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/videos")
+		u = "me/videos"
 	} else {
 		u = fmt.Sprintf("users/%s/videos", uid)
 	}
@@ -569,7 +569,7 @@ func (s *UsersService) GetVideo(uid string, vid int) (*Video, *Response, error) 
 func (s *UsersService) WatchLaterListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/watchlater")
+		u = "me/watchlater"
 	} else {
 		u = fmt.Sprintf("users/%s/watchlater", uid)
 	}

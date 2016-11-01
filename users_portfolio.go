@@ -36,7 +36,7 @@ type ListPortfolioOptions struct {
 func (s *UsersService) ListPortfolio(uid string, opt *ListPortfolioOptions) ([]*Portfolio, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/portfolios")
+		u = "me/portfolios"
 	} else {
 		u = fmt.Sprintf("users/%s/portfolios", uid)
 	}
