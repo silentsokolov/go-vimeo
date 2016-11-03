@@ -1,7 +1,9 @@
 package vimeo
 
 import (
+	"errors"
 	"fmt"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -109,6 +111,16 @@ type Video struct {
 	Status        string        `json:"status,omitempty"`
 	ResourceKey   string        `json:"resource_key,omitempty"`
 	EmbedPresets  *EmbedPresets `json:"embed_presets,omitempty"`
+}
+
+// UploadVideo represents a video.
+type UploadVideo struct {
+	URI              string `json:"uri,omitempty"`
+	TicketID         string `json:"ticket_id,omitempty"`
+	User             *User  `json:"user,omitempty"`
+	UploadLink       string `json:"upload_link,omitempty"`
+	UploadLinkSecure string `json:"upload_link_secure,omitempty"`
+	Form             string `json:"form,omitempty"`
 }
 
 // TitleRequest a request to edit an embed settings.
@@ -238,6 +250,45 @@ func getVideo(c *Client, url string) (*Video, *Response, error) {
 	}
 
 	return video, resp, err
+}
+
+func getUploadVideo(c *Client, url string) (*UploadVideo, *Response, error) {
+	req, err := c.NewRequest("POST", url, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	uploadVideo := &UploadVideo{}
+
+	resp, err := c.Do(req, uploadVideo)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return uploadVideo, resp, err
+}
+
+func uploadVideo(c *Client, url string, file *os.File) (*Response, error) {
+	stat, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	if stat.IsDir() {
+		return nil, errors.New("the video file can't be a directory")
+	}
+
+	uploadVideo, _, err := getUploadVideo(c, url)
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := c.NewUploadRequest(uploadVideo.UploadLinkSecure, file, stat.Name())
+	if err != nil {
+		return nil, err
+	}
+
+	return c.Do(req, nil)
 }
 
 func deleteVideo(c *Client, url string) (*Response, error) {

@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"mime/multipart"
 	"net/http"
 	"net/url"
 	"reflect"
@@ -104,6 +105,37 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 
 	if c.UserAgent != "" {
 		req.Header.Set("User-Agent", c.UserAgent)
+	}
+
+	return req, nil
+}
+
+// NewUploadRequest creates an upload request.
+func (c *Client) NewUploadRequest(url string, reader io.Reader, name string) (*http.Request, error) {
+	body := new(bytes.Buffer)
+	writer := multipart.NewWriter(body)
+
+	part, err := writer.CreateFormFile("file_data", name)
+	if err != nil {
+		return nil, err
+	}
+
+	content, err := ioutil.ReadAll(reader)
+	if err != nil {
+		return nil, err
+	}
+
+	part.Write(content)
+
+	err = writer.Close()
+	if err != nil {
+		return nil, err
+	}
+
+	req, err := http.NewRequest("POST", url, body)
+	req.Header.Set("Content-Type", writer.FormDataContentType())
+	if err != nil {
+		return nil, err
 	}
 
 	return req, nil
