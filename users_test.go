@@ -483,6 +483,34 @@ func TestUsersService_AlbumGetVideo_authenticatedUser(t *testing.T) {
 	}
 }
 
+func TestUsersService_AlbumAddVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/albums/a/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.AlbumAddVideo("1", "a", 1)
+	if err != nil {
+		t.Errorf("Users.AlbumAddVideo returned unexpected error: %v", err)
+	}
+}
+
+func TestUsersService_AlbumAddVideo_authenticatedUser(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/me/albums/a/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Users.AlbumAddVideo("", "a", 1)
+	if err != nil {
+		t.Errorf("Users.AlbumAddVideo returned unexpected error: %v", err)
+	}
+}
+
 func TestUsersService_AlbumDeleteVideo(t *testing.T) {
 	setup()
 	defer teardown()

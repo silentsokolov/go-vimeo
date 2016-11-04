@@ -230,3 +230,17 @@ func TestChannelsService_DeleteVideo(t *testing.T) {
 		t.Errorf("Channels.DeleteVideo returned unexpected error: %v", err)
 	}
 }
+
+func TestChannelsService_AddVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/channels/ch/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+	})
+
+	_, err := client.Channels.AddVideo("ch", 1)
+	if err != nil {
+		t.Errorf("Channels.AddVideo returned unexpected error: %v", err)
+	}
+}

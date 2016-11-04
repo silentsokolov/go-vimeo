@@ -29,7 +29,10 @@ func main() {
 The go-vimeo library does not directly handle authentication. Instead, when creating a new client, pass an http.Client that can handle authentication for you, for example the [oauth2](https://github.com/golang/oauth2).
 
 ```go
-import "golang.org/x/oauth2"
+import (
+	"golang.org/x/oauth2"
+	"github.com/silentsokolov/go-vimeo"
+)
 
 func main() {
     ts := oauth2.StaticTokenSource(
@@ -47,8 +50,6 @@ func main() {
 ### Pagination ###
 
 ```go
-import "golang.org/x/oauth2"
-
 func main() {
     client := ...
 
@@ -71,8 +72,6 @@ func main() {
 ### Created/Updated request ###
 
 ```go
-import "golang.org/x/oauth2"
-
 func main() {
     client := ...
 
@@ -95,8 +94,6 @@ func main() {
 The "Me" service repeats the "Users" service, passing the empty string will authenticated user.
 
 ```go
-import "golang.org/x/oauth2"
-
 func main() {
     client := ...
 
@@ -105,5 +102,27 @@ func main() {
     me, _, _ := client.Users.Get("")
 
     fmt.Println(me)
+}
+```
+
+### Upload video ###
+
+```go
+import (
+	"os"
+
+	"golang.org/x/oauth2"
+	"github.com/silentsokolov/go-vimeo"
+)
+
+func main() {
+    client := ...
+    filePath := "/Users/user/Videos/Awesome.mp4"
+
+    f, _ := os.Open(filePath)
+
+    resp, _ := client.Users.UploadVideo("", f)
+
+    fmt.Println(resp)
 }
 ```

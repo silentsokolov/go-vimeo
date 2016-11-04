@@ -300,6 +300,15 @@ func deleteVideo(c *Client, url string) (*Response, error) {
 	return c.Do(req, nil)
 }
 
+func addVideo(c *Client, url string) (*Response, error) {
+	req, err := c.NewRequest("PUT", url, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	return c.Do(req, nil)
+}
+
 // List lists the videos.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos

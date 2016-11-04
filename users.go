@@ -2,6 +2,7 @@ package vimeo
 
 import (
 	"fmt"
+	"os"
 	"time"
 )
 
@@ -560,6 +561,23 @@ func (s *UsersService) GetVideo(uid string, vid int) (*Video, *Response, error) 
 	video, resp, err := getVideo(s.client, u)
 
 	return video, resp, err
+}
+
+// UploadVideo upload video file.
+// Passing the empty string will edit authenticated user.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/videos
+func (s *UsersService) UploadVideo(uid string, file *os.File) (*Response, error) {
+	var u string
+	if uid == "" {
+		u = "me/videos"
+	} else {
+		u = fmt.Sprintf("users/%s/videos", uid)
+	}
+
+	resp, err := uploadVideo(s.client, u, file)
+
+	return resp, err
 }
 
 // WatchLaterListVideo lists the video.
