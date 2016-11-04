@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	libraryVersion   = "0.8.0"
+	libraryVersion   = "1.0.0"
 	defaultBaseURL   = "https://api.vimeo.com/"
 	defaultUserAgent = "go-vimeo/" + libraryVersion
 
