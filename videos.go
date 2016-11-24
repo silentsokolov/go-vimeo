@@ -3,6 +3,8 @@ package vimeo
 import (
 	"errors"
 	"fmt"
+	"net"
+	"net/http"
 	"os"
 	"strconv"
 	"strings"
@@ -120,7 +122,7 @@ type UploadVideo struct {
 	User             *User  `json:"user,omitempty"`
 	UploadLink       string `json:"upload_link,omitempty"`
 	UploadLinkSecure string `json:"upload_link_secure,omitempty"`
-	Form             string `json:"form,omitempty"`
+	CompleteURI      string `json:"complete_uri,omitempty"`
 }
 
 // TitleRequest a request to edit an embed settings.
@@ -213,6 +215,12 @@ type ListVideoOptions struct {
 	ListOptions
 }
 
+// UploadVideoOptions specifies the optional parameters to the
+// uploadVideo method.
+type UploadVideoOptions struct {
+	Type string `json:"type,omitempty"`
+}
+
 func listVideo(c *Client, url string, opt *ListVideoOptions) ([]*Video, *Response, error) {
 	u, err := addOptions(url, opt)
 	if err != nil {
@@ -252,8 +260,8 @@ func getVideo(c *Client, url string) (*Video, *Response, error) {
 	return video, resp, err
 }
 
-func getUploadVideo(c *Client, url string) (*UploadVideo, *Response, error) {
-	req, err := c.NewRequest("POST", url, nil)
+func getUploadVideo(c *Client, uri string, opt *UploadVideoOptions) (*UploadVideo, *Response, error) {
+	req, err := c.NewRequest("POST", uri, opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -268,27 +276,99 @@ func getUploadVideo(c *Client, url string) (*UploadVideo, *Response, error) {
 	return uploadVideo, resp, err
 }
 
-func uploadVideo(c *Client, url string, file *os.File) (*Response, error) {
+func completeUploadVideo(c *Client, completeURI string) (*Video, *Response, error) {
+	req, err := c.NewRequest("DELETE", completeURI, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	// Get uri form header location
+	resp, err := c.Do(req, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	url, err := resp.Location()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	video, resp, err := getVideo(c, url.String())
+
+	return video, resp, err
+}
+
+func processUploadVideo(c *Client, uploadURL string) (int64, error) {
+	req, err := http.NewRequest("PUT", uploadURL, nil)
+	if err != nil {
+		return int64(0), err
+	}
+	req.Header.Set("Content-Length", "0")
+	req.Header.Set("Content-Range", "bytes */*")
+
+	resp, err := c.Do(req, nil)
+	if err != nil {
+		return int64(0), err
+	}
+
+	rangeHeader := resp.Header.Get("Range")
+	last := strings.SplitN(rangeHeader, "-", 2)[1]
+	lastByte, err := strconv.Atoi(last)
+	if err != nil {
+		return int64(0), err
+	}
+
+	return int64(lastByte), nil
+}
+
+func uploadVideo(c *Client, url string, file *os.File) (*Video, *Response, error) {
+	opt := &UploadVideoOptions{Type: "streaming"}
+
 	stat, err := file.Stat()
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	if stat.IsDir() {
-		return nil, errors.New("the video file can't be a directory")
+		return nil, nil, errors.New("the video file can't be a directory")
 	}
 
-	uploadVideo, _, err := getUploadVideo(c, url)
+	uploadVideo, _, err := getUploadVideo(c, url, opt)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	req, err := c.NewUploadRequest(uploadVideo.UploadLinkSecure, file, stat.Name())
-	if err != nil {
-		return nil, err
+	lastByte := int64(0)
+	for lastByte < stat.Size() {
+		req, err := c.NewUploadRequest(uploadVideo.UploadLinkSecure, file, stat.Size(), lastByte)
+		if err != nil {
+			return nil, nil, err
+		}
+
+		_, err = c.Do(req, nil)
+		if err != nil {
+			switch nerr := err.(type) {
+			case net.Error:
+				if nerr.Timeout() {
+					lastByte, err = processUploadVideo(c, url)
+					if err != nil {
+						return nil, nil, err
+					}
+					continue
+				}
+			default:
+				return nil, nil, err
+			}
+		}
+		lastByte, err = processUploadVideo(c, url)
+		if err != nil {
+			return nil, nil, err
+		}
 	}
 
-	return c.Do(req, nil)
+	video, resp, err := completeUploadVideo(c, uploadVideo.CompleteURI)
+
+	return video, resp, err
 }
 
 func deleteVideo(c *Client, url string) (*Response, error) {

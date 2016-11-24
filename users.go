@@ -567,7 +567,7 @@ func (s *UsersService) GetVideo(uid string, vid int) (*Video, *Response, error) 
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/videos
-func (s *UsersService) UploadVideo(uid string, file *os.File) (*Response, error) {
+func (s *UsersService) UploadVideo(uid string, file *os.File) (*Video, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/videos"
@@ -575,9 +575,9 @@ func (s *UsersService) UploadVideo(uid string, file *os.File) (*Response, error)
 		u = fmt.Sprintf("users/%s/videos", uid)
 	}
 
-	resp, err := uploadVideo(s.client, u, file)
+	video, resp, err := uploadVideo(s.client, u, file)
 
-	return resp, err
+	return video, resp, err
 }
 
 // WatchLaterListVideo lists the video.

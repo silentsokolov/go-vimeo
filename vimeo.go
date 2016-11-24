@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"mime/multipart"
 	"net/http"
 	"net/url"
+	"os"
 	"reflect"
 
 	"github.com/google/go-querystring/query"
@@ -111,32 +111,17 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 }
 
 // NewUploadRequest creates an upload request.
-func (c *Client) NewUploadRequest(url string, reader io.Reader, name string) (*http.Request, error) {
-	body := new(bytes.Buffer)
-	writer := multipart.NewWriter(body)
+func (c *Client) NewUploadRequest(url string, file *os.File, size, lastByte int64) (*http.Request, error) {
+	b, _ := ioutil.ReadAll(file)
+	body := bytes.NewReader(b)
 
-	part, err := writer.CreateFormFile("file_data", name)
+	req, err := http.NewRequest("PUT", url, body)
 	if err != nil {
 		return nil, err
 	}
 
-	content, err := ioutil.ReadAll(reader)
-	if err != nil {
-		return nil, err
-	}
-
-	part.Write(content)
-
-	err = writer.Close()
-	if err != nil {
-		return nil, err
-	}
-
-	req, err := http.NewRequest("POST", url, body)
-	req.Header.Set("Content-Type", writer.FormDataContentType())
-	if err != nil {
-		return nil, err
-	}
+	req.Header.Set("Content-Length", fmt.Sprintf("%d", size))
+	req.Header.Set("Content-Range", fmt.Sprintf("bytes: %d-%d/%d", lastByte, size, size))
 
 	return req, nil
 }

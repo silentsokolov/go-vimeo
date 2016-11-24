@@ -121,8 +121,8 @@ func main() {
 
     f, _ := os.Open(filePath)
 
-    resp, _ := client.Users.UploadVideo("", f)
+    video, resp, _ := client.Users.UploadVideo("", f)
 
-    fmt.Println(resp)
+    fmt.Println(video, resp)
 }
 ```

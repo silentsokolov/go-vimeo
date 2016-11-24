@@ -924,3 +924,79 @@ func TestVideosService_ListRelatedVideo(t *testing.T) {
 		t.Errorf("Videos.ListRelatedVideo returned %+v, want %+v", videos, want)
 	}
 }
+
+func TestVideosService_getUploadVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	input := &UploadVideoOptions{Type: "streaming"}
+
+	mux.HandleFunc("/me/videos", func(w http.ResponseWriter, r *http.Request) {
+		// testMethod(t, r, "POST")
+
+		v := &UploadVideoOptions{}
+		json.NewDecoder(r.Body).Decode(v)
+
+		testMethod(t, r, "POST")
+		if !reflect.DeepEqual(v, input) {
+			t.Errorf("Videos.getUploadVideo body is %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"ticket_id": "1"}`)
+	})
+
+	uploadVideo, _, err := getUploadVideo(client, "/me/videos", input)
+	if err != nil {
+		t.Errorf("Videos.getUploadVideo returned unexpected error: %v", err)
+	}
+
+	want := &UploadVideo{TicketID: "1"}
+	if !reflect.DeepEqual(uploadVideo, want) {
+		t.Errorf("Videos.getUploadVideo returned %+v, want %+v", uploadVideo, want)
+	}
+}
+
+func TestVideosService_completeUploadVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/users/1/tickets/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "DELETE")
+		w.Header().Add("Location", "/videos/1")
+	})
+
+	mux.HandleFunc("/videos/1", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "GET")
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	video, _, err := completeUploadVideo(client, "/users/1/tickets/1")
+	if err != nil {
+		t.Errorf("Videos.completeUploadVideo returned unexpected error: %v", err)
+	}
+
+	want := &Video{Name: "Test"}
+	if !reflect.DeepEqual(video, want) {
+		t.Errorf("Videos.completeUploadVideo returned %+v, want %+v", video, want)
+	}
+}
+
+func TestVideosService_processUploadVideo(t *testing.T) {
+	setup()
+	defer teardown()
+
+	mux.HandleFunc("/upload", func(w http.ResponseWriter, r *http.Request) {
+		testMethod(t, r, "PUT")
+		w.Header().Add("Range", "bytes=0-1000")
+	})
+
+	lastByte, err := processUploadVideo(client, fmt.Sprintf("%s/%s", client.BaseURL.String(), "upload"))
+	if err != nil {
+		t.Errorf("Videos.processUploadVideo returned unexpected error: %v", err)
+	}
+
+	want := int64(1000)
+	if lastByte != want {
+		t.Errorf("Videos.completeUploadVideo returned %+v, want %+v", lastByte, want)
+	}
+}
