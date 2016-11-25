@@ -350,7 +350,7 @@ func uploadVideo(c *Client, url string, file *os.File) (*Video, *Response, error
 			switch nerr := err.(type) {
 			case net.Error:
 				if nerr.Timeout() {
-					lastByte, err = processUploadVideo(c, url)
+					lastByte, err = processUploadVideo(c, uploadVideo.UploadLinkSecure)
 					if err != nil {
 						return nil, nil, err
 					}
@@ -360,7 +360,7 @@ func uploadVideo(c *Client, url string, file *os.File) (*Video, *Response, error
 				return nil, nil, err
 			}
 		}
-		lastByte, err = processUploadVideo(c, url)
+		lastByte, err = processUploadVideo(c, uploadVideo.UploadLinkSecure)
 		if err != nil {
 			return nil, nil, err
 		}

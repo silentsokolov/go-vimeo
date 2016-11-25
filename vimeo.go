@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	libraryVersion   = "1.0.0"
+	libraryVersion   = "1.1.0"
 	defaultBaseURL   = "https://api.vimeo.com/"
 	defaultUserAgent = "go-vimeo/" + libraryVersion
 
@@ -254,7 +254,7 @@ func newResponse(r *http.Response) *Response {
 // body, or a JSON response body that maps to ErrorResponse.  Any other
 // response body will be silently ignored.
 func CheckResponse(r *http.Response) error {
-	if code := r.StatusCode; 200 <= code && code <= 299 {
+	if code := r.StatusCode; 200 <= code && code <= 299 || code == 308 {
 		return nil
 	}
 
