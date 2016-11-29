@@ -932,8 +932,6 @@ func TestVideosService_getUploadVideo(t *testing.T) {
 	input := &UploadVideoOptions{Type: "streaming"}
 
 	mux.HandleFunc("/me/videos", func(w http.ResponseWriter, r *http.Request) {
-		// testMethod(t, r, "POST")
-
 		v := &UploadVideoOptions{}
 		json.NewDecoder(r.Body).Decode(v)
 
@@ -998,5 +996,35 @@ func TestVideosService_processUploadVideo(t *testing.T) {
 	want := int64(1000)
 	if lastByte != want {
 		t.Errorf("Videos.completeUploadVideo returned %+v, want %+v", lastByte, want)
+	}
+}
+
+func TestVideosService_uploadVideoByURL(t *testing.T) {
+	setup()
+	defer teardown()
+
+	videoURL := "http://video.com/1.mp4"
+	input := &UploadVideoOptions{Type: "pull", Link: videoURL}
+
+	mux.HandleFunc("/me/videos", func(w http.ResponseWriter, r *http.Request) {
+		v := &UploadVideoOptions{}
+		json.NewDecoder(r.Body).Decode(v)
+
+		testMethod(t, r, "POST")
+		if !reflect.DeepEqual(v, input) {
+			t.Errorf("Videos.getUploadVideo body is %+v, want %+v", v, input)
+		}
+
+		fmt.Fprint(w, `{"name": "Test"}`)
+	})
+
+	video, _, err := uploadVideoByURL(client, "/me/videos", videoURL)
+	if err != nil {
+		t.Errorf("Videos.Get returned unexpected error: %v", err)
+	}
+
+	want := &Video{Name: "Test"}
+	if !reflect.DeepEqual(video, want) {
+		t.Errorf("Videos.Get returned %+v, want %+v", video, want)
 	}
 }

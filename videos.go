@@ -219,6 +219,7 @@ type ListVideoOptions struct {
 // uploadVideo method.
 type UploadVideoOptions struct {
 	Type string `json:"type,omitempty"`
+	Link string `json:"link,omitempty"`
 }
 
 func listVideo(c *Client, url string, opt *ListVideoOptions) ([]*Video, *Response, error) {
@@ -367,6 +368,23 @@ func uploadVideo(c *Client, url string, file *os.File) (*Video, *Response, error
 	}
 
 	video, resp, err := completeUploadVideo(c, uploadVideo.CompleteURI)
+
+	return video, resp, err
+}
+
+func uploadVideoByURL(c *Client, uri, videoURL string) (*Video, *Response, error) {
+	opt := &UploadVideoOptions{Type: "pull", Link: videoURL}
+	req, err := c.NewRequest("POST", uri, opt)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	video := &Video{}
+
+	resp, err := c.Do(req, video)
+	if err != nil {
+		return nil, resp, err
+	}
 
 	return video, resp, err
 }
