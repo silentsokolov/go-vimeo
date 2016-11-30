@@ -8,7 +8,6 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 	"reflect"
 
 	"github.com/google/go-querystring/query"
@@ -111,11 +110,8 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 }
 
 // NewUploadRequest creates an upload request.
-func (c *Client) NewUploadRequest(url string, file *os.File, size, lastByte int64) (*http.Request, error) {
-	b, _ := ioutil.ReadAll(file)
-	body := bytes.NewReader(b)
-
-	req, err := http.NewRequest("PUT", url, body)
+func (c *Client) NewUploadRequest(url string, reader io.Reader, size, lastByte int64) (*http.Request, error) {
+	req, err := http.NewRequest("PUT", url, reader)
 	if err != nil {
 		return nil, err
 	}
