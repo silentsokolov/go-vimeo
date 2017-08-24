@@ -13,9 +13,9 @@ import "github.com/silentsokolov/go-vimeo"
 
 
 func main() {
-    client := vimeo.NewClient(nil)
+	client := vimeo.NewClient(nil)
 
-    // Specific optional parameters
+	// Specific optional parameters
 	opt := &vimeo.ListCategoryOptions{
 		ListOptions: vimeo.ListOptions{Page: 1, PerPage: 2},
 	}
@@ -35,14 +35,14 @@ import (
 )
 
 func main() {
-    ts := oauth2.StaticTokenSource(
-        &oauth2.Token{AccessToken: "... your access token ..."},
-    )
-    tc := oauth2.NewClient(oauth2.NoContext, ts)
+	ts := oauth2.StaticTokenSource(
+		&oauth2.Token{AccessToken: "... your access token ..."},
+	)
+	tc := oauth2.NewClient(oauth2.NoContext, ts)
 
-    client := vimeo.NewClient(tc)
+	client := vimeo.NewClient(tc)
 
-    cats, _, err := client.Categories.List(nil)
+	cats, _, err := client.Categories.List(nil)
 }
 ```
 
@@ -51,9 +51,9 @@ func main() {
 
 ```go
 func main() {
-    client := ...
+	client := ...
 
-    // Specific optional parameters
+	// Specific optional parameters
 	opt := &vimeo.ListCategoryOptions{
 		ListOptions: vimeo.ListOptions{Page: 2, PerPage: 2},
 	}
@@ -73,18 +73,18 @@ func main() {
 
 ```go
 func main() {
-    client := ...
+	client := ...
 
-    // Specific request instance
-    req := &vimeo.ChannelRequest{
-        Name:        "My Channel",
-        Description: "Awesome",
-        Privacy:     "anybody",
-    }
+	// Specific request instance
+	req := &vimeo.ChannelRequest{
+		Name:        "My Channel",
+		Description: "Awesome",
+		Privacy:     "anybody",
+	}
 
-    ch, _, _ := client.Channels.Create(req)
+	ch, _, _ := client.Channels.Create(req)
 
-    fmt.Println(ch)
+	fmt.Println(ch)
 }
 ```
 
@@ -95,13 +95,20 @@ The "Me" service repeats the "Users" service, passing the empty string will auth
 
 ```go
 func main() {
-    client := ...
+	client := ...
 
-    // Call /me API method.
-    // Return current authenticated user.
-    me, _, _ := client.Users.Get("")
+	// Call /me API method.
+	// Return current authenticated user.
+	me, _, _ := client.Users.Get("")
 
-    fmt.Println(me)
+	fmt.Println(me)
+
+
+	// Call /me/videos API method.
+	// Return videos for current authenticated user.
+	videos, _, _ := client.Users.ListVideo("", nil)
+
+	fmt.Println(videos)
 }
 ```
 
@@ -116,13 +123,13 @@ import (
 )
 
 func main() {
-    client := ...
-    filePath := "/Users/user/Videos/Awesome.mp4"
+	client := ...
+	filePath := "/Users/user/Videos/Awesome.mp4"
 
-    f, _ := os.Open(filePath)
+	f, _ := os.Open(filePath)
 
-    video, resp, _ := client.Users.UploadVideo("", f)
+	video, resp, _ := client.Users.UploadVideo("", f)
 
-    fmt.Println(video, resp)
+	fmt.Println(video, resp)
 }
 ```
