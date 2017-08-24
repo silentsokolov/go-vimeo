@@ -32,6 +32,20 @@ type Stats struct {
 	Plays int `json:"plays,omitempty"`
 }
 
+// File internal object provides access to video file information
+type File struct {
+	Quality     string    `json:"quality,omitempty"`
+	Type        string    `json:"type,omitempty"`
+	Width       int       `json:"width,omitempty"`
+	Height      int       `json:"height,omitempty"`
+	Link        string    `json:"link,omitempty"`
+	CreatedTime time.Time `json:"created_time,omitempty"`
+	FPS         float32   `json:"fps,omitempty"`
+	Size        int       `json:"size,omitempty"`
+	MD5         string    `json:"md5,omitempty"`
+	LinkSecure  string    `json:"link_secure,omitempty"`
+}
+
 // App internal object provides access to specific app.
 type App struct {
 	URI  string `json:"uri,omitempty"`
@@ -109,6 +123,7 @@ type Video struct {
 	Tags          []*Tag        `json:"tags,omitempty"`
 	Stats         *Stats        `json:"stats,omitempty"`
 	User          *User         `json:"user,omitempty"`
+	Files         []*File       `json:"files,omitempty"`
 	App           *App          `json:"app,omitempty"`
 	Status        string        `json:"status,omitempty"`
 	ResourceKey   string        `json:"resource_key,omitempty"`
