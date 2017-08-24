@@ -261,8 +261,8 @@ func getVideo(c *Client, url string) (*Video, *Response, error) {
 	return video, resp, err
 }
 
-func getUploadVideo(c *Client, uri string, opt *UploadVideoOptions) (*UploadVideo, *Response, error) {
-	req, err := c.NewRequest("POST", uri, opt)
+func getUploadVideo(c *Client, method string, uri string, opt *UploadVideoOptions) (*UploadVideo, *Response, error) {
+	req, err := c.NewRequest(method, uri, opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -322,7 +322,7 @@ func processUploadVideo(c *Client, uploadURL string) (int64, error) {
 	return int64(lastByte), nil
 }
 
-func uploadVideo(c *Client, url string, file *os.File) (*Video, *Response, error) {
+func uploadVideo(c *Client, method string, url string, file *os.File) (*Video, *Response, error) {
 	opt := &UploadVideoOptions{Type: "streaming"}
 
 	stat, err := file.Stat()
@@ -334,7 +334,7 @@ func uploadVideo(c *Client, url string, file *os.File) (*Video, *Response, error
 		return nil, nil, errors.New("the video file can't be a directory")
 	}
 
-	uploadVideo, _, err := getUploadVideo(c, url, opt)
+	uploadVideo, _, err := getUploadVideo(c, method, url, opt)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -683,4 +683,14 @@ func (s *VideosService) ListRelatedVideo(vid int, opt *ListVideoOptions) ([]*Vid
 	videos, resp, err := listVideo(s.client, u, opt)
 
 	return videos, resp, err
+}
+
+// ReplaceFile upload video file/replace video file.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/files
+func (s *VideosService) ReplaceFile(vid int, file *os.File) (*Video, *Response, error) {
+	u := fmt.Sprintf("videos/%d/files", vid)
+	video, resp, err := uploadVideo(s.client, "PUT", u, file)
+
+	return video, resp, err
 }

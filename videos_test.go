@@ -943,7 +943,7 @@ func TestVideosService_getUploadVideo(t *testing.T) {
 		fmt.Fprint(w, `{"ticket_id": "1"}`)
 	})
 
-	uploadVideo, _, err := getUploadVideo(client, "/me/videos", input)
+	uploadVideo, _, err := getUploadVideo(client, "POST", "/me/videos", input)
 	if err != nil {
 		t.Errorf("Videos.getUploadVideo returned unexpected error: %v", err)
 	}

@@ -536,7 +536,7 @@ func (s *UsersService) RemovePortrait(uid string, pid string) (*Response, error)
 func (s *UsersService) ListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
-		u = "me/videos"
+		u = "me/videos?fields=uri,name"
 	} else {
 		u = fmt.Sprintf("users/%s/videos", uid)
 	}
@@ -575,7 +575,7 @@ func (s *UsersService) UploadVideo(uid string, file *os.File) (*Video, *Response
 		u = fmt.Sprintf("users/%s/videos", uid)
 	}
 
-	video, resp, err := uploadVideo(s.client, u, file)
+	video, resp, err := uploadVideo(s.client, "POST", u, file)
 
 	return video, resp, err
 }
