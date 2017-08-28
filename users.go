@@ -536,7 +536,7 @@ func (s *UsersService) RemovePortrait(uid string, pid string) (*Response, error)
 func (s *UsersService) ListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
-		u = "me/videos?fields=uri,name"
+		u = "me/videos"
 	} else {
 		u = fmt.Sprintf("users/%s/videos", uid)
 	}
