@@ -13,10 +13,13 @@ func TestTagsService_Get(t *testing.T) {
 
 	mux.HandleFunc("/tags/1", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
+		testFormURLValues(t, r, values{
+			"fields": "name",
+		})
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	tag, _, err := client.Tags.Get("1")
+	tag, _, err := client.Tags.Get("1", Fields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Tags.Get returned unexpected error: %v", err)
 	}
@@ -33,17 +36,14 @@ func TestTagsService_ListVideo(t *testing.T) {
 
 	mux.HandleFunc("/tags/1/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Tags.ListVideo("1", opt)
+	videos, _, err := client.Tags.ListVideo("1", Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Tags.ListVideo returned unexpected error: %v", err)
 	}

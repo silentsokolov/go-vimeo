@@ -13,18 +13,14 @@ func TestLanguagesService_List(t *testing.T) {
 
 	mux.HandleFunc("/languages", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListLanguageOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-
-	languages, _, err := client.Languages.List(opt)
+	languages, _, err := client.Languages.List(Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Languages.List returned unexpected error: %v", err)
 	}

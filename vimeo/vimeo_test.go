@@ -44,7 +44,7 @@ func testMethod(t *testing.T, r *http.Request, want string) {
 
 type values map[string]string
 
-func testFormValues(t *testing.T, r *http.Request, values values) {
+func testFormURLValues(t *testing.T, r *http.Request, values values) {
 	want := url.Values{}
 	for k, v := range values {
 		want.Add(k, v)
@@ -400,17 +400,142 @@ func TestCheckError_statusFail(t *testing.T) {
 }
 
 func TestAddOptions(t *testing.T) {
-	type Opt struct {
-		A string `url:"a,omitempty"`
-		B string `url:"b,omitempty"`
-	}
-	opt := Opt{A: "1", B: "2"}
-	opURL, err := addOptions("api", opt)
+	opURL, err := addOptions("api", Page(2), Filter("feature"))
 	if err != nil {
 		t.Errorf("addOptions returned unexpected error: %v", err)
 	}
 
-	if opURL != "api?a=1&b=2" {
-		t.Errorf("addOptions returned url: %v, get %v", opURL, "api?a=1&b=2")
+	if opURL != "api?filter=feature&page=2" {
+		t.Errorf("addOptions returned url: %v, get %v", opURL, "api?filter=feature&page=2")
+	}
+}
+
+func TestPageOption(t *testing.T) {
+	opt := Page(10)
+	k, v := opt.Get()
+
+	if k != "page" {
+		t.Errorf("Page returned key: %v, get %v", k, "page")
+	}
+
+	if v != "10" {
+		t.Errorf("Page returned value: %v, get %v", v, "10")
+	}
+}
+
+func TestPerPageOption(t *testing.T) {
+	opt := PerPage(10)
+	k, v := opt.Get()
+
+	if k != "per_page" {
+		t.Errorf("PerPage returned key: %v, get %v", k, "per_page")
+	}
+
+	if v != "10" {
+		t.Errorf("PerPage returned value: %v, get %v", v, "10")
+	}
+}
+
+func TestSortOption(t *testing.T) {
+	opt := Sort("name")
+	k, v := opt.Get()
+
+	if k != "sort" {
+		t.Errorf("Sort returned key: %v, get %v", k, "sort")
+	}
+
+	if v != "name" {
+		t.Errorf("Sort returned value: %v, get %v", v, "name")
+	}
+}
+
+func TestDirectionOption(t *testing.T) {
+	opt := Direction("name")
+	k, v := opt.Get()
+
+	if k != "direction" {
+		t.Errorf("Direction returned key: %v, get %v", k, "sort")
+	}
+
+	if v != "name" {
+		t.Errorf("Direction returned value: %v, get %v", v, "name")
+	}
+}
+
+func TestFilterOption(t *testing.T) {
+	opt := Filter("name")
+	k, v := opt.Get()
+
+	if k != "filter" {
+		t.Errorf("Filter returned key: %v, get %v", k, "filter")
+	}
+
+	if v != "name" {
+		t.Errorf("Filter returned value: %v, get %v", v, "name")
+	}
+}
+
+func TestQueryOption(t *testing.T) {
+	opt := Query("name")
+	k, v := opt.Get()
+
+	if k != "query" {
+		t.Errorf("Query returned key: %v, get %v", k, "query")
+	}
+
+	if v != "name" {
+		t.Errorf("Query returned value: %v, get %v", v, "name")
+	}
+}
+
+func TestFilterPlayableOption(t *testing.T) {
+	opt := FilterPlayable("name")
+	k, v := opt.Get()
+
+	if k != "filter_playable" {
+		t.Errorf("FilterPlayable returned key: %v, get %v", k, "filter_playable")
+	}
+
+	if v != "name" {
+		t.Errorf("FilterPlayable returned value: %v, get %v", v, "name")
+	}
+}
+
+func TestFilterEmbeddableOption(t *testing.T) {
+	opt := FilterEmbeddable("name")
+	k, v := opt.Get()
+
+	if k != "filter_embeddable" {
+		t.Errorf("FilterEmbeddable returned key: %v, get %v", k, "filter_embeddable")
+	}
+
+	if v != "name" {
+		t.Errorf("FilterEmbeddable returned value: %v, get %v", v, "name")
+	}
+}
+
+func TestFilterContentRatingOption(t *testing.T) {
+	opt := FilterContentRating([]string{"a", "b", "c"})
+	k, v := opt.Get()
+
+	if k != "filter_content_rating" {
+		t.Errorf("FilterContentRating returned key: %v, get %v", k, "filter_content_rating")
+	}
+
+	if v != "a,b,c" {
+		t.Errorf("FilterContentRating returned value: %v, get %v", v, "a,b,c")
+	}
+}
+
+func TestFieldsOption(t *testing.T) {
+	opt := Fields([]string{"a", "b", "c"})
+	k, v := opt.Get()
+
+	if k != "fields" {
+		t.Errorf("Fields returned key: %v, get %v", k, "fields")
+	}
+
+	if v != "a,b,c" {
+		t.Errorf("Fields returned value: %v, get %v", v, "a,b,c")
 	}
 }

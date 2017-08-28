@@ -25,8 +25,12 @@ type TextTrackRequest struct {
 // ListTextTrack lists the text tracks.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/texttracks
-func (s *VideosService) ListTextTrack(vid int) ([]*TextTrack, *Response, error) {
-	u := fmt.Sprintf("/videos/%d/texttracks", vid)
+func (s *VideosService) ListTextTrack(vid int, opt ...CallOption) ([]*TextTrack, *Response, error) {
+	u, err := addOptions(fmt.Sprintf("/videos/%d/texttracks", vid), opt...)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -67,8 +71,12 @@ func (s *VideosService) AddTextTrack(vid int, r *TextTrackRequest) (*TextTrack, 
 // GetTextTrack get specific text track by ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/texttracks/%7Btexttrack_id%7D
-func (s *VideosService) GetTextTrack(vid int, tid int) (*TextTrack, *Response, error) {
-	u := fmt.Sprintf("videos/%d/texttracks/%d", vid, tid)
+func (s *VideosService) GetTextTrack(vid int, tid int, opt ...CallOption) (*TextTrack, *Response, error) {
+	u, err := addOptions(fmt.Sprintf("videos/%d/texttracks/%d", vid, tid), opt...)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err

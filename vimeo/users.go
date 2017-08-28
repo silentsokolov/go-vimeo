@@ -39,14 +39,6 @@ type User struct {
 	ResourceKey   string     `json:"resource_key,omitempty"`
 }
 
-// ListUserOptions specifies the optional parameters to the
-// ListUser method.
-type ListUserOptions struct {
-	Query  string `url:"query,omitempty"`
-	Filter string `url:"filter,omitempty"`
-	ListOptions
-}
-
 // UserRequest represents a request to create/edit an user.
 type UserRequest struct {
 	Name     string `json:"name,omitempty"`
@@ -54,8 +46,8 @@ type UserRequest struct {
 	Bio      string `json:"bio,omitempty"`
 }
 
-func listUser(c *Client, url string, opt *ListUserOptions) ([]*User, *Response, error) {
-	u, err := addOptions(url, opt)
+func listUser(c *Client, url string, opt ...CallOption) ([]*User, *Response, error) {
+	u, err := addOptions(url, opt...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -80,8 +72,8 @@ func listUser(c *Client, url string, opt *ListUserOptions) ([]*User, *Response, 
 // Search users.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/users
-func (s *UsersService) Search(opt *ListUserOptions) ([]*User, *Response, error) {
-	users, resp, err := listUser(s.client, "users", opt)
+func (s *UsersService) Search(opt ...CallOption) ([]*User, *Response, error) {
+	users, resp, err := listUser(s.client, "users", opt...)
 
 	return users, resp, err
 }
@@ -90,12 +82,17 @@ func (s *UsersService) Search(opt *ListUserOptions) ([]*User, *Response, error) 
 // Passing the empty string will authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D
-func (s *UsersService) Get(uid string) (*User, *Response, error) {
+func (s *UsersService) Get(uid string, opt ...CallOption) (*User, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me"
 	} else {
 		u = fmt.Sprintf("users/%s", uid)
+	}
+
+	u, err := addOptions(u, opt...)
+	if err != nil {
+		return nil, nil, err
 	}
 
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -143,7 +140,7 @@ func (s *UsersService) Edit(uid string, r *UserRequest) (*User, *Response, error
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/appearances
-func (s *UsersService) ListAppearance(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+func (s *UsersService) ListAppearance(uid string, opt ...CallOption) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/appearances"
@@ -151,7 +148,7 @@ func (s *UsersService) ListAppearance(uid string, opt *ListVideoOptions) ([]*Vid
 		u = fmt.Sprintf("users/%s/appearances", uid)
 	}
 
-	videos, resp, err := listVideo(s.client, u, opt)
+	videos, resp, err := listVideo(s.client, u, opt...)
 
 	return videos, resp, err
 }
@@ -160,7 +157,7 @@ func (s *UsersService) ListAppearance(uid string, opt *ListVideoOptions) ([]*Vid
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/categories
-func (s *UsersService) ListCategory(uid string, opt *ListCategoryOptions) ([]*Category, *Response, error) {
+func (s *UsersService) ListCategory(uid string, opt ...CallOption) ([]*Category, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/categories"
@@ -168,7 +165,7 @@ func (s *UsersService) ListCategory(uid string, opt *ListCategoryOptions) ([]*Ca
 		u = fmt.Sprintf("users/%s/categories", uid)
 	}
 
-	categories, resp, err := listCategory(s.client, u, opt)
+	categories, resp, err := listCategory(s.client, u, opt...)
 
 	return categories, resp, err
 }
@@ -217,7 +214,7 @@ func (s *UsersService) UnsubscribeCategory(uid string, cat string) (*Response, e
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/channels
-func (s *UsersService) ListChannel(uid string, opt *ListChannelOptions) ([]*Channel, *Response, error) {
+func (s *UsersService) ListChannel(uid string, opt ...CallOption) ([]*Channel, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/channels"
@@ -225,7 +222,7 @@ func (s *UsersService) ListChannel(uid string, opt *ListChannelOptions) ([]*Chan
 		u = fmt.Sprintf("users/%s/channels", uid)
 	}
 
-	categories, resp, err := listChannel(s.client, u, opt)
+	categories, resp, err := listChannel(s.client, u, opt...)
 
 	return categories, resp, err
 }
@@ -281,17 +278,11 @@ type Feed struct {
 	Clip *Video `json:"clip,omitempty"`
 }
 
-// ListFeedOptions specifies the optional parameters to the
-// Feed method.
-type ListFeedOptions struct {
-	ListOptions
-}
-
 // Feed lists the feed for an user.
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/feed
-func (s *UsersService) Feed(uid string, opt *ListFeedOptions) ([]*Feed, *Response, error) {
+func (s *UsersService) Feed(uid string, opt ...CallOption) ([]*Feed, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/feed"
@@ -299,7 +290,7 @@ func (s *UsersService) Feed(uid string, opt *ListFeedOptions) ([]*Feed, *Respons
 		u = fmt.Sprintf("users/%s/feed", uid)
 	}
 
-	u, err := addOptions(u, opt)
+	u, err := addOptions(u, opt...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -325,7 +316,7 @@ func (s *UsersService) Feed(uid string, opt *ListFeedOptions) ([]*Feed, *Respons
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/followers
-func (s *UsersService) ListFollower(uid string, opt *ListUserOptions) ([]*User, *Response, error) {
+func (s *UsersService) ListFollower(uid string, opt ...CallOption) ([]*User, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/followers"
@@ -333,7 +324,7 @@ func (s *UsersService) ListFollower(uid string, opt *ListUserOptions) ([]*User, 
 		u = fmt.Sprintf("users/%s/followers", uid)
 	}
 
-	users, resp, err := listUser(s.client, u, opt)
+	users, resp, err := listUser(s.client, u, opt...)
 
 	return users, resp, err
 }
@@ -342,7 +333,7 @@ func (s *UsersService) ListFollower(uid string, opt *ListUserOptions) ([]*User, 
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/following
-func (s *UsersService) ListFollowed(uid string, opt *ListUserOptions) ([]*User, *Response, error) {
+func (s *UsersService) ListFollowed(uid string, opt ...CallOption) ([]*User, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/following"
@@ -350,7 +341,7 @@ func (s *UsersService) ListFollowed(uid string, opt *ListUserOptions) ([]*User, 
 		u = fmt.Sprintf("users/%s/following", uid)
 	}
 
-	users, resp, err := listUser(s.client, u, opt)
+	users, resp, err := listUser(s.client, u, opt...)
 
 	return users, resp, err
 }
@@ -399,7 +390,7 @@ func (s *UsersService) UnfollowUser(uid string, fid string) (*Response, error) {
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/groups
-func (s *UsersService) ListGroup(uid string, opt *ListGroupOptions) ([]*Group, *Response, error) {
+func (s *UsersService) ListGroup(uid string, opt ...CallOption) ([]*Group, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/groups"
@@ -407,7 +398,7 @@ func (s *UsersService) ListGroup(uid string, opt *ListGroupOptions) ([]*Group, *
 		u = fmt.Sprintf("users/%s/groups", uid)
 	}
 
-	groups, resp, err := listGroup(s.client, u, opt)
+	groups, resp, err := listGroup(s.client, u, opt...)
 
 	return groups, resp, err
 }
@@ -456,7 +447,7 @@ func (s *UsersService) LeaveGroup(uid string, gid string) (*Response, error) {
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/likes
-func (s *UsersService) ListLikedVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+func (s *UsersService) ListLikedVideo(uid string, opt ...CallOption) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/likes"
@@ -464,7 +455,7 @@ func (s *UsersService) ListLikedVideo(uid string, opt *ListVideoOptions) ([]*Vid
 		u = fmt.Sprintf("users/%s/likes", uid)
 	}
 
-	videos, resp, err := listVideo(s.client, u, opt)
+	videos, resp, err := listVideo(s.client, u, opt...)
 
 	return videos, resp, err
 }
@@ -533,15 +524,15 @@ func (s *UsersService) RemovePortrait(uid string, pid string) (*Response, error)
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/videos
-func (s *UsersService) ListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+func (s *UsersService) ListVideo(uid string, opt ...CallOption) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
-		u = "me/videos?fields=uri,name"
+		u = "me/videos"
 	} else {
 		u = fmt.Sprintf("users/%s/videos", uid)
 	}
 
-	videos, resp, err := listVideo(s.client, u, opt)
+	videos, resp, err := listVideo(s.client, u, opt...)
 
 	return videos, resp, err
 }
@@ -550,7 +541,7 @@ func (s *UsersService) ListVideo(uid string, opt *ListVideoOptions) ([]*Video, *
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/videos
-func (s *UsersService) GetVideo(uid string, vid int) (*Video, *Response, error) {
+func (s *UsersService) GetVideo(uid string, vid int, opt ...CallOption) (*Video, *Response, error) {
 	var u string
 	if uid == "" {
 		u = fmt.Sprintf("me/videos/%d", vid)
@@ -558,7 +549,7 @@ func (s *UsersService) GetVideo(uid string, vid int) (*Video, *Response, error) 
 		u = fmt.Sprintf("users/%s/videos/%d", uid, vid)
 	}
 
-	video, resp, err := getVideo(s.client, u)
+	video, resp, err := getVideo(s.client, u, opt...)
 
 	return video, resp, err
 }
@@ -601,7 +592,7 @@ func (s *UsersService) UploadVideoByURL(uid string, videoURL string) (*Video, *R
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/watchlater
-func (s *UsersService) WatchLaterListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+func (s *UsersService) WatchLaterListVideo(uid string, opt ...CallOption) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/watchlater"
@@ -609,7 +600,7 @@ func (s *UsersService) WatchLaterListVideo(uid string, opt *ListVideoOptions) ([
 		u = fmt.Sprintf("users/%s/watchlater", uid)
 	}
 
-	videos, resp, err := listVideo(s.client, u, opt)
+	videos, resp, err := listVideo(s.client, u, opt...)
 
 	return videos, resp, err
 }
@@ -674,8 +665,8 @@ func (s *UsersService) WatchLaterDeleteVideo(uid string, vid int) (*Response, er
 // WatchedListVideo lists the video.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/me/watched/videos
-func (s *UsersService) WatchedListVideo(uid string, opt *ListVideoOptions) ([]*Video, *Response, error) {
-	videos, resp, err := listVideo(s.client, "me/watched/videos", opt)
+func (s *UsersService) WatchedListVideo(uid string, opt ...CallOption) ([]*Video, *Response, error) {
+	videos, resp, err := listVideo(s.client, "me/watched/videos", opt...)
 
 	return videos, resp, err
 }

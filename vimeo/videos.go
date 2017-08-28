@@ -218,18 +218,6 @@ func (v Video) GetID() int {
 	return ID
 }
 
-// ListVideoOptions specifies the optional parameters to the
-// CategoriesService.ListVideo method.
-type ListVideoOptions struct {
-	Query            string `url:"query,omitempty"`
-	Filter           string `url:"filter,omitempty"`
-	FilterEmbeddable string `url:"filter_embeddable,omitempty"`
-	Sort             string `url:"sort,omitempty"`
-	Direction        string `url:"direction,omitempty"`
-	FilterPlayable   string `url:"filter_playable,omitempty"`
-	ListOptions
-}
-
 // UploadVideoOptions specifies the optional parameters to the
 // uploadVideo method.
 type UploadVideoOptions struct {
@@ -237,8 +225,8 @@ type UploadVideoOptions struct {
 	Link string `json:"link,omitempty"`
 }
 
-func listVideo(c *Client, url string, opt *ListVideoOptions) ([]*Video, *Response, error) {
-	u, err := addOptions(url, opt)
+func listVideo(c *Client, url string, opt ...CallOption) ([]*Video, *Response, error) {
+	u, err := addOptions(url, opt...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -260,8 +248,13 @@ func listVideo(c *Client, url string, opt *ListVideoOptions) ([]*Video, *Respons
 	return videos.Data, resp, err
 }
 
-func getVideo(c *Client, url string) (*Video, *Response, error) {
-	req, err := c.NewRequest("GET", url, nil)
+func getVideo(c *Client, url string, opt ...CallOption) (*Video, *Response, error) {
+	u, err := addOptions(url, opt...)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := c.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -425,8 +418,8 @@ func addVideo(c *Client, url string) (*Response, error) {
 // List lists the videos.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos
-func (s *VideosService) List(opt *ListVideoOptions) ([]*Video, *Response, error) {
-	videos, resp, err := listVideo(s.client, "videos", opt)
+func (s *VideosService) List(opt ...CallOption) ([]*Video, *Response, error) {
+	videos, resp, err := listVideo(s.client, "videos", opt...)
 
 	return videos, resp, err
 }
@@ -434,9 +427,9 @@ func (s *VideosService) List(opt *ListVideoOptions) ([]*Video, *Response, error)
 // Get specific video by ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D
-func (s *VideosService) Get(vid int) (*Video, *Response, error) {
+func (s *VideosService) Get(vid int, opt ...CallOption) (*Video, *Response, error) {
 	u := fmt.Sprintf("videos/%d", vid)
-	video, resp, err := getVideo(s.client, u)
+	video, resp, err := getVideo(s.client, u, opt...)
 
 	return video, resp, err
 }
@@ -473,9 +466,9 @@ func (s *VideosService) Delete(vid int) (*Response, error) {
 // ListCategory lists the video category.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/categories
-func (s *VideosService) ListCategory(vid int, opt *ListCategoryOptions) ([]*Category, *Response, error) {
+func (s *VideosService) ListCategory(vid int, opt ...CallOption) ([]*Category, *Response, error) {
 	u := fmt.Sprintf("videos/%d/categories", vid)
-	catogories, resp, err := listCategory(s.client, u, opt)
+	catogories, resp, err := listCategory(s.client, u, opt...)
 
 	return catogories, resp, err
 }
@@ -483,9 +476,9 @@ func (s *VideosService) ListCategory(vid int, opt *ListCategoryOptions) ([]*Cate
 // LikeList lists users who liked this video.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/likes
-func (s *VideosService) LikeList(vid int, opt *ListUserOptions) ([]*User, *Response, error) {
+func (s *VideosService) LikeList(vid int, opt ...CallOption) ([]*User, *Response, error) {
 	u := fmt.Sprintf("videos/%d/likes", vid)
-	users, resp, err := listUser(s.client, u, opt)
+	users, resp, err := listUser(s.client, u, opt...)
 
 	return users, resp, err
 }
@@ -550,8 +543,12 @@ type Domain struct {
 // ListDomain lists the domains.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/domains
-func (s *VideosService) ListDomain(vid int) ([]*Domain, *Response, error) {
-	u := fmt.Sprintf("videos/%d/privacy/domains", vid)
+func (s *VideosService) ListDomain(vid int, opt ...CallOption) ([]*Domain, *Response, error) {
+	u, err := addOptions(fmt.Sprintf("videos/%d/privacy/domains", vid), opt...)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -598,9 +595,9 @@ func (s *VideosService) DisallowDomain(vid int, d string) (*Response, error) {
 // ListUser list the all allowed users
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/users
-func (s *VideosService) ListUser(vid int) ([]*User, *Response, error) {
+func (s *VideosService) ListUser(vid int, opt ...CallOption) ([]*User, *Response, error) {
 	u := fmt.Sprintf("videos/%d/privacy/users", vid)
-	users, resp, err := listUser(s.client, u, nil)
+	users, resp, err := listUser(s.client, u, opt...)
 
 	return users, resp, err
 }
@@ -647,9 +644,9 @@ func (s *VideosService) DisallowUser(vid int, uid string) (*Response, error) {
 // ListTag list a video's tags
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/tags
-func (s *VideosService) ListTag(vid int) ([]*Tag, *Response, error) {
+func (s *VideosService) ListTag(vid int, opt ...CallOption) ([]*Tag, *Response, error) {
 	u := fmt.Sprintf("videos/%d/tags", vid)
-	tags, resp, err := listTag(s.client, u)
+	tags, resp, err := listTag(s.client, u, opt...)
 
 	return tags, resp, err
 }
@@ -657,9 +654,9 @@ func (s *VideosService) ListTag(vid int) ([]*Tag, *Response, error) {
 // GetTag specific tag by name.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/tags/%7Bword%7D
-func (s *VideosService) GetTag(vid int, t string) (*Tag, *Response, error) {
+func (s *VideosService) GetTag(vid int, t string, opt ...CallOption) (*Tag, *Response, error) {
 	u := fmt.Sprintf("videos/%d/tags/%s", vid, t)
-	tag, resp, err := getTag(s.client, u)
+	tag, resp, err := getTag(s.client, u, opt...)
 
 	return tag, resp, err
 }
@@ -693,9 +690,9 @@ func (s *VideosService) UnassignTag(vid int, t string) (*Response, error) {
 // ListRelatedVideo lists the related video.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/videos
-func (s *VideosService) ListRelatedVideo(vid int, opt *ListVideoOptions) ([]*Video, *Response, error) {
+func (s *VideosService) ListRelatedVideo(vid int, opt ...CallOption) ([]*Video, *Response, error) {
 	u := fmt.Sprintf("videos/%d/videos", vid)
-	videos, resp, err := listVideo(s.client, u, opt)
+	videos, resp, err := listVideo(s.client, u, opt...)
 
 	return videos, resp, err
 }

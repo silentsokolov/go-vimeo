@@ -42,8 +42,11 @@ type PicturesRequest struct {
 // ListPictures lists thumbnails.
 //
 // https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/pictures
-func (s *VideosService) ListPictures(vid int) ([]*Pictures, *Response, error) {
-	u := fmt.Sprintf("videos/%d/pictures", vid)
+func (s *VideosService) ListPictures(vid int, opt ...CallOption) ([]*Pictures, *Response, error) {
+	u, err := addOptions(fmt.Sprintf("videos/%d/pictures", vid), opt...)
+	if err != nil {
+		return nil, nil, err
+	}
 
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
@@ -84,8 +87,12 @@ func (s *VideosService) CreatePictures(vid int, r *PicturesRequest) (*Pictures, 
 // GetPictures get one thumbnail.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/pictures
-func (s *VideosService) GetPictures(vid int, pid int) (*Pictures, *Response, error) {
-	u := fmt.Sprintf("videos/%d/pictures/%d", vid, pid)
+func (s *VideosService) GetPictures(vid int, pid int, opt ...CallOption) (*Pictures, *Response, error) {
+	u, err := addOptions(fmt.Sprintf("videos/%d/pictures/%d", vid, pid), opt...)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err

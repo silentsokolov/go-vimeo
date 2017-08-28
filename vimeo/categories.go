@@ -33,14 +33,8 @@ type SubCategory struct {
 	Link string `json:"link,omitempty"`
 }
 
-// ListCategoryOptions specifies the optional parameters to the
-// CategoriesService.List method.
-type ListCategoryOptions struct {
-	ListOptions
-}
-
-func listCategory(c *Client, url string, opt *ListCategoryOptions) ([]*Category, *Response, error) {
-	u, err := addOptions(url, opt)
+func listCategory(c *Client, url string, opt ...CallOption) ([]*Category, *Response, error) {
+	u, err := addOptions(url, opt...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -62,8 +56,13 @@ func listCategory(c *Client, url string, opt *ListCategoryOptions) ([]*Category,
 	return categories.Data, resp, err
 }
 
-func getCategory(c *Client, url string) (*Category, *Response, error) {
-	req, err := c.NewRequest("GET", url, nil)
+func getCategory(c *Client, url string, opt ...CallOption) (*Category, *Response, error) {
+	u, err := addOptions(url, opt...)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := c.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -81,8 +80,8 @@ func getCategory(c *Client, url string) (*Category, *Response, error) {
 // List the category.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/categories
-func (s *CategoriesService) List(opt *ListCategoryOptions) ([]*Category, *Response, error) {
-	categories, resp, err := listCategory(s.client, "categories", opt)
+func (s *CategoriesService) List(opt ...CallOption) ([]*Category, *Response, error) {
+	categories, resp, err := listCategory(s.client, "categories", opt...)
 
 	return categories, resp, err
 }
@@ -90,9 +89,9 @@ func (s *CategoriesService) List(opt *ListCategoryOptions) ([]*Category, *Respon
 // Get specific category by name.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D
-func (s *CategoriesService) Get(cat string) (*Category, *Response, error) {
+func (s *CategoriesService) Get(cat string, opt ...CallOption) (*Category, *Response, error) {
 	u := fmt.Sprintf("categories/%s", cat)
-	category, resp, err := getCategory(s.client, u)
+	category, resp, err := getCategory(s.client, u, opt...)
 
 	return category, resp, err
 }
@@ -100,9 +99,9 @@ func (s *CategoriesService) Get(cat string) (*Category, *Response, error) {
 // ListChannel lists the channel for an category.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/channels
-func (s *CategoriesService) ListChannel(cat string, opt *ListChannelOptions) ([]*Channel, *Response, error) {
+func (s *CategoriesService) ListChannel(cat string, opt ...CallOption) ([]*Channel, *Response, error) {
 	u := fmt.Sprintf("categories/%s/channels", cat)
-	channels, resp, err := listChannel(s.client, u, opt)
+	channels, resp, err := listChannel(s.client, u, opt...)
 
 	return channels, resp, err
 }
@@ -110,9 +109,9 @@ func (s *CategoriesService) ListChannel(cat string, opt *ListChannelOptions) ([]
 // ListGroup lists the group for an category.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/groups
-func (s *CategoriesService) ListGroup(cat string, opt *ListGroupOptions) ([]*Group, *Response, error) {
+func (s *CategoriesService) ListGroup(cat string, opt ...CallOption) ([]*Group, *Response, error) {
 	u := fmt.Sprintf("categories/%s/groups", cat)
-	groups, resp, err := listGroup(s.client, u, opt)
+	groups, resp, err := listGroup(s.client, u, opt...)
 
 	return groups, resp, err
 }
@@ -120,9 +119,9 @@ func (s *CategoriesService) ListGroup(cat string, opt *ListGroupOptions) ([]*Gro
 // ListVideo lists the video for an category.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/videos
-func (s *CategoriesService) ListVideo(cat string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+func (s *CategoriesService) ListVideo(cat string, opt ...CallOption) ([]*Video, *Response, error) {
 	u := fmt.Sprintf("categories/%s/videos", cat)
-	videos, resp, err := listVideo(s.client, u, opt)
+	videos, resp, err := listVideo(s.client, u, opt...)
 
 	return videos, resp, err
 }
@@ -130,9 +129,9 @@ func (s *CategoriesService) ListVideo(cat string, opt *ListVideoOptions) ([]*Vid
 // GetVideo specific video by category name and video ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/videos/%7Bvideo_id%7D
-func (s *CategoriesService) GetVideo(cat string, vid int) (*Video, *Response, error) {
+func (s *CategoriesService) GetVideo(cat string, vid int, opt ...CallOption) (*Video, *Response, error) {
 	u := fmt.Sprintf("categories/%s/videos/%d", cat, vid)
-	video, resp, err := getVideo(s.client, u)
+	video, resp, err := getVideo(s.client, u, opt...)
 
 	return video, resp, err
 }

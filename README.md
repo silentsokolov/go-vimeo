@@ -9,18 +9,14 @@ go-vimeo is a Go client library for accessing the [Vimeo API](https://developer.
 ## Basic usage ##
 
 ```go
-import "github.com/silentsokolov/go-vimeo"
+import "github.com/silentsokolov/go-vimeo/vimeo"
 
 
 func main() {
 	client := vimeo.NewClient(nil)
 
 	// Specific optional parameters
-	opt := &vimeo.ListCategoryOptions{
-		ListOptions: vimeo.ListOptions{Page: 1, PerPage: 2},
-	}
-
-	cats, _, err := client.Categories.List(opt)
+	cats, _, err := client.Categories.List(Page(1), PerPage(2))
 }
 ```
 
@@ -31,7 +27,7 @@ The go-vimeo library does not directly handle authentication. Instead, when crea
 ```go
 import (
 	"golang.org/x/oauth2"
-	"github.com/silentsokolov/go-vimeo"
+	"github.com/silentsokolov/go-vimeo/vimeo"
 )
 
 func main() {
@@ -42,7 +38,7 @@ func main() {
 
 	client := vimeo.NewClient(tc)
 
-	cats, _, err := client.Categories.List(nil)
+	cats, _, err := client.Categories.List()
 }
 ```
 
@@ -53,13 +49,8 @@ func main() {
 func main() {
 	client := ...
 
-	// Specific optional parameters
-	opt := &vimeo.ListCategoryOptions{
-		ListOptions: vimeo.ListOptions{Page: 2, PerPage: 2},
-	}
-
 	// Any "List" request
-	_, resp, _ := client.Categories.List(opt)
+	_, resp, _ := client.Categories.List(Page(2), PerPage(2))
 
 	fmt.Printf("Current page: %d\n", resp.Page)
 	fmt.Printf("Next page: %s\n", resp.NextPage)
@@ -106,7 +97,7 @@ func main() {
 
 	// Call /me/videos API method.
 	// Return videos for current authenticated user.
-	videos, _, _ := client.Users.ListVideo("", nil)
+	videos, _, _ := client.Users.ListVideo("")
 
 	fmt.Println(videos)
 }
@@ -119,7 +110,7 @@ import (
 	"os"
 
 	"golang.org/x/oauth2"
-	"github.com/silentsokolov/go-vimeo"
+	"github.com/silentsokolov/go-vimeo/vimeo"
 )
 
 func main() {

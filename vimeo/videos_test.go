@@ -22,17 +22,14 @@ func TestVideosService_List(t *testing.T) {
 
 	mux.HandleFunc("/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Videos.List(opt)
+	videos, _, err := client.Videos.List(Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Videos.List returned unexpected error: %v", err)
 	}
@@ -115,17 +112,14 @@ func TestVideosService_ListCategory(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/categories", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListCategoryOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	categories, _, err := client.Videos.ListCategory(1, opt)
+	categories, _, err := client.Videos.ListCategory(1, Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Videos.ListCategory returned unexpected error: %v", err)
 	}
@@ -142,17 +136,14 @@ func TestVideosService_ListComment(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/comments", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"text": "Test"}]}`)
 	})
 
-	opt := &ListCommentOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	comments, _, err := client.Videos.ListComment(1, opt)
+	comments, _, err := client.Videos.ListComment(1, Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Videos.ListComment returned unexpected error: %v", err)
 	}
@@ -169,10 +160,13 @@ func TestVideosService_GetComment(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/comments/1", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
+		testFormURLValues(t, r, values{
+			"fields": "name",
+		})
 		fmt.Fprint(w, `{"text": "Test"}`)
 	})
 
-	comment, _, err := client.Videos.GetComment(1, 1)
+	comment, _, err := client.Videos.GetComment(1, 1, Fields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Videos.GetComment returned unexpected error: %v", err)
 	}
@@ -265,17 +259,14 @@ func TestVideosService_ListReplies(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/comments/1/replies", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"text": "Test"}]}`)
 	})
 
-	opt := &ListRepliesOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	replies, _, err := client.Videos.ListReplies(1, 1, opt)
+	replies, _, err := client.Videos.ListReplies(1, 1, Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Videos.ListReplies returned unexpected error: %v", err)
 	}
@@ -323,17 +314,14 @@ func TestVideosService_ListCredit(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/credits", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListCreditOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	credits, _, err := client.Videos.ListCredit(1, opt)
+	credits, _, err := client.Videos.ListCredit(1, Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Videos.ListCredit returned unexpected error: %v", err)
 	}
@@ -350,10 +338,13 @@ func TestVideosService_GetCredit(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/credits/1", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
+		testFormURLValues(t, r, values{
+			"fields": "name",
+		})
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	credit, _, err := client.Videos.GetCredit(1, 1)
+	credit, _, err := client.Videos.GetCredit(1, 1, Fields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Videos.GetCredit returned unexpected error: %v", err)
 	}
@@ -904,17 +895,14 @@ func TestVideosService_ListRelatedVideo(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Videos.ListRelatedVideo(1, opt)
+	videos, _, err := client.Videos.ListRelatedVideo(1, Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Videos.ListRelatedVideo returned unexpected error: %v", err)
 	}

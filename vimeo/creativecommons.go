@@ -17,17 +17,11 @@ type CreativeCommon struct {
 	Name string `json:"name,omitempty"`
 }
 
-// ListCreativeCommonOptions specifies the optional parameters to the
-// CreativeCommonsService.List method.
-type ListCreativeCommonOptions struct {
-	ListOptions
-}
-
 // List the creative common.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/creativecommons
-func (s *CreativeCommonsService) List(opt *ListCreativeCommonOptions) ([]*CreativeCommon, *Response, error) {
-	u, err := addOptions("creativecommons", opt)
+func (s *CreativeCommonsService) List(opt ...CallOption) ([]*CreativeCommon, *Response, error) {
+	u, err := addOptions("creativecommons", opt...)
 	if err != nil {
 		return nil, nil, err
 	}

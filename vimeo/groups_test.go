@@ -22,17 +22,14 @@ func TestGroupsService_List(t *testing.T) {
 
 	mux.HandleFunc("/groups", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListGroupOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	groups, _, err := client.Groups.List(opt)
+	groups, _, err := client.Groups.List(Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Groups.List returned unexpected error: %v", err)
 	}
@@ -81,10 +78,13 @@ func TestGroupsService_Get(t *testing.T) {
 
 	mux.HandleFunc("/groups/1", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
+		testFormURLValues(t, r, values{
+			"fields": "name",
+		})
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	group, _, err := client.Groups.Get("1")
+	group, _, err := client.Groups.Get("1", Fields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Groups.Get returned unexpected error: %v", err)
 	}
@@ -115,17 +115,14 @@ func TestGroupsService_ListUser(t *testing.T) {
 
 	mux.HandleFunc("/groups/1/users", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListUserOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	users, _, err := client.Groups.ListUser("1", opt)
+	users, _, err := client.Groups.ListUser("1", Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Groups.ListUser returned unexpected error: %v", err)
 	}
@@ -142,17 +139,14 @@ func TestGroupsService_ListVideo(t *testing.T) {
 
 	mux.HandleFunc("/groups/1/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Groups.ListVideo("1", opt)
+	videos, _, err := client.Groups.ListVideo("1", Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Groups.ListVideo returned unexpected error: %v", err)
 	}

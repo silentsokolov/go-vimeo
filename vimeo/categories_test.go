@@ -13,17 +13,14 @@ func TestCategoriesService_List(t *testing.T) {
 
 	mux.HandleFunc("/categories", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListCategoryOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	categories, _, err := client.Categories.List(opt)
+	categories, _, err := client.Categories.List(Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Categories.List returned unexpected error: %v", err)
 	}
@@ -40,10 +37,13 @@ func TestCategoriesService_Get(t *testing.T) {
 
 	mux.HandleFunc("/categories/cat", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
+		testFormURLValues(t, r, values{
+			"fields": "name",
+		})
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	category, _, err := client.Categories.Get("cat")
+	category, _, err := client.Categories.Get("cat", Fields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Categories.Get returned unexpected error: %v", err)
 	}
@@ -60,17 +60,14 @@ func TestCategoriesService_ListChannel(t *testing.T) {
 
 	mux.HandleFunc("/categories/cat/channels", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListChannelOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	channels, _, err := client.Categories.ListChannel("cat", opt)
+	channels, _, err := client.Categories.ListChannel("cat", Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Categories.ListChannel returned unexpected error: %v", err)
 	}
@@ -87,17 +84,14 @@ func TestCategoriesService_ListGroup(t *testing.T) {
 
 	mux.HandleFunc("/categories/cat/groups", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListGroupOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	groups, _, err := client.Categories.ListGroup("cat", opt)
+	groups, _, err := client.Categories.ListGroup("cat", Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Categories.ListGroup returned unexpected error: %v", err)
 	}
@@ -114,17 +108,14 @@ func TestCategoriesService_ListVideo(t *testing.T) {
 
 	mux.HandleFunc("/categories/cat/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Categories.ListVideo("cat", opt)
+	videos, _, err := client.Categories.ListVideo("cat", Page(1), PerPage(2))
 	if err != nil {
 		t.Errorf("Categories.ListVideo returned unexpected error: %v", err)
 	}

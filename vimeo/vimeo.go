@@ -8,9 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"reflect"
-
-	"github.com/google/go-querystring/query"
+	"strings"
 )
 
 const (
@@ -264,29 +262,108 @@ func CheckResponse(r *http.Response) error {
 	return errorResponse
 }
 
-// ListOptions specifies the optional parameters to various List methods that
-// support pagination.
-type ListOptions struct {
-	Page      int `url:"page,omitempty"`
-	PerPage   int `url:"per_page,omitempty"`
-	Sort      int `url:"sort,omitempty"`
-	Direction int `url:"direction,omitempty"`
+// CallOption is an optional argument to an API call.
+// A CallOption is something that configures an API call in a way that is not specific to that API: page, filter and etc
+type CallOption interface {
+	Get() (key, value string)
 }
 
-func addOptions(s string, opt interface{}) (string, error) {
-	v := reflect.ValueOf(opt)
-	if v.Kind() == reflect.Ptr && v.IsNil() {
-		return s, nil
-	}
+// Page is an optional argument to an API call
+type Page int
 
+// Get return key/value for make query
+func (o Page) Get() (string, string) {
+	return "page", fmt.Sprint(o)
+}
+
+// PerPage is an optional argument to an API call
+type PerPage int
+
+// Get return key/value for make query
+func (o PerPage) Get() (string, string) {
+	return "per_page", fmt.Sprint(o)
+}
+
+// Sort is an optional argument to an API call
+type Sort string
+
+// Get key/value for make query
+func (o Sort) Get() (string, string) {
+	return "sort", fmt.Sprint(o)
+}
+
+// Direction is an optional argument to an API call
+// All sortable resources accept the direction parameter which must be either asc or desc.
+type Direction string
+
+// Get key/value for make query
+func (o Direction) Get() (string, string) {
+	return "direction", fmt.Sprint(o)
+}
+
+// Filter is an optional argument to an API call
+type Filter string
+
+// Get key/value for make query
+func (o Filter) Get() (string, string) {
+	return "filter", fmt.Sprint(o)
+}
+
+// FilterEmbeddable is an optional argument to an API call
+type FilterEmbeddable string
+
+// Get key/value for make query
+func (o FilterEmbeddable) Get() (string, string) {
+	return "filter_embeddable", fmt.Sprint(o)
+}
+
+// FilterPlayable is an optional argument to an API call
+type FilterPlayable string
+
+// Get key/value for make query
+func (o FilterPlayable) Get() (string, string) {
+	return "filter_playable", fmt.Sprint(o)
+}
+
+// Query is an optional argument to an API call. Search query.
+type Query string
+
+// Get key/value for make query
+func (o Query) Get() (string, string) {
+	return "query", fmt.Sprint(o)
+}
+
+// FilterContentRating is an optional argument to an API call
+// Content filter is a specific type of resource filter, available on all video resources.
+// Any videos that do not match one of the provided ratings will be excluded from the list of videos.
+// Valid ratings include: language/drugs/violence/nudity/safe/unrated
+type FilterContentRating []string
+
+// Get key/value for make query
+func (o FilterContentRating) Get() (string, string) {
+	return "filter_content_rating", strings.Join(o, ",")
+}
+
+// FilterContentRating is an optional argument to an API call
+// Content filter is a specific type of resource filter, available on all video resources.
+// Any videos that do not match one of the provided ratings will be excluded from the list of videos.
+// Valid ratings include: language/drugs/violence/nudity/safe/unrated
+type Fields []string
+
+// Get key/value for make query
+func (o Fields) Get() (string, string) {
+	return "fields", strings.Join(o, ",")
+}
+
+func addOptions(s string, opts ...CallOption) (string, error) {
 	u, err := url.Parse(s)
 	if err != nil {
 		return s, err
 	}
 
-	qs, err := query.Values(opt)
-	if err != nil {
-		return s, err
+	qs := u.Query()
+	for _, o := range opts {
+		qs.Set(o.Get())
 	}
 
 	u.RawQuery = qs.Encode()

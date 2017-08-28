@@ -37,15 +37,6 @@ type Album struct {
 	Privacy      *Privacy  `json:"privacy,omitempty"`
 }
 
-// ListAlbumOptions specifies the optional parameters to the
-// ListAlbum method.
-type ListAlbumOptions struct {
-	Query     string `url:"query,omitempty"`
-	Sort      string `url:"sort,omitempty"`
-	Direction string `url:"direction,omitempty"`
-	ListOptions
-}
-
 // AlbumRequest represents a request to create/edit an album.
 type AlbumRequest struct {
 	Name        string `json:"name,omitempty"`
@@ -59,7 +50,7 @@ type AlbumRequest struct {
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums
-func (s *UsersService) ListAlbum(uid string, opt *ListAlbumOptions) ([]*Album, *Response, error) {
+func (s *UsersService) ListAlbum(uid string, opt ...CallOption) ([]*Album, *Response, error) {
 	var u string
 	if uid == "" {
 		u = "me/albums"
@@ -67,7 +58,7 @@ func (s *UsersService) ListAlbum(uid string, opt *ListAlbumOptions) ([]*Album, *
 		u = fmt.Sprintf("users/%s/albums", uid)
 	}
 
-	u, err := addOptions(u, opt)
+	u, err := addOptions(u, opt...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -119,12 +110,17 @@ func (s *UsersService) CreateAlbum(uid string, r *AlbumRequest) (*Album, *Respon
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D
-func (s *UsersService) GetAlbum(uid string, ab string) (*Album, *Response, error) {
+func (s *UsersService) GetAlbum(uid string, ab string, opt ...CallOption) (*Album, *Response, error) {
 	var u string
 	if uid == "" {
 		u = fmt.Sprintf("me/albums/%s", ab)
 	} else {
 		u = fmt.Sprintf("users/%s/albums/%s", uid, ab)
+	}
+
+	u, err := addOptions(u, opt...)
+	if err != nil {
+		return nil, nil, err
 	}
 
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -192,14 +188,14 @@ func (s *UsersService) DeleteAlbum(uid string, ab string) (*Response, error) {
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D/videos
-func (s *UsersService) AlbumListVideo(uid string, ab string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+func (s *UsersService) AlbumListVideo(uid string, ab string, opt ...CallOption) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
 		u = fmt.Sprintf("me/albums/%s/videos", ab)
 	} else {
 		u = fmt.Sprintf("users/%s/albums/%s/videos", uid, ab)
 	}
-	videos, resp, err := listVideo(s.client, u, opt)
+	videos, resp, err := listVideo(s.client, u, opt...)
 
 	return videos, resp, err
 }
@@ -208,14 +204,14 @@ func (s *UsersService) AlbumListVideo(uid string, ab string, opt *ListVideoOptio
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D/videos/%7Bvideo_id%7D
-func (s *UsersService) AlbumGetVideo(uid string, ab string, vid int) (*Video, *Response, error) {
+func (s *UsersService) AlbumGetVideo(uid string, ab string, vid int, opt ...CallOption) (*Video, *Response, error) {
 	var u string
 	if uid == "" {
 		u = fmt.Sprintf("me/albums/%s/videos/%d", ab, vid)
 	} else {
 		u = fmt.Sprintf("users/%s/albums/%s/videos/%d", uid, ab, vid)
 	}
-	video, resp, err := getVideo(s.client, u)
+	video, resp, err := getVideo(s.client, u, opt...)
 
 	return video, resp, err
 }
