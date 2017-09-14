@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/silentsokolov/go-vimeo.svg?branch=master)](https://travis-ci.org/silentsokolov/go-vimeo)
-[![GoDoc](https://godoc.org/github.com/silentsokolov/go-vimeo?status.svg)](https://godoc.org/github.com/silentsokolov/go-vimeo/) [![codecov](https://codecov.io/gh/silentsokolov/go-vimeo/branch/master/graph/badge.svg)](https://codecov.io/gh/silentsokolov/go-vimeo)
+[![GoDoc](https://godoc.org/github.com/silentsokolov/go-vimeo?status.svg)](https://godoc.org/github.com/silentsokolov/go-vimeo/vimeo) [![codecov](https://codecov.io/gh/silentsokolov/go-vimeo/branch/master/graph/badge.svg)](https://codecov.io/gh/silentsokolov/go-vimeo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/silentsokolov/go-vimeo)](https://goreportcard.com/report/github.com/silentsokolov/go-vimeo)
 
 # go-vimeo
@@ -16,7 +16,7 @@ func main() {
 	client := vimeo.NewClient(nil)
 
 	// Specific optional parameters
-	cats, _, err := client.Categories.List(OptPage(1), OptPerPage(2))
+	cats, _, err := client.Categories.List(OptPage(1), OptPerPage(2), OptFields([]string{"name"}))
 }
 ```
 
