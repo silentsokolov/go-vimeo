@@ -20,7 +20,7 @@ func TestContentRatingsService_List(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	ratings, _, err := client.ContentRatings.List(Page(1), PerPage(2))
+	ratings, _, err := client.ContentRatings.List(OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("ContentRatings.List returned unexpected error: %v", err)
 	}

@@ -16,7 +16,7 @@ func main() {
 	client := vimeo.NewClient(nil)
 
 	// Specific optional parameters
-	cats, _, err := client.Categories.List(Page(1), PerPage(2))
+	cats, _, err := client.Categories.List(OptPage(1), OptPerPage(2))
 }
 ```
 
@@ -50,7 +50,7 @@ func main() {
 	client := ...
 
 	// Any "List" request
-	_, resp, _ := client.Categories.List(Page(2), PerPage(2))
+	_, resp, _ := client.Categories.List(OptPage(2), OptPerPage(2))
 
 	fmt.Printf("Current page: %d\n", resp.Page)
 	fmt.Printf("Next page: %s\n", resp.NextPage)

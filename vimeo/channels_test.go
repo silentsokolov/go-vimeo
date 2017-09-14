@@ -29,7 +29,7 @@ func TestChannelsService_List(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	channels, _, err := client.Channels.List(Page(1), PerPage(2))
+	channels, _, err := client.Channels.List(OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Channels.List returned unexpected error: %v", err)
 	}
@@ -85,7 +85,7 @@ func TestChannelsService_Get(t *testing.T) {
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	channel, _, err := client.Channels.Get("1", Fields([]string{"name"}))
+	channel, _, err := client.Channels.Get("1", OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Channels.Get returned unexpected error: %v", err)
 	}
@@ -156,7 +156,7 @@ func TestChannelsService_ListUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	users, _, err := client.Channels.ListUser("1", Page(1), PerPage(2))
+	users, _, err := client.Channels.ListUser("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Channels.ListUser returned unexpected error: %v", err)
 	}
@@ -180,7 +180,7 @@ func TestChannelsService_ListVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Channels.ListVideo("1", Page(1), PerPage(2))
+	videos, _, err := client.Channels.ListVideo("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Channels.ListVideo returned unexpected error: %v", err)
 	}

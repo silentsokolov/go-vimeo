@@ -20,7 +20,7 @@ func TestCreativeCommonsService_List(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	commons, _, err := client.CreativeCommons.List(Page(1), PerPage(2))
+	commons, _, err := client.CreativeCommons.List(OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("CreativeCommons.List returned unexpected error: %v", err)
 	}

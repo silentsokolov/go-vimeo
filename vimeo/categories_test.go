@@ -20,7 +20,7 @@ func TestCategoriesService_List(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	categories, _, err := client.Categories.List(Page(1), PerPage(2))
+	categories, _, err := client.Categories.List(OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Categories.List returned unexpected error: %v", err)
 	}
@@ -43,7 +43,7 @@ func TestCategoriesService_Get(t *testing.T) {
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	category, _, err := client.Categories.Get("cat", Fields([]string{"name"}))
+	category, _, err := client.Categories.Get("cat", OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Categories.Get returned unexpected error: %v", err)
 	}
@@ -67,7 +67,7 @@ func TestCategoriesService_ListChannel(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	channels, _, err := client.Categories.ListChannel("cat", Page(1), PerPage(2))
+	channels, _, err := client.Categories.ListChannel("cat", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Categories.ListChannel returned unexpected error: %v", err)
 	}
@@ -91,7 +91,7 @@ func TestCategoriesService_ListGroup(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	groups, _, err := client.Categories.ListGroup("cat", Page(1), PerPage(2))
+	groups, _, err := client.Categories.ListGroup("cat", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Categories.ListGroup returned unexpected error: %v", err)
 	}
@@ -115,7 +115,7 @@ func TestCategoriesService_ListVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Categories.ListVideo("cat", Page(1), PerPage(2))
+	videos, _, err := client.Categories.ListVideo("cat", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Categories.ListVideo returned unexpected error: %v", err)
 	}

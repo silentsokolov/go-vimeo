@@ -29,7 +29,7 @@ func TestGroupsService_List(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	groups, _, err := client.Groups.List(Page(1), PerPage(2))
+	groups, _, err := client.Groups.List(OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Groups.List returned unexpected error: %v", err)
 	}
@@ -84,7 +84,7 @@ func TestGroupsService_Get(t *testing.T) {
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	group, _, err := client.Groups.Get("1", Fields([]string{"name"}))
+	group, _, err := client.Groups.Get("1", OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Groups.Get returned unexpected error: %v", err)
 	}
@@ -122,7 +122,7 @@ func TestGroupsService_ListUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	users, _, err := client.Groups.ListUser("1", Page(1), PerPage(2))
+	users, _, err := client.Groups.ListUser("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Groups.ListUser returned unexpected error: %v", err)
 	}
@@ -146,7 +146,7 @@ func TestGroupsService_ListVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Groups.ListVideo("1", Page(1), PerPage(2))
+	videos, _, err := client.Groups.ListVideo("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Groups.ListVideo returned unexpected error: %v", err)
 	}

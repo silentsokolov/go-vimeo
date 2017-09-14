@@ -8,7 +8,9 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
+	"time"
 )
 
 const (
@@ -17,6 +19,10 @@ const (
 	defaultUserAgent = "go-vimeo/" + libraryVersion
 
 	mediaTypeVersion = "application/vnd.vimeo.*+json;version=3.2"
+
+	headerRateLimit     = "X-RateLimit-Limit"
+	headerRateRemaining = "X-RateLimit-Remaining"
+	headerRateReset     = "X-RateLimit-Reset"
 )
 
 // Client manages communication with Vimeo API.
@@ -225,6 +231,46 @@ func (r *ErrorResponse) Error() string {
 		r.Response.StatusCode, r.Message)
 }
 
+// Rate represents the rate limit for the current client.
+type Rate struct {
+	Limit     int
+	Remaining int
+	Reset     time.Time
+}
+
+// RateLimitError occurs when API response with a rate limit remaining value of 0.
+type RateLimitError struct {
+	Rate     Rate
+	Response *http.Response
+	Message  string
+}
+
+func (r *RateLimitError) Error() string {
+	return fmt.Sprintf("%v %v: %d %v Reset in %v.",
+		r.Response.Request.Method, sanitizeURL(r.Response.Request.URL),
+		r.Response.StatusCode, r.Message, r.Rate.Reset)
+}
+
+// parseRate parses the rate related headers.
+func parseRate(r *http.Response) Rate {
+	var rate Rate
+
+	if reset := r.Header.Get(headerRateReset); reset != "" {
+		t, err := time.Parse(time.RFC3339, reset)
+		if err == nil {
+			rate.Reset = t
+		}
+	}
+	if limit := r.Header.Get(headerRateLimit); limit != "" {
+		rate.Limit, _ = strconv.Atoi(limit)
+	}
+	if remaining := r.Header.Get(headerRateRemaining); remaining != "" {
+		rate.Remaining, _ = strconv.Atoi(remaining)
+	}
+
+	return rate
+}
+
 func sanitizeURL(uri *url.URL) *url.URL {
 	if uri == nil {
 		return nil
@@ -259,6 +305,14 @@ func CheckResponse(r *http.Response) error {
 		json.Unmarshal(data, errorResponse)
 	}
 
+	if r.StatusCode == http.StatusTooManyRequests && r.Header.Get(headerRateRemaining) == "0" {
+		return &RateLimitError{
+			Rate:     parseRate(r),
+			Response: errorResponse.Response,
+			Message:  errorResponse.Message,
+		}
+	}
+
 	return errorResponse
 }
 
@@ -268,90 +322,89 @@ type CallOption interface {
 	Get() (key, value string)
 }
 
-// Page is an optional argument to an API call
-type Page int
+// OptPage is an optional argument to an API call
+type OptPage int
 
 // Get return key/value for make query
-func (o Page) Get() (string, string) {
+func (o OptPage) Get() (string, string) {
 	return "page", fmt.Sprint(o)
 }
 
-// PerPage is an optional argument to an API call
-type PerPage int
+// OptPerPage is an optional argument to an API call
+type OptPerPage int
 
 // Get return key/value for make query
-func (o PerPage) Get() (string, string) {
+func (o OptPerPage) Get() (string, string) {
 	return "per_page", fmt.Sprint(o)
 }
 
-// Sort is an optional argument to an API call
-type Sort string
+// OptSort is an optional argument to an API call
+type OptSort string
 
 // Get key/value for make query
-func (o Sort) Get() (string, string) {
+func (o OptSort) Get() (string, string) {
 	return "sort", fmt.Sprint(o)
 }
 
-// Direction is an optional argument to an API call
+// OptDirection is an optional argument to an API call
 // All sortable resources accept the direction parameter which must be either asc or desc.
-type Direction string
+type OptDirection string
 
 // Get key/value for make query
-func (o Direction) Get() (string, string) {
+func (o OptDirection) Get() (string, string) {
 	return "direction", fmt.Sprint(o)
 }
 
-// Filter is an optional argument to an API call
-type Filter string
+// OptFilter is an optional argument to an API call
+type OptFilter string
 
 // Get key/value for make query
-func (o Filter) Get() (string, string) {
+func (o OptFilter) Get() (string, string) {
 	return "filter", fmt.Sprint(o)
 }
 
-// FilterEmbeddable is an optional argument to an API call
-type FilterEmbeddable string
+// OptFilterEmbeddable is an optional argument to an API call
+type OptFilterEmbeddable string
 
 // Get key/value for make query
-func (o FilterEmbeddable) Get() (string, string) {
+func (o OptFilterEmbeddable) Get() (string, string) {
 	return "filter_embeddable", fmt.Sprint(o)
 }
 
-// FilterPlayable is an optional argument to an API call
-type FilterPlayable string
+// OptFilterPlayable is an optional argument to an API call
+type OptFilterPlayable string
 
 // Get key/value for make query
-func (o FilterPlayable) Get() (string, string) {
+func (o OptFilterPlayable) Get() (string, string) {
 	return "filter_playable", fmt.Sprint(o)
 }
 
-// Query is an optional argument to an API call. Search query.
-type Query string
+// OptQuery is an optional argument to an API call. Search query.
+type OptQuery string
 
 // Get key/value for make query
-func (o Query) Get() (string, string) {
+func (o OptQuery) Get() (string, string) {
 	return "query", fmt.Sprint(o)
 }
 
-// FilterContentRating is an optional argument to an API call
+// OptFilterContentRating is an optional argument to an API call
 // Content filter is a specific type of resource filter, available on all video resources.
 // Any videos that do not match one of the provided ratings will be excluded from the list of videos.
 // Valid ratings include: language/drugs/violence/nudity/safe/unrated
-type FilterContentRating []string
+type OptFilterContentRating []string
 
 // Get key/value for make query
-func (o FilterContentRating) Get() (string, string) {
+func (o OptFilterContentRating) Get() (string, string) {
 	return "filter_content_rating", strings.Join(o, ",")
 }
 
-// FilterContentRating is an optional argument to an API call
-// Content filter is a specific type of resource filter, available on all video resources.
-// Any videos that do not match one of the provided ratings will be excluded from the list of videos.
-// Valid ratings include: language/drugs/violence/nudity/safe/unrated
-type Fields []string
+// OptFields is an optional argument to an API call.
+// With a simple parameter you can reduce the size of the responses,
+// and dramatically increase the performance of your API requests.
+type OptFields []string
 
 // Get key/value for make query
-func (o Fields) Get() (string, string) {
+func (o OptFields) Get() (string, string) {
 	return "fields", strings.Join(o, ",")
 }
 

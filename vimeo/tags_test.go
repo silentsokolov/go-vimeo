@@ -19,7 +19,7 @@ func TestTagsService_Get(t *testing.T) {
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	tag, _, err := client.Tags.Get("1", Fields([]string{"name"}))
+	tag, _, err := client.Tags.Get("1", OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Tags.Get returned unexpected error: %v", err)
 	}
@@ -43,7 +43,7 @@ func TestTagsService_ListVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Tags.ListVideo("1", Page(1), PerPage(2))
+	videos, _, err := client.Tags.ListVideo("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Tags.ListVideo returned unexpected error: %v", err)
 	}

@@ -20,7 +20,7 @@ func TestLanguagesService_List(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	languages, _, err := client.Languages.List(Page(1), PerPage(2))
+	languages, _, err := client.Languages.List(OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Languages.List returned unexpected error: %v", err)
 	}

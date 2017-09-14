@@ -21,7 +21,7 @@ func TestUsersService_Search(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	users, _, err := client.Users.Search(Page(1), PerPage(2))
+	users, _, err := client.Users.Search(OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.Search returned unexpected error: %v", err)
 	}
@@ -44,7 +44,7 @@ func TestUsersService_Get(t *testing.T) {
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	user, _, err := client.Users.Get("1", Fields([]string{"name"}))
+	user, _, err := client.Users.Get("1", OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Users.Get returned unexpected error: %v", err)
 	}
@@ -67,7 +67,7 @@ func TestUsersService_Get_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	user, _, err := client.Users.Get("", Fields([]string{"name"}))
+	user, _, err := client.Users.Get("", OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Users.Get returned unexpected error: %v", err)
 	}
@@ -153,7 +153,7 @@ func TestUsersService_ListAlbum(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	albums, _, err := client.Users.ListAlbum("1", Page(1), PerPage(2))
+	albums, _, err := client.Users.ListAlbum("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListAlbum returned unexpected error: %v", err)
 	}
@@ -177,7 +177,7 @@ func TestUsersService_ListAlbum_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	albums, _, err := client.Users.ListAlbum("", Page(1), PerPage(2))
+	albums, _, err := client.Users.ListAlbum("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListAlbum returned unexpected error: %v", err)
 	}
@@ -264,7 +264,7 @@ func TestUsersService_GetAlbum(t *testing.T) {
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	album, _, err := client.Users.GetAlbum("1", "a", Fields([]string{"name"}))
+	album, _, err := client.Users.GetAlbum("1", "a", OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Users.GetAlbum returned unexpected error: %v", err)
 	}
@@ -402,7 +402,7 @@ func TestUsersService_AlbumListVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.AlbumListVideo("1", "a", Page(1), PerPage(2))
+	videos, _, err := client.Users.AlbumListVideo("1", "a", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.AlbumListVideo returned unexpected error: %v", err)
 	}
@@ -426,7 +426,7 @@ func TestUsersService_AlbumListVideo_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.AlbumListVideo("", "a", Page(1), PerPage(2))
+	videos, _, err := client.Users.AlbumListVideo("", "a", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.AlbumListVideo returned unexpected error: %v", err)
 	}
@@ -546,7 +546,7 @@ func TestUsersService_ListAppearance(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.ListAppearance("1", Page(1), PerPage(2))
+	videos, _, err := client.Users.ListAppearance("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListAppearance returned unexpected error: %v", err)
 	}
@@ -570,7 +570,7 @@ func TestUsersService_ListAppearance_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.ListAppearance("", Page(1), PerPage(2))
+	videos, _, err := client.Users.ListAppearance("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListAppearance returned unexpected error: %v", err)
 	}
@@ -594,7 +594,7 @@ func TestUsersService_ListCategory(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	categories, _, err := client.Users.ListCategory("1", Page(1), PerPage(2))
+	categories, _, err := client.Users.ListCategory("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListCategory returned unexpected error: %v", err)
 	}
@@ -618,7 +618,7 @@ func TestUsersService_ListCategory_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	categories, _, err := client.Users.ListCategory("", Page(1), PerPage(2))
+	categories, _, err := client.Users.ListCategory("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListCategory returned unexpected error: %v", err)
 	}
@@ -698,7 +698,7 @@ func TestUsersService_ListChannel(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	channels, _, err := client.Users.ListChannel("1", Page(1), PerPage(2))
+	channels, _, err := client.Users.ListChannel("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListChannel returned unexpected error: %v", err)
 	}
@@ -722,7 +722,7 @@ func TestUsersService_ListChannel_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	channels, _, err := client.Users.ListChannel("", Page(1), PerPage(2))
+	channels, _, err := client.Users.ListChannel("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListChannel returned unexpected error: %v", err)
 	}
@@ -802,7 +802,7 @@ func TestUsersService_Feed(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"uri": "/1"}]}`)
 	})
 
-	feed, _, err := client.Users.Feed("1", Page(1), PerPage(2))
+	feed, _, err := client.Users.Feed("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.Feed returned unexpected error: %v", err)
 	}
@@ -826,7 +826,7 @@ func TestUsersService_Feed_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"uri": "/1"}]}`)
 	})
 
-	feed, _, err := client.Users.Feed("", Page(1), PerPage(2))
+	feed, _, err := client.Users.Feed("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.Feed returned unexpected error: %v", err)
 	}
@@ -850,7 +850,7 @@ func TestUsersService_ListFollower(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	users, _, err := client.Users.ListFollower("1", Page(1), PerPage(2))
+	users, _, err := client.Users.ListFollower("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListFollower returned unexpected error: %v", err)
 	}
@@ -874,7 +874,7 @@ func TestUsersService_ListFollower_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	users, _, err := client.Users.ListFollower("", Page(1), PerPage(2))
+	users, _, err := client.Users.ListFollower("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListFollower returned unexpected error: %v", err)
 	}
@@ -898,7 +898,7 @@ func TestUsersService_ListFollowed(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	users, _, err := client.Users.ListFollowed("1", Page(1), PerPage(2))
+	users, _, err := client.Users.ListFollowed("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListFollowed returned unexpected error: %v", err)
 	}
@@ -922,7 +922,7 @@ func TestUsersService_ListFollowed_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	users, _, err := client.Users.ListFollowed("", Page(1), PerPage(2))
+	users, _, err := client.Users.ListFollowed("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListFollowed returned unexpected error: %v", err)
 	}
@@ -1002,7 +1002,7 @@ func TestUsersService_ListGroup(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	groups, _, err := client.Users.ListGroup("1", Page(1), PerPage(2))
+	groups, _, err := client.Users.ListGroup("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListGroup returned unexpected error: %v", err)
 	}
@@ -1026,7 +1026,7 @@ func TestUsersService_ListGroup_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	groups, _, err := client.Users.ListGroup("", Page(1), PerPage(2))
+	groups, _, err := client.Users.ListGroup("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListGroup returned unexpected error: %v", err)
 	}
@@ -1106,7 +1106,7 @@ func TestUsersService_ListLikedVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.ListLikedVideo("1", Page(1), PerPage(2))
+	videos, _, err := client.Users.ListLikedVideo("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListLikedVideo returned unexpected error: %v", err)
 	}
@@ -1130,7 +1130,7 @@ func TestUsersService_ListLikedVideo_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.ListLikedVideo("", Page(1), PerPage(2))
+	videos, _, err := client.Users.ListLikedVideo("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListLikedVideo returned unexpected error: %v", err)
 	}
@@ -1238,7 +1238,7 @@ func TestUsersService_ListPortfolio(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	portfolios, _, err := client.Users.ListPortfolio("1", Page(1), PerPage(2))
+	portfolios, _, err := client.Users.ListPortfolio("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListPortfolio returned unexpected error: %v", err)
 	}
@@ -1262,7 +1262,7 @@ func TestUsersService_ListPortfolio_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	portfolios, _, err := client.Users.ListPortfolio("", Page(1), PerPage(2))
+	portfolios, _, err := client.Users.ListPortfolio("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListPortfolio returned unexpected error: %v", err)
 	}
@@ -1326,7 +1326,7 @@ func TestUsersService_ProtfolioListVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.ProtfolioListVideo("1", "1", Page(1), PerPage(2))
+	videos, _, err := client.Users.ProtfolioListVideo("1", "1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ProtfolioListVideo returned unexpected error: %v", err)
 	}
@@ -1350,7 +1350,7 @@ func TestUsersService_ProtfolioListVideo_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.ProtfolioListVideo("", "1", Page(1), PerPage(2))
+	videos, _, err := client.Users.ProtfolioListVideo("", "1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ProtfolioListVideo returned unexpected error: %v", err)
 	}
@@ -1470,7 +1470,7 @@ func TestUsersService_ListPreset(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	presets, _, err := client.Users.ListPreset("1", Page(1), PerPage(2))
+	presets, _, err := client.Users.ListPreset("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListPreset returned unexpected error: %v", err)
 	}
@@ -1494,7 +1494,7 @@ func TestUsersService_ListPreset_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	presets, _, err := client.Users.ListPreset("", Page(1), PerPage(2))
+	presets, _, err := client.Users.ListPreset("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListPreset returned unexpected error: %v", err)
 	}
@@ -1517,7 +1517,7 @@ func TestUsersService_GetPreset(t *testing.T) {
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	preset, _, err := client.Users.GetPreset("1", 1, Fields([]string{"name"}))
+	preset, _, err := client.Users.GetPreset("1", 1, OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Users.GetPreset returned unexpected error: %v", err)
 	}
@@ -1561,7 +1561,7 @@ func TestUsersService_PresetListVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.PresetListVideo("1", 1, Page(1), PerPage(2))
+	videos, _, err := client.Users.PresetListVideo("1", 1, OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.PresetListVideo returned unexpected error: %v", err)
 	}
@@ -1585,7 +1585,7 @@ func TestUsersService_PresetListVideo_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.PresetListVideo("", 1, Page(1), PerPage(2))
+	videos, _, err := client.Users.PresetListVideo("", 1, OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.PresetListVideo returned unexpected error: %v", err)
 	}
@@ -1609,7 +1609,7 @@ func TestUsersService_ListVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.ListVideo("1", Page(1), PerPage(2))
+	videos, _, err := client.Users.ListVideo("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListVideo returned unexpected error: %v", err)
 	}
@@ -1633,7 +1633,7 @@ func TestUsersService_ListVideo_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.ListVideo("", Page(1), PerPage(2))
+	videos, _, err := client.Users.ListVideo("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListVideo returned unexpected error: %v", err)
 	}
@@ -1697,7 +1697,7 @@ func TestUsersService_WatchLaterListVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.WatchLaterListVideo("1", Page(1), PerPage(2))
+	videos, _, err := client.Users.WatchLaterListVideo("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.WatchLaterListVideo returned unexpected error: %v", err)
 	}
@@ -1721,7 +1721,7 @@ func TestUsersService_WatchLaterListVideo_authenticatedUser(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.WatchLaterListVideo("", Page(1), PerPage(2))
+	videos, _, err := client.Users.WatchLaterListVideo("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.WatchLaterListVideo returned unexpected error: %v", err)
 	}
@@ -1841,7 +1841,7 @@ func TestUsersService_WatchedListVideo(t *testing.T) {
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	videos, _, err := client.Users.WatchedListVideo("", Page(1), PerPage(2))
+	videos, _, err := client.Users.WatchedListVideo("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.WatchedListVideo returned unexpected error: %v", err)
 	}

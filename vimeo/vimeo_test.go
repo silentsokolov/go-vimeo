@@ -12,6 +12,7 @@ import (
 	"reflect"
 	"strings"
 	"testing"
+	"time"
 )
 
 var (
@@ -312,7 +313,7 @@ func TestResponse_setPaging(t *testing.T) {
 	resp.setPaging(p)
 
 	if resp.Page != p.Page {
-		t.Errorf("Response Page is %v, want %v", resp.Page, p.Page)
+		t.Errorf("Response OptPage is %v, want %v", resp.Page, p.Page)
 	}
 
 	if resp.TotalPages != p.Total {
@@ -399,8 +400,37 @@ func TestCheckError_statusFail(t *testing.T) {
 	}
 }
 
+func TestCheckError_rateLimit(t *testing.T) {
+	res := &http.Response{
+		Request:    &http.Request{},
+		StatusCode: http.StatusTooManyRequests,
+		Header:     http.Header{},
+		Body:       ioutil.NopCloser(strings.NewReader(`{"error": "Invalid type for field [field]"}`)),
+	}
+
+	res.Header.Set(headerRateLimit, "1000")
+	res.Header.Set(headerRateRemaining, "0")
+	res.Header.Set(headerRateReset, "2017-09-14T09:47:00+00:00")
+
+	err := CheckResponse(res)
+	rateLimitErr, ok := err.(*RateLimitError)
+	if !ok {
+		t.Fatalf("Expected a *RateLimitError error; got %#v.", err)
+	}
+	if got, want := rateLimitErr.Rate.Limit, 1000; got != want {
+		t.Errorf("rateLimitErr rate limit = %v, want %v", got, want)
+	}
+	if got, want := rateLimitErr.Rate.Remaining, 0; got != want {
+		t.Errorf("rateLimitErr rate remaining = %v, want %v", got, want)
+	}
+	reset := time.Date(2017, 9, 14, 9, 47, 0, 0, time.UTC)
+	if rateLimitErr.Rate.Reset.UTC() != reset {
+		t.Errorf("rateLimitErr rate reset = %v, want %v", rateLimitErr.Rate.Reset.UTC(), reset)
+	}
+}
+
 func TestAddOptions(t *testing.T) {
-	opURL, err := addOptions("api", Page(2), Filter("feature"))
+	opURL, err := addOptions("api", OptPage(2), OptFilter("feature"))
 	if err != nil {
 		t.Errorf("addOptions returned unexpected error: %v", err)
 	}
@@ -411,131 +441,131 @@ func TestAddOptions(t *testing.T) {
 }
 
 func TestPageOption(t *testing.T) {
-	opt := Page(10)
+	opt := OptPage(10)
 	k, v := opt.Get()
 
 	if k != "page" {
-		t.Errorf("Page returned key: %v, get %v", k, "page")
+		t.Errorf("OptPage returned key: %v, get %v", k, "page")
 	}
 
 	if v != "10" {
-		t.Errorf("Page returned value: %v, get %v", v, "10")
+		t.Errorf("OptPage returned value: %v, get %v", v, "10")
 	}
 }
 
 func TestPerPageOption(t *testing.T) {
-	opt := PerPage(10)
+	opt := OptPerPage(10)
 	k, v := opt.Get()
 
 	if k != "per_page" {
-		t.Errorf("PerPage returned key: %v, get %v", k, "per_page")
+		t.Errorf("OptPerPage returned key: %v, get %v", k, "per_page")
 	}
 
 	if v != "10" {
-		t.Errorf("PerPage returned value: %v, get %v", v, "10")
+		t.Errorf("OptPerPage returned value: %v, get %v", v, "10")
 	}
 }
 
 func TestSortOption(t *testing.T) {
-	opt := Sort("name")
+	opt := OptSort("name")
 	k, v := opt.Get()
 
 	if k != "sort" {
-		t.Errorf("Sort returned key: %v, get %v", k, "sort")
+		t.Errorf("OptSort returned key: %v, get %v", k, "sort")
 	}
 
 	if v != "name" {
-		t.Errorf("Sort returned value: %v, get %v", v, "name")
+		t.Errorf("OptSort returned value: %v, get %v", v, "name")
 	}
 }
 
 func TestDirectionOption(t *testing.T) {
-	opt := Direction("name")
+	opt := OptDirection("name")
 	k, v := opt.Get()
 
 	if k != "direction" {
-		t.Errorf("Direction returned key: %v, get %v", k, "sort")
+		t.Errorf("OptDirection returned key: %v, get %v", k, "sort")
 	}
 
 	if v != "name" {
-		t.Errorf("Direction returned value: %v, get %v", v, "name")
+		t.Errorf("OptDirection returned value: %v, get %v", v, "name")
 	}
 }
 
 func TestFilterOption(t *testing.T) {
-	opt := Filter("name")
+	opt := OptFilter("name")
 	k, v := opt.Get()
 
 	if k != "filter" {
-		t.Errorf("Filter returned key: %v, get %v", k, "filter")
+		t.Errorf("OptFilter returned key: %v, get %v", k, "filter")
 	}
 
 	if v != "name" {
-		t.Errorf("Filter returned value: %v, get %v", v, "name")
+		t.Errorf("OptFilter returned value: %v, get %v", v, "name")
 	}
 }
 
 func TestQueryOption(t *testing.T) {
-	opt := Query("name")
+	opt := OptQuery("name")
 	k, v := opt.Get()
 
 	if k != "query" {
-		t.Errorf("Query returned key: %v, get %v", k, "query")
+		t.Errorf("OptQuery returned key: %v, get %v", k, "query")
 	}
 
 	if v != "name" {
-		t.Errorf("Query returned value: %v, get %v", v, "name")
+		t.Errorf("OptQuery returned value: %v, get %v", v, "name")
 	}
 }
 
 func TestFilterPlayableOption(t *testing.T) {
-	opt := FilterPlayable("name")
+	opt := OptFilterPlayable("name")
 	k, v := opt.Get()
 
 	if k != "filter_playable" {
-		t.Errorf("FilterPlayable returned key: %v, get %v", k, "filter_playable")
+		t.Errorf("OptFilterPlayable returned key: %v, get %v", k, "filter_playable")
 	}
 
 	if v != "name" {
-		t.Errorf("FilterPlayable returned value: %v, get %v", v, "name")
+		t.Errorf("OptFilterPlayable returned value: %v, get %v", v, "name")
 	}
 }
 
 func TestFilterEmbeddableOption(t *testing.T) {
-	opt := FilterEmbeddable("name")
+	opt := OptFilterEmbeddable("name")
 	k, v := opt.Get()
 
 	if k != "filter_embeddable" {
-		t.Errorf("FilterEmbeddable returned key: %v, get %v", k, "filter_embeddable")
+		t.Errorf("OptFilterEmbeddable returned key: %v, get %v", k, "filter_embeddable")
 	}
 
 	if v != "name" {
-		t.Errorf("FilterEmbeddable returned value: %v, get %v", v, "name")
+		t.Errorf("OptFilterEmbeddable returned value: %v, get %v", v, "name")
 	}
 }
 
 func TestFilterContentRatingOption(t *testing.T) {
-	opt := FilterContentRating([]string{"a", "b", "c"})
+	opt := OptFilterContentRating([]string{"a", "b", "c"})
 	k, v := opt.Get()
 
 	if k != "filter_content_rating" {
-		t.Errorf("FilterContentRating returned key: %v, get %v", k, "filter_content_rating")
+		t.Errorf("OptFilterContentRating returned key: %v, get %v", k, "filter_content_rating")
 	}
 
 	if v != "a,b,c" {
-		t.Errorf("FilterContentRating returned value: %v, get %v", v, "a,b,c")
+		t.Errorf("OptFilterContentRating returned value: %v, get %v", v, "a,b,c")
 	}
 }
 
 func TestFieldsOption(t *testing.T) {
-	opt := Fields([]string{"a", "b", "c"})
+	opt := OptFields([]string{"a", "b", "c"})
 	k, v := opt.Get()
 
 	if k != "fields" {
-		t.Errorf("Fields returned key: %v, get %v", k, "fields")
+		t.Errorf("OptFields returned key: %v, get %v", k, "fields")
 	}
 
 	if v != "a,b,c" {
-		t.Errorf("Fields returned value: %v, get %v", v, "a,b,c")
+		t.Errorf("OptFields returned value: %v, get %v", v, "a,b,c")
 	}
 }
