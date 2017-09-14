@@ -13,18 +13,14 @@ func TestContentRatingsService_List(t *testing.T) {
 
 	mux.HandleFunc("/contentratings", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListContentRatingOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-
-	ratings, _, err := client.ContentRatings.List(opt)
+	ratings, _, err := client.ContentRatings.List(OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("ContentRatings.List returned unexpected error: %v", err)
 	}

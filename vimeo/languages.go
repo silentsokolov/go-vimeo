@@ -17,18 +17,11 @@ type Language struct {
 	Name string `json:"name,omitempty"`
 }
 
-// ListLanguageOptions specifies the optional parameters to the
-// LanguagesService.List method.
-type ListLanguageOptions struct {
-	Filter string `url:"filter,omitempty"`
-	ListOptions
-}
-
 // List the languages.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/languages
-func (s *LanguagesService) List(opt *ListLanguageOptions) ([]*Language, *Response, error) {
-	u, err := addOptions("languages", opt)
+func (s *LanguagesService) List(opt ...CallOption) ([]*Language, *Response, error) {
+	u, err := addOptions("languages", opt...)
 	if err != nil {
 		return nil, nil, err
 	}

@@ -16,14 +16,6 @@ type Credit struct {
 	Video *Video `json:"user,omitempty"`
 }
 
-// ListCreditOptions specifies the optional parameters to the ListCredit method.
-type ListCreditOptions struct {
-	Query     string `url:"query,omitempty"`
-	Sort      string `url:"sort,omitempty"`
-	Direction string `url:"direction,omitempty"`
-	ListOptions
-}
-
 // CreditRequest represents a request to create/edit an creadit.
 type CreditRequest struct {
 	Role    string `json:"role,omitempty"`
@@ -35,9 +27,8 @@ type CreditRequest struct {
 // ListCredit lists the credits.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/credits
-func (s *VideosService) ListCredit(vid int, opt *ListCreditOptions) ([]*Credit, *Response, error) {
-	u := fmt.Sprintf("videos/%d/credits", vid)
-	u, err := addOptions(u, opt)
+func (s *VideosService) ListCredit(vid int, opt ...CallOption) ([]*Credit, *Response, error) {
+	u, err := addOptions(fmt.Sprintf("videos/%d/credits", vid), opt...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -81,8 +72,12 @@ func (s *VideosService) AddCredit(vid int, r *CreditRequest) (*Credit, *Response
 // GetCredit get specific credit by ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/credits/%7Bcredit_id%7D
-func (s *VideosService) GetCredit(vid int, cid int) (*Credit, *Response, error) {
-	u := fmt.Sprintf("videos/%d/credits/%d", vid, cid)
+func (s *VideosService) GetCredit(vid int, cid int, opt ...CallOption) (*Credit, *Response, error) {
+	u, err := addOptions(fmt.Sprintf("videos/%d/credits/%d", vid, cid), opt...)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err

@@ -14,17 +14,14 @@ func TestUsersService_Search(t *testing.T) {
 
 	mux.HandleFunc("/users", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListUserOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	users, _, err := client.Users.Search(opt)
+	users, _, err := client.Users.Search(OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.Search returned unexpected error: %v", err)
 	}
@@ -41,10 +38,13 @@ func TestUsersService_Get(t *testing.T) {
 
 	mux.HandleFunc("/users/1", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
+		testFormURLValues(t, r, values{
+			"fields": "name",
+		})
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	user, _, err := client.Users.Get("1")
+	user, _, err := client.Users.Get("1", OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Users.Get returned unexpected error: %v", err)
 	}
@@ -61,10 +61,13 @@ func TestUsersService_Get_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
+		testFormURLValues(t, r, values{
+			"fields": "name",
+		})
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	user, _, err := client.Users.Get("")
+	user, _, err := client.Users.Get("", OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Users.Get returned unexpected error: %v", err)
 	}
@@ -143,17 +146,14 @@ func TestUsersService_ListAlbum(t *testing.T) {
 
 	mux.HandleFunc("/users/1/albums", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListAlbumOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	albums, _, err := client.Users.ListAlbum("1", opt)
+	albums, _, err := client.Users.ListAlbum("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListAlbum returned unexpected error: %v", err)
 	}
@@ -170,17 +170,14 @@ func TestUsersService_ListAlbum_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/albums", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListAlbumOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	albums, _, err := client.Users.ListAlbum("", opt)
+	albums, _, err := client.Users.ListAlbum("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListAlbum returned unexpected error: %v", err)
 	}
@@ -261,10 +258,13 @@ func TestUsersService_GetAlbum(t *testing.T) {
 
 	mux.HandleFunc("/users/1/albums/a", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
+		testFormURLValues(t, r, values{
+			"fields": "name",
+		})
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	album, _, err := client.Users.GetAlbum("1", "a")
+	album, _, err := client.Users.GetAlbum("1", "a", OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Users.GetAlbum returned unexpected error: %v", err)
 	}
@@ -395,17 +395,14 @@ func TestUsersService_AlbumListVideo(t *testing.T) {
 
 	mux.HandleFunc("/users/1/albums/a/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.AlbumListVideo("1", "a", opt)
+	videos, _, err := client.Users.AlbumListVideo("1", "a", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.AlbumListVideo returned unexpected error: %v", err)
 	}
@@ -422,17 +419,14 @@ func TestUsersService_AlbumListVideo_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/albums/a/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.AlbumListVideo("", "a", opt)
+	videos, _, err := client.Users.AlbumListVideo("", "a", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.AlbumListVideo returned unexpected error: %v", err)
 	}
@@ -545,17 +539,14 @@ func TestUsersService_ListAppearance(t *testing.T) {
 
 	mux.HandleFunc("/users/1/appearances", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.ListAppearance("1", opt)
+	videos, _, err := client.Users.ListAppearance("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListAppearance returned unexpected error: %v", err)
 	}
@@ -572,17 +563,14 @@ func TestUsersService_ListAppearance_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/appearances", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.ListAppearance("", opt)
+	videos, _, err := client.Users.ListAppearance("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListAppearance returned unexpected error: %v", err)
 	}
@@ -599,17 +587,14 @@ func TestUsersService_ListCategory(t *testing.T) {
 
 	mux.HandleFunc("/users/1/categories", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListCategoryOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	categories, _, err := client.Users.ListCategory("1", opt)
+	categories, _, err := client.Users.ListCategory("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListCategory returned unexpected error: %v", err)
 	}
@@ -626,17 +611,14 @@ func TestUsersService_ListCategory_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/categories", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListCategoryOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	categories, _, err := client.Users.ListCategory("", opt)
+	categories, _, err := client.Users.ListCategory("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListCategory returned unexpected error: %v", err)
 	}
@@ -709,17 +691,14 @@ func TestUsersService_ListChannel(t *testing.T) {
 
 	mux.HandleFunc("/users/1/channels", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListChannelOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	channels, _, err := client.Users.ListChannel("1", opt)
+	channels, _, err := client.Users.ListChannel("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListChannel returned unexpected error: %v", err)
 	}
@@ -736,17 +715,14 @@ func TestUsersService_ListChannel_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/channels", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListChannelOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	channels, _, err := client.Users.ListChannel("", opt)
+	channels, _, err := client.Users.ListChannel("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListChannel returned unexpected error: %v", err)
 	}
@@ -819,17 +795,14 @@ func TestUsersService_Feed(t *testing.T) {
 
 	mux.HandleFunc("/users/1/feed", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"uri": "/1"}]}`)
 	})
 
-	opt := &ListFeedOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	feed, _, err := client.Users.Feed("1", opt)
+	feed, _, err := client.Users.Feed("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.Feed returned unexpected error: %v", err)
 	}
@@ -846,17 +819,14 @@ func TestUsersService_Feed_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/feed", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"uri": "/1"}]}`)
 	})
 
-	opt := &ListFeedOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	feed, _, err := client.Users.Feed("", opt)
+	feed, _, err := client.Users.Feed("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.Feed returned unexpected error: %v", err)
 	}
@@ -873,17 +843,14 @@ func TestUsersService_ListFollower(t *testing.T) {
 
 	mux.HandleFunc("/users/1/followers", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListUserOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	users, _, err := client.Users.ListFollower("1", opt)
+	users, _, err := client.Users.ListFollower("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListFollower returned unexpected error: %v", err)
 	}
@@ -900,17 +867,14 @@ func TestUsersService_ListFollower_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/followers", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListUserOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	users, _, err := client.Users.ListFollower("", opt)
+	users, _, err := client.Users.ListFollower("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListFollower returned unexpected error: %v", err)
 	}
@@ -927,17 +891,14 @@ func TestUsersService_ListFollowed(t *testing.T) {
 
 	mux.HandleFunc("/users/1/following", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListUserOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	users, _, err := client.Users.ListFollowed("1", opt)
+	users, _, err := client.Users.ListFollowed("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListFollowed returned unexpected error: %v", err)
 	}
@@ -954,17 +915,14 @@ func TestUsersService_ListFollowed_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/following", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListUserOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	users, _, err := client.Users.ListFollowed("", opt)
+	users, _, err := client.Users.ListFollowed("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListFollowed returned unexpected error: %v", err)
 	}
@@ -1037,17 +995,14 @@ func TestUsersService_ListGroup(t *testing.T) {
 
 	mux.HandleFunc("/users/1/groups", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListGroupOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	groups, _, err := client.Users.ListGroup("1", opt)
+	groups, _, err := client.Users.ListGroup("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListGroup returned unexpected error: %v", err)
 	}
@@ -1064,17 +1019,14 @@ func TestUsersService_ListGroup_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/groups", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListGroupOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	groups, _, err := client.Users.ListGroup("", opt)
+	groups, _, err := client.Users.ListGroup("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListGroup returned unexpected error: %v", err)
 	}
@@ -1147,17 +1099,14 @@ func TestUsersService_ListLikedVideo(t *testing.T) {
 
 	mux.HandleFunc("/users/1/likes", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.ListLikedVideo("1", opt)
+	videos, _, err := client.Users.ListLikedVideo("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListLikedVideo returned unexpected error: %v", err)
 	}
@@ -1174,17 +1123,14 @@ func TestUsersService_ListLikedVideo_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/likes", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.ListLikedVideo("", opt)
+	videos, _, err := client.Users.ListLikedVideo("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListLikedVideo returned unexpected error: %v", err)
 	}
@@ -1285,17 +1231,14 @@ func TestUsersService_ListPortfolio(t *testing.T) {
 
 	mux.HandleFunc("/users/1/portfolios", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListPortfolioOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	portfolios, _, err := client.Users.ListPortfolio("1", opt)
+	portfolios, _, err := client.Users.ListPortfolio("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListPortfolio returned unexpected error: %v", err)
 	}
@@ -1312,17 +1255,14 @@ func TestUsersService_ListPortfolio_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/portfolios", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListPortfolioOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	portfolios, _, err := client.Users.ListPortfolio("", opt)
+	portfolios, _, err := client.Users.ListPortfolio("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListPortfolio returned unexpected error: %v", err)
 	}
@@ -1379,17 +1319,14 @@ func TestUsersService_ProtfolioListVideo(t *testing.T) {
 
 	mux.HandleFunc("/users/1/portfolios/1/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.ProtfolioListVideo("1", "1", opt)
+	videos, _, err := client.Users.ProtfolioListVideo("1", "1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ProtfolioListVideo returned unexpected error: %v", err)
 	}
@@ -1406,17 +1343,14 @@ func TestUsersService_ProtfolioListVideo_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/portfolios/1/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.ProtfolioListVideo("", "1", opt)
+	videos, _, err := client.Users.ProtfolioListVideo("", "1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ProtfolioListVideo returned unexpected error: %v", err)
 	}
@@ -1529,17 +1463,14 @@ func TestUsersService_ListPreset(t *testing.T) {
 
 	mux.HandleFunc("/users/1/presets", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListPresetOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	presets, _, err := client.Users.ListPreset("1", opt)
+	presets, _, err := client.Users.ListPreset("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListPreset returned unexpected error: %v", err)
 	}
@@ -1556,17 +1487,14 @@ func TestUsersService_ListPreset_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/presets", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListPresetOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	presets, _, err := client.Users.ListPreset("", opt)
+	presets, _, err := client.Users.ListPreset("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListPreset returned unexpected error: %v", err)
 	}
@@ -1583,10 +1511,13 @@ func TestUsersService_GetPreset(t *testing.T) {
 
 	mux.HandleFunc("/users/1/presets/1", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
+		testFormURLValues(t, r, values{
+			"fields": "name",
+		})
 		fmt.Fprint(w, `{"name": "Test"}`)
 	})
 
-	preset, _, err := client.Users.GetPreset("1", 1)
+	preset, _, err := client.Users.GetPreset("1", 1, OptFields([]string{"name"}))
 	if err != nil {
 		t.Errorf("Users.GetPreset returned unexpected error: %v", err)
 	}
@@ -1623,17 +1554,14 @@ func TestUsersService_PresetListVideo(t *testing.T) {
 
 	mux.HandleFunc("/users/1/presets/1/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.PresetListVideo("1", 1, opt)
+	videos, _, err := client.Users.PresetListVideo("1", 1, OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.PresetListVideo returned unexpected error: %v", err)
 	}
@@ -1650,17 +1578,14 @@ func TestUsersService_PresetListVideo_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/presets/1/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.PresetListVideo("", 1, opt)
+	videos, _, err := client.Users.PresetListVideo("", 1, OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.PresetListVideo returned unexpected error: %v", err)
 	}
@@ -1677,17 +1602,14 @@ func TestUsersService_ListVideo(t *testing.T) {
 
 	mux.HandleFunc("/users/1/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.ListVideo("1", opt)
+	videos, _, err := client.Users.ListVideo("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListVideo returned unexpected error: %v", err)
 	}
@@ -1704,17 +1626,14 @@ func TestUsersService_ListVideo_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.ListVideo("", opt)
+	videos, _, err := client.Users.ListVideo("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.ListVideo returned unexpected error: %v", err)
 	}
@@ -1771,17 +1690,14 @@ func TestUsersService_WatchLaterListVideo(t *testing.T) {
 
 	mux.HandleFunc("/users/1/watchlater", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.WatchLaterListVideo("1", opt)
+	videos, _, err := client.Users.WatchLaterListVideo("1", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.WatchLaterListVideo returned unexpected error: %v", err)
 	}
@@ -1798,17 +1714,14 @@ func TestUsersService_WatchLaterListVideo_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/watchlater", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.WatchLaterListVideo("", opt)
+	videos, _, err := client.Users.WatchLaterListVideo("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.WatchLaterListVideo returned unexpected error: %v", err)
 	}
@@ -1921,17 +1834,14 @@ func TestUsersService_WatchedListVideo(t *testing.T) {
 
 	mux.HandleFunc("/me/watched/videos", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListVideoOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-	videos, _, err := client.Users.WatchedListVideo("", opt)
+	videos, _, err := client.Users.WatchedListVideo("", OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("Users.WatchedListVideo returned unexpected error: %v", err)
 	}

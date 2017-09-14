@@ -13,18 +13,14 @@ func TestCreativeCommonsService_List(t *testing.T) {
 
 	mux.HandleFunc("/creativecommons", func(w http.ResponseWriter, r *http.Request) {
 		testMethod(t, r, "GET")
-		testFormValues(t, r, values{
+		testFormURLValues(t, r, values{
 			"page":     "1",
 			"per_page": "2",
 		})
 		fmt.Fprint(w, `{"data": [{"name": "Test"}]}`)
 	})
 
-	opt := &ListCreativeCommonOptions{
-		ListOptions: ListOptions{Page: 1, PerPage: 2},
-	}
-
-	commons, _, err := client.CreativeCommons.List(opt)
+	commons, _, err := client.CreativeCommons.List(OptPage(1), OptPerPage(2))
 	if err != nil {
 		t.Errorf("CreativeCommons.List returned unexpected error: %v", err)
 	}

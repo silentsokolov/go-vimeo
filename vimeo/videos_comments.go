@@ -17,31 +17,16 @@ type Comment struct {
 	ResourceKey string `json:"resource_key,omitempty"`
 }
 
-// ListCommentOptions specifies the optional parameters to the
-// ListCommentOptions.VideoListComment method.
-type ListCommentOptions struct {
-	Query     string `url:"query,omitempty"`
-	Direction string `url:"direction,omitempty"`
-	ListOptions
-}
-
 // CommentRequest represents a request to create/edit an comment.
 type CommentRequest struct {
 	Text string `json:"text,omitempty"`
 }
 
-// ListRepliesOptions specifies the optional parameters to the
-// ListRepliesOptions.ListReplies method.
-type ListRepliesOptions struct {
-	ListOptions
-}
-
 // ListComment lists the comments.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments
-func (s *VideosService) ListComment(vid int, opt *ListCommentOptions) ([]*Comment, *Response, error) {
-	u := fmt.Sprintf("videos/%d/comments", vid)
-	u, err := addOptions(u, opt)
+func (s *VideosService) ListComment(vid int, opt ...CallOption) ([]*Comment, *Response, error) {
+	u, err := addOptions(fmt.Sprintf("videos/%d/comments", vid), opt...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -85,8 +70,12 @@ func (s *VideosService) AddComment(vid int, r *CommentRequest) (*Comment, *Respo
 // GetComment get specific comment by ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments/%7Bcomment_id%7D
-func (s *VideosService) GetComment(vid int, cid int) (*Comment, *Response, error) {
-	u := fmt.Sprintf("videos/%d/comments/%d", vid, cid)
+func (s *VideosService) GetComment(vid int, cid int, opt ...CallOption) (*Comment, *Response, error) {
+	u, err := addOptions(fmt.Sprintf("videos/%d/comments/%d", vid, cid), opt...)
+	if err != nil {
+		return nil, nil, err
+	}
+
 	req, err := s.client.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
@@ -137,9 +126,8 @@ func (s *VideosService) DeleteComment(vid int, cid int) (*Response, error) {
 // ListReplies lists the comment replies.
 //
 // https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments/%7Bcomment_id%7D/replies
-func (s *VideosService) ListReplies(vid int, cid int, opt *ListRepliesOptions) ([]*Comment, *Response, error) {
-	u := fmt.Sprintf("videos/%d/comments/%d/replies", vid, cid)
-	u, err := addOptions(u, opt)
+func (s *VideosService) ListReplies(vid int, cid int, opt ...CallOption) ([]*Comment, *Response, error) {
+	u, err := addOptions(fmt.Sprintf("videos/%d/comments/%d/replies", vid, cid), opt...)
 	if err != nil {
 		return nil, nil, err
 	}

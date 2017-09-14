@@ -22,26 +22,36 @@ type Tag struct {
 	ResourceKey string `json:"resource_key,omitempty"`
 }
 
-func listTag(c *Client, url string) ([]*Tag, *Response, error) {
-	req, err := c.NewRequest("GET", url, nil)
+func listTag(c *Client, url string, opt ...CallOption) ([]*Tag, *Response, error) {
+	u, err := addOptions(url, opt...)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	categories := &dataListTag{}
+	req, err := c.NewRequest("GET", u, nil)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	resp, err := c.Do(req, categories)
+	tags := &dataListTag{}
+
+	resp, err := c.Do(req, tags)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	resp.setPaging(categories)
+	resp.setPaging(tags)
 
-	return categories.Data, resp, err
+	return tags.Data, resp, err
 }
 
-func getTag(c *Client, url string) (*Tag, *Response, error) {
-	req, err := c.NewRequest("GET", url, nil)
+func getTag(c *Client, url string, opt ...CallOption) (*Tag, *Response, error) {
+	u, err := addOptions(url, opt...)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	req, err := c.NewRequest("GET", u, nil)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -59,9 +69,9 @@ func getTag(c *Client, url string) (*Tag, *Response, error) {
 // Get specific tag by name.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/tags/%7Bword%7D
-func (s *TagsService) Get(t string) (*Tag, *Response, error) {
+func (s *TagsService) Get(t string, opt ...CallOption) (*Tag, *Response, error) {
 	u := fmt.Sprintf("tags/%s", t)
-	tag, resp, err := getTag(s.client, u)
+	tag, resp, err := getTag(s.client, u, opt...)
 
 	return tag, resp, err
 }
@@ -69,9 +79,9 @@ func (s *TagsService) Get(t string) (*Tag, *Response, error) {
 // ListVideo lists the video for an tag.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/tags/%7Bword%7D/videos
-func (s *TagsService) ListVideo(t string, opt *ListVideoOptions) ([]*Video, *Response, error) {
+func (s *TagsService) ListVideo(t string, opt ...CallOption) ([]*Video, *Response, error) {
 	u := fmt.Sprintf("tags/%s/videos", t)
-	videos, resp, err := listVideo(s.client, u, opt)
+	videos, resp, err := listVideo(s.client, u, opt...)
 
 	return videos, resp, err
 }

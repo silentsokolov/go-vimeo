@@ -17,17 +17,11 @@ type ContentRating struct {
 	Name string `json:"name,omitempty"`
 }
 
-// ListContentRatingOptions specifies the optional parameters to the
-// ContentRatingsService.List method.
-type ListContentRatingOptions struct {
-	ListOptions
-}
-
 // List the content rating.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/contentratings
-func (s *ContentRatingsService) List(opt *ListContentRatingOptions) ([]*ContentRating, *Response, error) {
-	u, err := addOptions("contentratings", opt)
+func (s *ContentRatingsService) List(opt ...CallOption) ([]*ContentRating, *Response, error) {
+	u, err := addOptions("contentratings", opt...)
 	if err != nil {
 		return nil, nil, err
 	}
