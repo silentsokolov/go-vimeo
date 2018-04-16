@@ -3,12 +3,12 @@ package vimeo
 import (
 	"errors"
 	"fmt"
-	"net"
-	"net/http"
 	"os"
 	"strconv"
 	"strings"
 	"time"
+
+	tus "github.com/eventials/go-tus"
 )
 
 // VideosService handles communication with the videos related
@@ -43,7 +43,6 @@ type File struct {
 	FPS         float32   `json:"fps,omitempty"`
 	Size        int       `json:"size,omitempty"`
 	MD5         string    `json:"md5,omitempty"`
-	LinkSecure  string    `json:"link_secure,omitempty"`
 }
 
 // App internal object provides access to specific app.
@@ -102,6 +101,17 @@ type EmbedPresets struct {
 	User     *User          `json:"user,omitempty"`
 }
 
+// Upload represents a request to upload video.
+type Upload struct {
+	Status      string `json:"status,omitempty"`
+	UploadLink  string `json:"upload_link,omitempty"`
+	RedirectURL string `json:"redirect_url,omitempty"`
+	Link        string `json:"link,omitempty"`
+	Rorm        string `json:"form,omitempty"`
+	Approach    string `json:"approach,omitempty"`
+	Size        int64  `json:"size,omitempty"`
+}
+
 // Video represents a video.
 type Video struct {
 	URI           string        `json:"uri,omitempty"`
@@ -122,22 +132,14 @@ type Video struct {
 	Pictures      *Pictures     `json:"pictures,omitempty"`
 	Tags          []*Tag        `json:"tags,omitempty"`
 	Stats         *Stats        `json:"stats,omitempty"`
+	Categories    []*Category   `json:"categories,omitempty"`
 	User          *User         `json:"user,omitempty"`
 	Files         []*File       `json:"files,omitempty"`
 	App           *App          `json:"app,omitempty"`
 	Status        string        `json:"status,omitempty"`
 	ResourceKey   string        `json:"resource_key,omitempty"`
 	EmbedPresets  *EmbedPresets `json:"embed_presets,omitempty"`
-}
-
-// UploadVideo represents a video.
-type UploadVideo struct {
-	URI              string `json:"uri,omitempty"`
-	TicketID         string `json:"ticket_id,omitempty"`
-	User             *User  `json:"user,omitempty"`
-	UploadLink       string `json:"upload_link,omitempty"`
-	UploadLinkSecure string `json:"upload_link_secure,omitempty"`
-	CompleteURI      string `json:"complete_uri,omitempty"`
+	Upload        *Upload       `json:"upload,omitempty"`
 }
 
 // TitleRequest a request to edit an embed settings.
@@ -198,17 +200,22 @@ type EmbedRequest struct {
 	OverlayEmailCaptureConfirmation string             `json:"overlay_email_capture_confirmation,omitempty"`
 }
 
+// ReviewPageRequest represents a request to edit an video.
+type ReviewPageRequest struct {
+	Active bool `json:"name,active"`
+}
+
 // VideoRequest represents a request to edit an video.
 type VideoRequest struct {
-	Name          string        `json:"name,omitempty"`
-	Description   string        `json:"description,omitempty"`
-	License       string        `json:"license,omitempty"`
-	Privacy       *Privacy      `json:"privacy,omitempty"`
-	Password      string        `json:"password,omitempty"`
-	ReviewLink    bool          `json:"review_link"`
-	Locale        string        `json:"locale,omitempty"`
-	ContentRating []string      `json:"content_rating,omitempty"`
-	Embed         *EmbedRequest `json:"embed,omitempty"`
+	Name          string             `json:"name,omitempty"`
+	Description   string             `json:"description,omitempty"`
+	License       string             `json:"license,omitempty"`
+	Privacy       *Privacy           `json:"privacy,omitempty"`
+	Password      string             `json:"password,omitempty"`
+	Locale        string             `json:"locale,omitempty"`
+	ContentRating []string           `json:"content_rating,omitempty"`
+	Embed         *EmbedRequest      `json:"embed,omitempty"`
+	ReviewPage    *ReviewPageRequest `json:"review_page,omitempty"`
 }
 
 // GetID returns the numeric identifier (ID) of the video.
@@ -218,11 +225,10 @@ func (v Video) GetID() int {
 	return ID
 }
 
-// UploadVideoOptions specifies the optional parameters to the
+// UploadVideoRequest specifies the optional parameters to the
 // uploadVideo method.
-type UploadVideoOptions struct {
-	Type string `json:"type,omitempty"`
-	Link string `json:"link,omitempty"`
+type UploadVideoRequest struct {
+	Upload *Upload `json:"upload,omitempty"`
 }
 
 func listVideo(c *Client, url string, opt ...CallOption) ([]*Video, *Response, error) {
@@ -269,70 +275,23 @@ func getVideo(c *Client, url string, opt ...CallOption) (*Video, *Response, erro
 	return video, resp, err
 }
 
-func getUploadVideo(c *Client, method string, uri string, opt *UploadVideoOptions) (*UploadVideo, *Response, error) {
-	req, err := c.NewRequest(method, uri, opt)
+func getUploadVideo(c *Client, method string, uri string, reqUpload *UploadVideoRequest) (*Video, *Response, error) {
+	req, err := c.NewRequest(method, uri, reqUpload)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	uploadVideo := &UploadVideo{}
+	video := &Video{}
 
-	resp, err := c.Do(req, uploadVideo)
+	resp, err := c.Do(req, video)
 	if err != nil {
 		return nil, resp, err
 	}
 
-	return uploadVideo, resp, err
-}
-
-func completeUploadVideo(c *Client, completeURI string) (*Video, *Response, error) {
-	req, err := c.NewRequest("DELETE", completeURI, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	// Get uri form header location
-	resp, err := c.Do(req, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	url, err := resp.Location()
-	if err != nil {
-		return nil, nil, err
-	}
-
-	video, resp, err := getVideo(c, url.String())
-
 	return video, resp, err
 }
 
-func processUploadVideo(c *Client, uploadURL string) (int64, error) {
-	req, err := http.NewRequest("PUT", uploadURL, nil)
-	if err != nil {
-		return int64(0), err
-	}
-	req.Header.Set("Content-Length", "0")
-	req.Header.Set("Content-Range", "bytes */*")
-
-	resp, err := c.Do(req, nil)
-	if err != nil {
-		return int64(0), err
-	}
-
-	rangeHeader := resp.Header.Get("Range")
-	last := strings.SplitN(rangeHeader, "-", 2)[1]
-	lastByte, err := strconv.Atoi(last)
-	if err != nil {
-		return int64(0), err
-	}
-
-	return int64(lastByte), nil
-}
-
 func uploadVideo(c *Client, method string, url string, file *os.File) (*Video, *Response, error) {
-	opt := &UploadVideoOptions{Type: "streaming"}
-
 	stat, err := file.Stat()
 	if err != nil {
 		return nil, nil, err
@@ -342,47 +301,49 @@ func uploadVideo(c *Client, method string, url string, file *os.File) (*Video, *
 		return nil, nil, errors.New("the video file can't be a directory")
 	}
 
-	uploadVideo, _, err := getUploadVideo(c, method, url, opt)
+	reqUpload := &UploadVideoRequest{
+		Upload: &Upload{
+			Approach: "tus",
+			Size:     stat.Size(),
+		},
+	}
+
+	video, _, err := getUploadVideo(c, method, url, reqUpload)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	lastByte := int64(0)
-	for lastByte < stat.Size() {
-		req, err := c.NewUploadRequest(uploadVideo.UploadLinkSecure, file, stat.Size(), lastByte)
-		if err != nil {
-			return nil, nil, err
-		}
-
-		_, err = c.Do(req, nil)
-		if err != nil {
-			switch nerr := err.(type) {
-			case net.Error:
-				if nerr.Timeout() {
-					lastByte, err = processUploadVideo(c, uploadVideo.UploadLinkSecure)
-					if err != nil {
-						return nil, nil, err
-					}
-					continue
-				}
-			default:
-				return nil, nil, err
-			}
-		}
-		lastByte, err = processUploadVideo(c, uploadVideo.UploadLinkSecure)
-		if err != nil {
-			return nil, nil, err
-		}
+	tusClient, err := tus.NewClient(video.Upload.UploadLink, nil)
+	if err != nil {
+		return nil, nil, err
 	}
 
-	video, resp, err := completeUploadVideo(c, uploadVideo.CompleteURI)
+	upload, err := tus.NewUploadFromFile(file)
+	if err != nil {
+		return nil, nil, err
+	}
 
-	return video, resp, err
+	uploader := tus.NewUploader(tusClient, video.Upload.UploadLink, upload, 0)
+
+	err = uploader.Upload()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	u := fmt.Sprintf("videos/%d", video.GetID())
+	completeVideo, resp, err := getVideo(c, u)
+
+	return completeVideo, resp, err
 }
 
 func uploadVideoByURL(c *Client, uri, videoURL string) (*Video, *Response, error) {
-	opt := &UploadVideoOptions{Type: "pull", Link: videoURL}
-	req, err := c.NewRequest("POST", uri, opt)
+	reqUpload := &UploadVideoRequest{
+		Upload: &Upload{
+			Approach: "pull",
+		},
+	}
+
+	req, err := c.NewRequest("POST", uri, reqUpload)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -406,13 +367,20 @@ func deleteVideo(c *Client, url string) (*Response, error) {
 	return c.Do(req, nil)
 }
 
-func addVideo(c *Client, url string) (*Response, error) {
+func addVideo(c *Client, url string) (*Video, *Response, error) {
 	req, err := c.NewRequest("PUT", url, nil)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
-	return c.Do(req, nil)
+	video := &Video{}
+
+	resp, err := c.Do(req, video)
+	if err != nil {
+		return nil, resp, err
+	}
+
+	return video, resp, err
 }
 
 // List lists the videos.

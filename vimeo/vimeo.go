@@ -18,7 +18,7 @@ const (
 	defaultBaseURL   = "https://api.vimeo.com/"
 	defaultUserAgent = "go-vimeo/" + libraryVersion
 
-	mediaTypeVersion = "application/vnd.vimeo.*+json;version=3.2"
+	mediaTypeVersion = "application/vnd.vimeo.*+json;version=3.4"
 
 	headerRateLimit     = "X-RateLimit-Limit"
 	headerRateRemaining = "X-RateLimit-Remaining"

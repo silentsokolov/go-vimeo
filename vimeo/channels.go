@@ -185,11 +185,11 @@ func (s *ChannelsService) GetVideo(ch string, vid int, opt ...CallOption) (*Vide
 // AddVideo add video to channel by ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/videos/%7Bvideo_id%7D
-func (s *ChannelsService) AddVideo(ch string, vid int) (*Response, error) {
+func (s *ChannelsService) AddVideo(ch string, vid int) (*Video, *Response, error) {
 	u := fmt.Sprintf("channels/%s/videos/%d", ch, vid)
-	resp, err := addVideo(s.client, u)
+	video, resp, err := addVideo(s.client, u)
 
-	return resp, err
+	return video, resp, err
 }
 
 // DeleteVideo specific video by channel name and video ID.

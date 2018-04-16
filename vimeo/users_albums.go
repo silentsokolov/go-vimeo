@@ -220,16 +220,16 @@ func (s *UsersService) AlbumGetVideo(uid string, ab string, vid int, opt ...Call
 // Passing the empty string will edit authenticated user.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D/videos/%7Bvideo_id%7D
-func (s *UsersService) AlbumAddVideo(uid string, ab string, vid int) (*Response, error) {
+func (s *UsersService) AlbumAddVideo(uid string, ab string, vid int) (*Video, *Response, error) {
 	var u string
 	if uid == "" {
 		u = fmt.Sprintf("me/albums/%s/videos/%d", ab, vid)
 	} else {
 		u = fmt.Sprintf("users/%s/albums/%s/videos/%d", uid, ab, vid)
 	}
-	resp, err := addVideo(s.client, u)
+	video, resp, err := addVideo(s.client, u)
 
-	return resp, err
+	return video, resp, err
 }
 
 // AlbumDeleteVideo delete specific video by album name and video ID.

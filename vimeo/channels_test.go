@@ -233,7 +233,7 @@ func TestChannelsService_AddVideo(t *testing.T) {
 		testMethod(t, r, "PUT")
 	})
 
-	_, err := client.Channels.AddVideo("ch", 1)
+	_, _, err := client.Channels.AddVideo("ch", 1)
 	if err != nil {
 		t.Errorf("Channels.AddVideo returned unexpected error: %v", err)
 	}

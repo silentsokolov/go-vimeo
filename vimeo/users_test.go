@@ -485,7 +485,7 @@ func TestUsersService_AlbumAddVideo(t *testing.T) {
 		testMethod(t, r, "PUT")
 	})
 
-	_, err := client.Users.AlbumAddVideo("1", "a", 1)
+	_, _, err := client.Users.AlbumAddVideo("1", "a", 1)
 	if err != nil {
 		t.Errorf("Users.AlbumAddVideo returned unexpected error: %v", err)
 	}
@@ -499,7 +499,7 @@ func TestUsersService_AlbumAddVideo_authenticatedUser(t *testing.T) {
 		testMethod(t, r, "PUT")
 	})
 
-	_, err := client.Users.AlbumAddVideo("", "a", 1)
+	_, _, err := client.Users.AlbumAddVideo("", "a", 1)
 	if err != nil {
 		t.Errorf("Users.AlbumAddVideo returned unexpected error: %v", err)
 	}

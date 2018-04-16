@@ -162,6 +162,16 @@ func (s *GroupsService) GetVideo(gr string, vid int, opt ...CallOption) (*Video,
 	return video, resp, err
 }
 
+// AddVideo add video to group by ID.
+//
+// Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/videos/%7Bvideo_id%7D
+func (s *GroupsService) AddVideo(gr string, vid int, opt ...CallOption) (*Video, *Response, error) {
+	u := fmt.Sprintf("groups/%s/videos/%d", gr, vid)
+	video, resp, err := addVideo(s.client, u)
+
+	return video, resp, err
+}
+
 // DeleteVideo specific video by group name and video ID.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/videos/%7Bvideo_id%7D
