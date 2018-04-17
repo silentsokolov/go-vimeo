@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 	"strings"
 	"time"
@@ -25,6 +26,10 @@ const (
 	headerRateReset     = "X-RateLimit-Reset"
 )
 
+type Uploader interface {
+	UploadFromFile(c *Client, uploadURL string, f *os.File) error
+}
+
 // Client manages communication with Vimeo API.
 type Client struct {
 	client *http.Client
@@ -32,6 +37,9 @@ type Client struct {
 	BaseURL *url.URL
 
 	UserAgent string
+
+	// Config
+	Config *Config
 
 	// Services used for communicating with the API
 	Categories      *CategoriesService
@@ -53,13 +61,18 @@ type service struct {
 // provided, http.DefaultClient will be used. To use API methods which require
 // authentication, provide an http.Client that will perform the authentication
 // for you (such as that provided by the golang.org/x/oauth2 library).
-func NewClient(httpClient *http.Client) *Client {
+func NewClient(httpClient *http.Client, config *Config) *Client {
 	if httpClient == nil {
 		httpClient = http.DefaultClient
+	}
+
+	if config == nil {
+		config = DefaultConfig()
 	}
 	baseURL, _ := url.Parse(defaultBaseURL)
 
 	c := &Client{client: httpClient, BaseURL: baseURL, UserAgent: defaultUserAgent}
+	c.Config = config
 	c.Categories = &CategoriesService{client: c}
 	c.Channels = &ChannelsService{client: c}
 	c.ContentRatings = &ContentRatingsService{client: c}

@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"strings"
 	"time"
-
-	tus "github.com/eventials/go-tus"
 )
 
 // VideosService handles communication with the videos related
@@ -292,6 +290,10 @@ func getUploadVideo(c *Client, method string, uri string, reqUpload *UploadVideo
 }
 
 func uploadVideo(c *Client, method string, url string, file *os.File) (*Video, *Response, error) {
+	if c.Config.Uploader == nil {
+		return nil, nil, errors.New("uploader can't be nil if you need upload video")
+	}
+
 	stat, err := file.Stat()
 	if err != nil {
 		return nil, nil, err
@@ -313,19 +315,7 @@ func uploadVideo(c *Client, method string, url string, file *os.File) (*Video, *
 		return nil, nil, err
 	}
 
-	tusClient, err := tus.NewClient(video.Upload.UploadLink, nil)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	upload, err := tus.NewUploadFromFile(file)
-	if err != nil {
-		return nil, nil, err
-	}
-
-	uploader := tus.NewUploader(tusClient, video.Upload.UploadLink, upload, 0)
-
-	err = uploader.Upload()
+	err = c.Config.Uploader.UploadFromFile(c, video.Upload.UploadLink, file)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -340,6 +330,7 @@ func uploadVideoByURL(c *Client, uri, videoURL string) (*Video, *Response, error
 	reqUpload := &UploadVideoRequest{
 		Upload: &Upload{
 			Approach: "pull",
+			Link:     videoURL,
 		},
 	}
 

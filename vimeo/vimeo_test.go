@@ -27,7 +27,7 @@ func setup() {
 	server = httptest.NewServer(mux)
 
 	// client configured to use test server
-	client = NewClient(nil)
+	client = NewClient(nil, nil)
 	url, _ := url.Parse(server.URL)
 	client.BaseURL = url
 }
@@ -64,7 +64,7 @@ func testHeader(t *testing.T, r *http.Request, header string, want string) {
 }
 
 func TestNewClient(t *testing.T) {
-	c := NewClient(nil)
+	c := NewClient(nil, nil)
 	if baseURL := c.BaseURL.String(); baseURL != defaultBaseURL {
 		t.Errorf("NewClient BaseURL is %v, want %v", baseURL, defaultBaseURL)
 	}
@@ -78,14 +78,14 @@ func TestNewClient(t *testing.T) {
 	}
 
 	testClient := new(http.Client)
-	c = NewClient(testClient)
+	c = NewClient(testClient, nil)
 	if client := c.Client(); client != testClient {
 		t.Errorf("NewClient Client is %+v, want %+v", client, testClient)
 	}
 }
 
 func TestNewRequest(t *testing.T) {
-	c := NewClient(nil)
+	c := NewClient(nil, nil)
 
 	type T struct {
 		Field string
@@ -116,7 +116,7 @@ func TestNewRequest(t *testing.T) {
 }
 
 func TestNewRequest_badURL(t *testing.T) {
-	c := NewClient(nil)
+	c := NewClient(nil, nil)
 	_, err := c.NewRequest("GET", ":", nil)
 
 	if err == nil {
@@ -129,7 +129,7 @@ func TestNewRequest_badURL(t *testing.T) {
 }
 
 func TestNewRequest_emptyBody(t *testing.T) {
-	c := NewClient(nil)
+	c := NewClient(nil, nil)
 	req, err := c.NewRequest("GET", "/", nil)
 
 	if err != nil {
@@ -142,7 +142,7 @@ func TestNewRequest_emptyBody(t *testing.T) {
 }
 
 func TestNewRequest_invalidJSON(t *testing.T) {
-	c := NewClient(nil)
+	c := NewClient(nil, nil)
 
 	type T struct {
 		F map[interface{}]interface{}
@@ -160,7 +160,7 @@ func TestNewRequest_invalidJSON(t *testing.T) {
 }
 
 func TestNewRequest_emptyUserAgent(t *testing.T) {
-	c := NewClient(nil)
+	c := NewClient(nil, nil)
 
 	c.UserAgent = ""
 

@@ -953,11 +953,17 @@ func TestVideosService_uploadVideoByURL(t *testing.T) {
 	input := &UploadVideoRequest{
 		Upload: &Upload{
 			Approach: "pull",
+			Link:     videoURL,
 		},
 	}
 
 	mux.HandleFunc("/me/videos", func(w http.ResponseWriter, r *http.Request) {
-		v := &UploadVideoRequest{}
+		v := &UploadVideoRequest{
+			Upload: &Upload{
+				Approach: "pull",
+				Link:     videoURL,
+			},
+		}
 		json.NewDecoder(r.Body).Decode(v)
 
 		testMethod(t, r, "POST")

@@ -13,7 +13,7 @@ import "github.com/silentsokolov/go-vimeo/vimeo"
 
 
 func main() {
-	client := vimeo.NewClient(nil)
+	client := vimeo.NewClient(tokenContext, nil)
 
 	// Specific optional parameters
 	cats, _, err := client.Categories.List(OptPage(1), OptPerPage(2), OptFields([]string{"name"}))
@@ -36,7 +36,7 @@ func main() {
 	)
 	tc := oauth2.NewClient(oauth2.NoContext, ts)
 
-	client := vimeo.NewClient(tc)
+	client := vimeo.NewClient(tc, nil)
 
 	cats, _, err := client.Categories.List()
 }
@@ -105,16 +105,44 @@ func main() {
 
 ### Upload video ###
 
+Since the release of Vimeo API version 3.4 used to unload the video the [tus protocol](https://tus.io/). Necessary to implement the process manually. You can use the implementation of [tus protocol on golang](https://github.com/eventials/go-tus).
+
 ```go
 import (
 	"os"
 
 	"golang.org/x/oauth2"
 	"github.com/silentsokolov/go-vimeo/vimeo"
+
+	tus "github.com/eventials/go-tus"
 )
 
+type Uploader struct{}
+
+func (u Uploader) UploadFromFile(c *vimeo.Client, uploadURL string, f *os.File) error {
+	tusClient, err := tus.NewClient(uploadURL, nil)
+	if err != nil {
+		return err
+	}
+
+	upload, err := tus.NewUploadFromFile(f)
+	if err != nil {
+		return err
+	}
+
+	uploader := tus.NewUploader(tusClient, uploadURL, upload, 0)
+
+	return uploader.Upload()
+}
+
 func main() {
-	client := ...
+	config := vimeo.Config{
+		Uploader: &Uploader{},
+	}
+
+	ts := ...
+	client := vimeo.NewClient(tc, config)
+
 	filePath := "/Users/user/Videos/Awesome.mp4"
 
 	f, _ := os.Open(filePath)
