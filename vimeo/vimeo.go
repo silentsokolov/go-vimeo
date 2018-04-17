@@ -8,14 +8,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"os"
 	"strconv"
 	"strings"
 	"time"
 )
 
 const (
-	libraryVersion   = "2.0.0"
+	libraryVersion   = "2.1.0"
 	defaultBaseURL   = "https://api.vimeo.com/"
 	defaultUserAgent = "go-vimeo/" + libraryVersion
 
@@ -25,10 +24,6 @@ const (
 	headerRateRemaining = "X-RateLimit-Remaining"
 	headerRateReset     = "X-RateLimit-Reset"
 )
-
-type Uploader interface {
-	UploadFromFile(c *Client, uploadURL string, f *os.File) error
-}
 
 // Client manages communication with Vimeo API.
 type Client struct {
