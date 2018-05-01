@@ -226,7 +226,8 @@ func (v Video) GetID() int {
 // UploadVideoRequest specifies the optional parameters to the
 // uploadVideo method.
 type UploadVideoRequest struct {
-	Upload *Upload `json:"upload,omitempty"`
+	FileName string  `json:"file_name"`
+	Upload   *Upload `json:"upload,omitempty"`
 }
 
 func listVideo(c *Client, url string, opt ...CallOption) ([]*Video, *Response, error) {
@@ -304,6 +305,7 @@ func uploadVideo(c *Client, method string, url string, file *os.File) (*Video, *
 	}
 
 	reqUpload := &UploadVideoRequest{
+		FileName: file.Name(),
 		Upload: &Upload{
 			Approach: "tus",
 			Size:     stat.Size(),
@@ -660,8 +662,8 @@ func (s *VideosService) ListRelatedVideo(vid int, opt ...CallOption) ([]*Video, 
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/files
 func (s *VideosService) ReplaceFile(vid int, file *os.File) (*Video, *Response, error) {
-	u := fmt.Sprintf("videos/%d/files", vid)
-	video, resp, err := uploadVideo(s.client, "PUT", u, file)
+	u := fmt.Sprintf("videos/%d/versions", vid)
+	video, resp, err := uploadVideo(s.client, "POST", u, file)
 
 	return video, resp, err
 }
