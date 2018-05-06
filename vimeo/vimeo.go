@@ -121,19 +121,6 @@ func (c *Client) NewRequest(method, urlStr string, body interface{}) (*http.Requ
 	return req, nil
 }
 
-// NewUploadRequest creates an upload request.
-func (c *Client) NewUploadRequest(url string, reader io.Reader, size, lastByte int64) (*http.Request, error) {
-	req, err := http.NewRequest("PUT", url, reader)
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("Content-Length", fmt.Sprintf("%d", size))
-	req.Header.Set("Content-Range", fmt.Sprintf("bytes: %d-%d/%d", lastByte, size, size))
-
-	return req, nil
-}
-
 // Do sends an API request and returns the API response. The API response is JSON decoded and stored in the value
 // pointed to by v, or returned as an error if an API error has occurred. If v implements the io.Writer interface,
 // the raw response will be written to v, without attempting to decode it.

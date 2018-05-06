@@ -140,8 +140,8 @@ func main() {
 		Uploader: &Uploader{},
 	}
 
-	ts := ...
-	client := vimeo.NewClient(tc, config)
+	tc := ...
+	client := vimeo.NewClient(tc, &config)
 
 	filePath := "/Users/user/Videos/Awesome.mp4"
 

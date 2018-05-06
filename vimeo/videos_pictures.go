@@ -1,6 +1,13 @@
 package vimeo
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+	"net/http"
+	"os"
+	"strconv"
+	"strings"
+)
 
 type dataListPictures struct {
 	Data []*Pictures `json:"data,omitempty"`
@@ -13,6 +20,7 @@ type Pictures struct {
 	Active      bool           `json:"active"`
 	Type        string         `json:"type,omitempty"`
 	Sizes       []*PictureSize `json:"sizes,omitempty"`
+	Link        string         `json:"link,omitempty"`
 	ResourceKey string         `json:"resource_key,omitempty"`
 }
 
@@ -37,6 +45,13 @@ type Header struct {
 type PicturesRequest struct {
 	Time   float32 `json:"time,omitempty"`
 	Active bool    `json:"active,omitempty"`
+}
+
+// GetID returns the numeric identifier (ID) of the video.
+func (v Pictures) GetID() int {
+	l := strings.SplitN(v.URI, "/", -1)
+	ID, _ := strconv.Atoi(l[len(l)-1])
+	return ID
 }
 
 // ListPictures lists thumbnails.
@@ -129,7 +144,7 @@ func (s *VideosService) EditPictures(vid int, pid int, r *PicturesRequest) (*Pic
 
 // DeletePictures delete specific pictures by ID.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments/%7Bcomment_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/pictures/%7Bpicture_id%7D
 func (s *VideosService) DeletePictures(vid int, pid int) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/pictures/%d", vid, pid)
 	req, err := s.client.NewRequest("DELETE", u, nil)
@@ -138,4 +153,38 @@ func (s *VideosService) DeletePictures(vid int, pid int) (*Response, error) {
 	}
 
 	return s.client.Do(req, nil)
+}
+
+// UploadPicture shortcut upload picture file.
+func (s *VideosService) UploadPicture(vid int, r *PicturesRequest, file *os.File) (*Pictures, *Response, error) {
+	pictures, _, err := s.CreatePictures(vid, r)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	stat, err := file.Stat()
+	if err != nil {
+		return nil, nil, err
+	}
+
+	if stat.IsDir() {
+		return nil, nil, errors.New("the video file can't be a directory")
+	}
+
+	req, err := http.NewRequest("PUT", pictures.Link, file)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	_, err = s.client.Do(req, nil)
+	if err != nil {
+		return nil, nil, err
+	}
+
+	pictures, resp, err := s.GetPictures(vid, pictures.GetID())
+	if err != nil {
+		return nil, nil, err
+	}
+
+	return pictures, resp, err
 }
