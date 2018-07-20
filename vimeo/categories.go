@@ -21,7 +21,7 @@ type Category struct {
 	TopLevel              bool           `json:"top_level"`
 	Pictures              *Pictures      `json:"pictures,omitempty"`
 	LastVideoFeaturedTime string         `json:"last_video_featured_time,omitempty"`
-	Parent                string         `json:"parent,omitempty"`
+	Parent                *SubCategory   `json:"parent,omitempty"`
 	SubCategories         []*SubCategory `json:"subcategories,omitempty"`
 	ResourceKey           string         `json:"resource_key,omitempty"`
 }
