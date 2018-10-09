@@ -316,8 +316,8 @@ func TestResponse_setPaging(t *testing.T) {
 		t.Errorf("Response OptPage is %v, want %v", resp.Page, p.Page)
 	}
 
-	if resp.TotalPages != p.Total {
-		t.Errorf("Response TotalPages is %v, want %v", resp.TotalPages, p.Total)
+	if resp.Total != p.Total {
+		t.Errorf("Response Total is %v, want %v", resp.Total, p.Total)
 	}
 
 	if resp.NextPage != p.Paging.Next {

@@ -201,6 +201,7 @@ type Response struct {
 	// Pagination
 	Page       int
 	TotalPages int
+	Total      int
 	NextPage   string
 	PrevPage   string
 	FirstPage  string
@@ -209,7 +210,8 @@ type Response struct {
 
 func (r *Response) setPaging(p paginator) {
 	r.Page = p.GetPage()
-	r.TotalPages = p.GetTotal()
+	r.TotalPages = p.GetTotal() // Deprecated
+	r.Total = p.GetTotal()
 	r.NextPage, r.PrevPage, r.FirstPage, r.LastPage = p.GetPaging()
 }
 

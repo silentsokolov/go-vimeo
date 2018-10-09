@@ -55,7 +55,7 @@ func main() {
 	fmt.Printf("Current page: %d\n", resp.Page)
 	fmt.Printf("Next page: %s\n", resp.NextPage)
 	fmt.Printf("Prev page: %s\n", resp.PrevPage)
-	fmt.Printf("Total pages: %d\n", resp.TotalPages)
+	fmt.Printf("Total objects: %d\n", resp.Total)
 }
 ```
 
