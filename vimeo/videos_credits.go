@@ -13,7 +13,7 @@ type Credit struct {
 	Name  string `json:"name,omitempty"`
 	Role  string `json:"role,omitempty"`
 	User  *User  `json:"user,omitempty"`
-	Video *Video `json:"user,omitempty"`
+	Video *Video `json:"video,omitempty"`
 }
 
 // CreditRequest represents a request to create/edit an creadit.

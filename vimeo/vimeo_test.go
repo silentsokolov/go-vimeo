@@ -569,3 +569,16 @@ func TestFieldsOption(t *testing.T) {
 		t.Errorf("OptFields returned value: %v, get %v", v, "a,b,c")
 	}
 }
+
+func TestWeakSearchOption(t *testing.T) {
+	opt := OptWeakSearch(true)
+	k, v := opt.Get()
+
+	if k != "weak_search" {
+		t.Errorf("OptFields returned key: %v, get %v", k, "weak_search")
+	}
+
+	if v != "true" {
+		t.Errorf("OptFields returned value: %v, get %v", v, "true")
+	}
+}

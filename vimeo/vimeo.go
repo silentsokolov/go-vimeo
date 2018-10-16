@@ -405,6 +405,15 @@ func (o OptFields) Get() (string, string) {
 	return "fields", strings.Join(o, ",")
 }
 
+// OptWeakSearch is an option argument to an API call
+// to allow usage of legacy search on the vimeo backend to find private videos
+type OptWeakSearch bool
+
+// Get return key/value for make query
+func (o OptWeakSearch) Get() (string, string) {
+	return "weak_search", fmt.Sprint(o)
+}
+
 func addOptions(s string, opts ...CallOption) (string, error) {
 	u, err := url.Parse(s)
 	if err != nil {
