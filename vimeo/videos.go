@@ -226,7 +226,8 @@ func (v Video) GetID() int {
 // UploadVideoRequest specifies the optional parameters to the
 // uploadVideo method.
 type UploadVideoRequest struct {
-	FileName string  `json:"file_name"`
+	FileName string  `json:"name"`
+	FileDescription string  `json:"description"`
 	Upload   *Upload `json:"upload,omitempty"`
 }
 
@@ -290,7 +291,7 @@ func getUploadVideo(c *Client, method string, uri string, reqUpload *UploadVideo
 	return video, resp, err
 }
 
-func uploadVideo(c *Client, method string, url string, file *os.File) (*Video, *Response, error) {
+func uploadVideo(c *Client, method string, url, title, description string, file *os.File) (*Video, *Response, error) {
 	if c.Config.Uploader == nil {
 		return nil, nil, errors.New("uploader can't be nil if you need upload video")
 	}
@@ -305,7 +306,8 @@ func uploadVideo(c *Client, method string, url string, file *os.File) (*Video, *
 	}
 
 	reqUpload := &UploadVideoRequest{
-		FileName: file.Name(),
+		FileName: title,
+		FileDescription:description,
 		Upload: &Upload{
 			Approach: "tus",
 			Size:     stat.Size(),
@@ -661,9 +663,9 @@ func (s *VideosService) ListRelatedVideo(vid int, opt ...CallOption) ([]*Video, 
 // ReplaceFile upload video file/replace video file.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/files
-func (s *VideosService) ReplaceFile(vid int, file *os.File) (*Video, *Response, error) {
+func (s *VideosService) ReplaceFile(vid int, file *os.File, title, description string) (*Video, *Response, error) {
 	u := fmt.Sprintf("videos/%d/versions", vid)
-	video, resp, err := uploadVideo(s.client, "POST", u, file)
+	video, resp, err := uploadVideo(s.client, "POST", u,  title, description, file)
 
 	return video, resp, err
 }
