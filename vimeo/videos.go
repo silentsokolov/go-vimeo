@@ -110,6 +110,12 @@ type Upload struct {
 	Size        int64  `json:"size,omitempty"`
 }
 
+// TransCode represents a request to upload video.
+type TransCode struct {
+	Status string `json:"status,omitempty"`
+}
+
+
 // Video represents a video.
 type Video struct {
 	URI           string        `json:"uri,omitempty"`
@@ -138,6 +144,7 @@ type Video struct {
 	ResourceKey   string        `json:"resource_key,omitempty"`
 	EmbedPresets  *EmbedPresets `json:"embed_presets,omitempty"`
 	Upload        *Upload       `json:"upload,omitempty"`
+	TransCode     *TransCode    `json:"transcode,omitempty"`
 }
 
 // TitleRequest a request to edit an embed settings.
