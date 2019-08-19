@@ -5,7 +5,7 @@ import "fmt"
 // TagsService handles communication with the tag related
 // methods of the Vimeo API.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/endpoints/tags
+// Vimeo API docs: https://developer.vimeo.com/api/reference/tags
 type TagsService service
 
 type dataListTag struct {
@@ -66,9 +66,9 @@ func getTag(c *Client, url string, opt ...CallOption) (*Tag, *Response, error) {
 	return tag, resp, err
 }
 
-// Get specific tag by name.
+// Get method gets a specific tag from all available tags.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/tags/%7Bword%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/tags#get_tag
 func (s *TagsService) Get(t string, opt ...CallOption) (*Tag, *Response, error) {
 	u := fmt.Sprintf("tags/%s", t)
 	tag, resp, err := getTag(s.client, u, opt...)
@@ -76,9 +76,9 @@ func (s *TagsService) Get(t string, opt ...CallOption) (*Tag, *Response, error) 
 	return tag, resp, err
 }
 
-// ListVideo lists the video for an tag.
+// ListVideo method gets all the videos in a specific tag.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/tags/%7Bword%7D/videos
+// Vimeo API docs: https://developer.vimeo.com/api/reference/tags#get_tag_videos
 func (s *TagsService) ListVideo(t string, opt ...CallOption) ([]*Video, *Response, error) {
 	u := fmt.Sprintf("tags/%s/videos", t)
 	videos, resp, err := listVideo(s.client, u, opt...)

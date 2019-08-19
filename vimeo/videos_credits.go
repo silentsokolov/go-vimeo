@@ -24,9 +24,9 @@ type CreditRequest struct {
 	UserURI string `json:"user_uri,omitempty"`
 }
 
-// ListCredit lists the credits.
+// ListCredit method returns all the credited users in a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/credits
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_video_credits
 func (s *VideosService) ListCredit(vid int, opt ...CallOption) ([]*Credit, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("videos/%d/credits", vid), opt...)
 	if err != nil {
@@ -50,9 +50,9 @@ func (s *VideosService) ListCredit(vid int, opt ...CallOption) ([]*Credit, *Resp
 	return credits.Data, resp, err
 }
 
-// AddCredit add credit.
+// AddCredit method adds a user credit to a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/credits
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#add_video_credit
 func (s *VideosService) AddCredit(vid int, r *CreditRequest) (*Credit, *Response, error) {
 	u := fmt.Sprintf("videos/%d/credits", vid)
 	req, err := s.client.NewRequest("POST", u, r)
@@ -69,9 +69,9 @@ func (s *VideosService) AddCredit(vid int, r *CreditRequest) (*Credit, *Response
 	return credit, resp, nil
 }
 
-// GetCredit get specific credit by ID.
+// GetCredit method returns a single credited user in a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/credits/%7Bcredit_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_video_credit
 func (s *VideosService) GetCredit(vid int, cid int, opt ...CallOption) (*Credit, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("videos/%d/credits/%d", vid, cid), opt...)
 	if err != nil {
@@ -93,9 +93,9 @@ func (s *VideosService) GetCredit(vid int, cid int, opt ...CallOption) (*Credit,
 	return credit, resp, err
 }
 
-// EditCredit edit specific credit by ID.
+// EditCredit method edits the specified user credit in a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/credits/%7Bcredit_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#edit_video_credit
 func (s *VideosService) EditCredit(vid int, cid int, r *CreditRequest) (*Credit, *Response, error) {
 	u := fmt.Sprintf("videos/%d/credits/%d", vid, cid)
 	req, err := s.client.NewRequest("PATCH", u, r)
@@ -112,9 +112,9 @@ func (s *VideosService) EditCredit(vid int, cid int, r *CreditRequest) (*Credit,
 	return credit, resp, nil
 }
 
-// DeleteCredit delete specific credit by ID.
+// DeleteCredit method deletes the specified user credit from a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/credits/%7Bcredit_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#delete_video_credit
 func (s *VideosService) DeleteCredit(vid int, cid int) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/credits/%d", vid, cid)
 	req, err := s.client.NewRequest("DELETE", u, nil)

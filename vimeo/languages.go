@@ -3,7 +3,7 @@ package vimeo
 // LanguagesService handles communication with the languages related
 // methods of the Vimeo API.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/endpoints/languages
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#languages
 type LanguagesService service
 
 type languageList struct {
@@ -17,9 +17,9 @@ type Language struct {
 	Name string `json:"name,omitempty"`
 }
 
-// List the languages.
+// List method returns all the video languages that Vimeo supports.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/languages
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_languages
 func (s *LanguagesService) List(opt ...CallOption) ([]*Language, *Response, error) {
 	u, err := addOptions("languages", opt...)
 	if err != nil {

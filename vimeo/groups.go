@@ -9,7 +9,7 @@ import (
 // GroupsService handles communication with the group related
 // methods of the Vimeo API.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/endpoints/groups
+// Vimeo API docs: https://developer.vimeo.com/api/reference/groups
 type GroupsService service
 
 type dataListGroup struct {
@@ -68,18 +68,18 @@ func listGroup(c *Client, url string, opt ...CallOption) ([]*Group, *Response, e
 	return groups.Data, resp, err
 }
 
-// List lists the group.
+// List method returns all groups.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/groups
+// Vimeo API docs: https://developer.vimeo.com/api/reference/groups#get_groups
 func (s *GroupsService) List(opt ...CallOption) ([]*Group, *Response, error) {
 	groups, resp, err := listGroup(s.client, "groups", opt...)
 
 	return groups, resp, err
 }
 
-// Create a new group.
+// Create method creates a new group.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/groups
+// Vimeo API docs: https://developer.vimeo.com/api/reference/groups#create_group
 func (s *GroupsService) Create(r *GroupRequest) (*Group, *Response, error) {
 	req, err := s.client.NewRequest("POST", "groups", r)
 	if err != nil {
@@ -95,9 +95,9 @@ func (s *GroupsService) Create(r *GroupRequest) (*Group, *Response, error) {
 	return group, resp, nil
 }
 
-// Get specific group by name.
+// Get method returns a specific group.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/groups#get_group
 func (s *GroupsService) Get(gr string, opt ...CallOption) (*Group, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("groups/%s", gr), opt...)
 	if err != nil {
@@ -119,9 +119,9 @@ func (s *GroupsService) Get(gr string, opt ...CallOption) (*Group, *Response, er
 	return group, resp, err
 }
 
-// Delete specific group by name.
+// Delete method deletes a group.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/groups#delete_group
 func (s *GroupsService) Delete(gr string) (*Response, error) {
 	u := fmt.Sprintf("groups/%s", gr)
 	req, err := s.client.NewRequest("DELETE", u, nil)
@@ -132,9 +132,9 @@ func (s *GroupsService) Delete(gr string) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// ListUser lists the user for an group.
+// ListUser method returns all the users that belong to the specified group.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/users
+// Vimeo API docs: https://developer.vimeo.com/api/reference/groups#get_group_members
 func (s *GroupsService) ListUser(gr string, opt ...CallOption) ([]*User, *Response, error) {
 	u := fmt.Sprintf("groups/%s/users", gr)
 	users, resp, err := listUser(s.client, u, opt...)
@@ -142,9 +142,9 @@ func (s *GroupsService) ListUser(gr string, opt ...CallOption) ([]*User, *Respon
 	return users, resp, err
 }
 
-// ListVideo lists the video for an group.
+// ListVideo method gets all the videos in a specific group.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/videos
+// Vimeo API docs: https://developer.vimeo.com/api/reference/groups#get_group_videos
 func (s *GroupsService) ListVideo(gr string, opt ...CallOption) ([]*Video, *Response, error) {
 	u := fmt.Sprintf("groups/%s/videos", gr)
 	videos, resp, err := listVideo(s.client, u, opt...)
@@ -152,9 +152,9 @@ func (s *GroupsService) ListVideo(gr string, opt ...CallOption) ([]*Video, *Resp
 	return videos, resp, err
 }
 
-// GetVideo specific video by group name and video ID.
+// GetVideo method returns a single video from a group. You can use this method to determine whether the video belongs to the group.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/groups#get_group_video
 func (s *GroupsService) GetVideo(gr string, vid int, opt ...CallOption) (*Video, *Response, error) {
 	u := fmt.Sprintf("groups/%s/videos/%d", gr, vid)
 	video, resp, err := getVideo(s.client, u, opt...)
@@ -162,9 +162,9 @@ func (s *GroupsService) GetVideo(gr string, vid int, opt ...CallOption) (*Video,
 	return video, resp, err
 }
 
-// AddVideo add video to group by ID.
+// AddVideo method adds a video to the specified group.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/groups#add_video_to_group
 func (s *GroupsService) AddVideo(gr string, vid int, opt ...CallOption) (*Video, *Response, error) {
 	u := fmt.Sprintf("groups/%s/videos/%d", gr, vid)
 	video, resp, err := addVideo(s.client, u)
@@ -172,9 +172,9 @@ func (s *GroupsService) AddVideo(gr string, vid int, opt ...CallOption) (*Video,
 	return video, resp, err
 }
 
-// DeleteVideo specific video by group name and video ID.
+// DeleteVideo method removes a single video from the specified group.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/groups/%7Bgroup_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/groups#delete_video_from_group
 func (s *GroupsService) DeleteVideo(gr string, vid int) (*Response, error) {
 	u := fmt.Sprintf("groups/%s/videos/%d", gr, vid)
 	resp, err := deleteVideo(s.client, u)

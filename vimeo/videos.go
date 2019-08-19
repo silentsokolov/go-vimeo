@@ -12,7 +12,7 @@ import (
 // VideosService handles communication with the videos related
 // methods of the Vimeo API.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/endpoints/videos
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos
 type VideosService service
 
 type dataListVideo struct {
@@ -114,7 +114,6 @@ type Upload struct {
 type TransCode struct {
 	Status string `json:"status,omitempty"`
 }
-
 
 // Video represents a video.
 type Video struct {
@@ -383,18 +382,18 @@ func addVideo(c *Client, url string) (*Video, *Response, error) {
 	return video, resp, err
 }
 
-// List lists the videos.
+// List method returns all the videos that match custom search criteria.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#search_videos
 func (s *VideosService) List(opt ...CallOption) ([]*Video, *Response, error) {
 	videos, resp, err := listVideo(s.client, "videos", opt...)
 
 	return videos, resp, err
 }
 
-// Get specific video by ID.
+// Get method returns a single video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_video
 func (s *VideosService) Get(vid int, opt ...CallOption) (*Video, *Response, error) {
 	u := fmt.Sprintf("videos/%d", vid)
 	video, resp, err := getVideo(s.client, u, opt...)
@@ -402,9 +401,9 @@ func (s *VideosService) Get(vid int, opt ...CallOption) (*Video, *Response, erro
 	return video, resp, err
 }
 
-// Edit specific video by ID.
+// Edit method edits the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#edit_video
 func (s *VideosService) Edit(vid int, r *VideoRequest) (*Video, *Response, error) {
 	u := fmt.Sprintf("videos/%d", vid)
 	req, err := s.client.NewRequest("PATCH", u, r)
@@ -421,9 +420,9 @@ func (s *VideosService) Edit(vid int, r *VideoRequest) (*Video, *Response, error
 	return video, resp, nil
 }
 
-// Delete specific video by ID.
+// Delete method deletes the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#delete_video
 func (s *VideosService) Delete(vid int) (*Response, error) {
 	u := fmt.Sprintf("videos/%d", vid)
 	resp, err := deleteVideo(s.client, u)
@@ -431,9 +430,9 @@ func (s *VideosService) Delete(vid int) (*Response, error) {
 	return resp, err
 }
 
-// ListCategory lists the video category.
+// ListCategory method gets all the categories that contain a particular video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/categories
+// Vimeo API docs: https://developer.vimeo.com/api/reference/categories#get_video_categories
 func (s *VideosService) ListCategory(vid int, opt ...CallOption) ([]*Category, *Response, error) {
 	u := fmt.Sprintf("videos/%d/categories", vid)
 	catogories, resp, err := listCategory(s.client, u, opt...)
@@ -441,9 +440,9 @@ func (s *VideosService) ListCategory(vid int, opt ...CallOption) ([]*Category, *
 	return catogories, resp, err
 }
 
-// LikeList lists users who liked this video.
+// LikeList method gets all the users who have liked a particular video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/likes
+// Vimeo API docs: https://developer.vimeo.com/api/reference/likes#get_video_likes
 func (s *VideosService) LikeList(vid int, opt ...CallOption) ([]*User, *Response, error) {
 	u := fmt.Sprintf("videos/%d/likes", vid)
 	users, resp, err := listUser(s.client, u, opt...)
@@ -451,9 +450,9 @@ func (s *VideosService) LikeList(vid int, opt ...CallOption) ([]*User, *Response
 	return users, resp, err
 }
 
-// GetPreset get preset by name.
+// GetPreset method determines whether the specified video uses a particular embed preset.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/presets/%7Bpreset_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/embed-presets#get_video_embed_preset
 func (s *VideosService) GetPreset(vid int, p int) (*Preset, *Response, error) {
 	u := fmt.Sprintf("videos/%d/presets/%d", vid, p)
 	req, err := s.client.NewRequest("GET", u, nil)
@@ -471,9 +470,9 @@ func (s *VideosService) GetPreset(vid int, p int) (*Preset, *Response, error) {
 	return portf, resp, err
 }
 
-// AssignPreset embed preset by name.
+// AssignPreset method assigns an embed preset to the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/presets/%7Bpreset_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/embed-presets#add_video_embed_preset
 func (s *VideosService) AssignPreset(vid int, p int) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/presets/%d", vid, p)
 	req, err := s.client.NewRequest("PUT", u, nil)
@@ -484,9 +483,9 @@ func (s *VideosService) AssignPreset(vid int, p int) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// UnassignPreset embed preset by name.
+// UnassignPreset method removes the embed preset from the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/presets/%7Bpreset_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/embed-presets#delete_video_embed_preset
 func (s *VideosService) UnassignPreset(vid int, p int) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/presets/%d", vid, p)
 	req, err := s.client.NewRequest("DELETE", u, nil)
@@ -508,9 +507,9 @@ type Domain struct {
 	Name string `json:"name,omitempty"`
 }
 
-// ListDomain lists the domains.
+// ListDomain method returns all the domains on the specified video's whitelist.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/domains
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_video_privacy_domains
 func (s *VideosService) ListDomain(vid int, opt ...CallOption) ([]*Domain, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("videos/%d/privacy/domains", vid), opt...)
 	if err != nil {
@@ -534,9 +533,9 @@ func (s *VideosService) ListDomain(vid int, opt ...CallOption) ([]*Domain, *Resp
 	return domains.Data, resp, err
 }
 
-// AllowDomain embedding on a domain.
+// AllowDomain method adds the specified domain to a video's whitelist.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/domains/%7Bdomain%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#add_video_privacy_domain
 func (s *VideosService) AllowDomain(vid int, d string) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/privacy/domains/%s", vid, d)
 	req, err := s.client.NewRequest("PUT", u, nil)
@@ -547,9 +546,9 @@ func (s *VideosService) AllowDomain(vid int, d string) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// DisallowDomain embedding on a domain.
+// DisallowDomain method removes the specified domain from a video's whitelist.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/domains/%7Bdomain%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#delete_video_privacy_domain
 func (s *VideosService) DisallowDomain(vid int, d string) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/privacy/domains/%s", vid, d)
 	req, err := s.client.NewRequest("DELETE", u, nil)
@@ -560,9 +559,9 @@ func (s *VideosService) DisallowDomain(vid int, d string) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// ListUser list the all allowed users
+// ListUser method returns all the users who have access to the specified private video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/users
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_video_privacy_users
 func (s *VideosService) ListUser(vid int, opt ...CallOption) ([]*User, *Response, error) {
 	u := fmt.Sprintf("videos/%d/privacy/users", vid)
 	users, resp, err := listUser(s.client, u, opt...)
@@ -570,9 +569,9 @@ func (s *VideosService) ListUser(vid int, opt ...CallOption) ([]*User, *Response
 	return users, resp, err
 }
 
-// AllowUsers allow users to view this video.
+// AllowUsers method gives multiple users permission to view the specified private video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/users
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#add_video_privacy_users
 func (s *VideosService) AllowUsers(vid int) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/privacy/users", vid)
 	req, err := s.client.NewRequest("PUT", u, nil)
@@ -583,9 +582,9 @@ func (s *VideosService) AllowUsers(vid int) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// AllowUser allow users to view this video.
+// AllowUser method gives a single user permission to view the specified private video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/users/%7Buser_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#add_video_privacy_user
 func (s *VideosService) AllowUser(vid int, uid string) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/privacy/users/%s", vid, uid)
 	req, err := s.client.NewRequest("PUT", u, nil)
@@ -596,9 +595,9 @@ func (s *VideosService) AllowUser(vid int, uid string) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// DisallowUser disallow user from viewing this video.
+// DisallowUser method prevents a user from being able to view the specified private video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/privacy/users/%7Buser_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#delete_video_privacy_user
 func (s *VideosService) DisallowUser(vid int, uid string) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/privacy/users/%s", vid, uid)
 	req, err := s.client.NewRequest("DELETE", u, nil)
@@ -609,9 +608,9 @@ func (s *VideosService) DisallowUser(vid int, uid string) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// ListTag list a video's tags
+// ListTag method returns all the tags associated with a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/tags
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_video_tags
 func (s *VideosService) ListTag(vid int, opt ...CallOption) ([]*Tag, *Response, error) {
 	u := fmt.Sprintf("videos/%d/tags", vid)
 	tags, resp, err := listTag(s.client, u, opt...)
@@ -619,9 +618,9 @@ func (s *VideosService) ListTag(vid int, opt ...CallOption) ([]*Tag, *Response, 
 	return tags, resp, err
 }
 
-// GetTag specific tag by name.
+// GetTag method determines whether a particular tag has been added to a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/tags/%7Bword%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#check_video_for_tag
 func (s *VideosService) GetTag(vid int, t string, opt ...CallOption) (*Tag, *Response, error) {
 	u := fmt.Sprintf("videos/%d/tags/%s", vid, t)
 	tag, resp, err := getTag(s.client, u, opt...)
@@ -629,9 +628,9 @@ func (s *VideosService) GetTag(vid int, t string, opt ...CallOption) (*Tag, *Res
 	return tag, resp, err
 }
 
-// AssignTag specific tag by name.
+// AssignTag method adds a single tag to the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/tags/%7Bword%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#add_video_tag
 func (s *VideosService) AssignTag(vid int, t string) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/tags/%s", vid, t)
 	req, err := s.client.NewRequest("PUT", u, nil)
@@ -642,9 +641,9 @@ func (s *VideosService) AssignTag(vid int, t string) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// UnassignTag specific tag by name.
+// UnassignTag method removes the specified tag from a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/tags/%7Bword%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#delete_video_tag
 func (s *VideosService) UnassignTag(vid int, t string) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/tags/%s", vid, t)
 	req, err := s.client.NewRequest("DELETE", u, nil)
@@ -655,9 +654,9 @@ func (s *VideosService) UnassignTag(vid int, t string) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// ListRelatedVideo lists the related video.
+// ListRelatedVideo method returns all the related videos of a particular video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/videos
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_related_videos
 func (s *VideosService) ListRelatedVideo(vid int, opt ...CallOption) ([]*Video, *Response, error) {
 	u := fmt.Sprintf("videos/%d/videos", vid)
 	videos, resp, err := listVideo(s.client, u, opt...)
@@ -665,9 +664,9 @@ func (s *VideosService) ListRelatedVideo(vid int, opt ...CallOption) ([]*Video, 
 	return videos, resp, err
 }
 
-// ReplaceFile upload video file/replace video file.
+// ReplaceFile method adds a version to the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/files
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#create_video_version
 func (s *VideosService) ReplaceFile(vid int, file *os.File) (*Video, *Response, error) {
 	u := fmt.Sprintf("videos/%d/versions", vid)
 	video, resp, err := uploadVideo(s.client, "POST", u, file)

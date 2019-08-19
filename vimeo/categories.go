@@ -5,7 +5,7 @@ import "fmt"
 // CategoriesService handles communication with the categories related
 // methods of the Vimeo API.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/endpoints/categories
+// Vimeo API docs: https://developer.vimeo.com/api/reference/categories
 type CategoriesService service
 
 type dataListCategory struct {
@@ -77,18 +77,18 @@ func getCategory(c *Client, url string, opt ...CallOption) (*Category, *Response
 	return category, resp, err
 }
 
-// List the category.
+// List method gets all existing categories.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/categories
+// Vimeo API docs: https://developer.vimeo.com/api/reference/categories#get_categories
 func (s *CategoriesService) List(opt ...CallOption) ([]*Category, *Response, error) {
 	categories, resp, err := listCategory(s.client, "categories", opt...)
 
 	return categories, resp, err
 }
 
-// Get specific category by name.
+// Get method gets a single category.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/categories#get_category
 func (s *CategoriesService) Get(cat string, opt ...CallOption) (*Category, *Response, error) {
 	u := fmt.Sprintf("categories/%s", cat)
 	category, resp, err := getCategory(s.client, u, opt...)
@@ -96,9 +96,9 @@ func (s *CategoriesService) Get(cat string, opt ...CallOption) (*Category, *Resp
 	return category, resp, err
 }
 
-// ListChannel lists the channel for an category.
+// ListChannel method gets all the channels that belong to a category.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/channels
+// Vimeo API docs: https://developer.vimeo.com/api/reference/categories#get_category_channels
 func (s *CategoriesService) ListChannel(cat string, opt ...CallOption) ([]*Channel, *Response, error) {
 	u := fmt.Sprintf("categories/%s/channels", cat)
 	channels, resp, err := listChannel(s.client, u, opt...)
@@ -106,9 +106,9 @@ func (s *CategoriesService) ListChannel(cat string, opt ...CallOption) ([]*Chann
 	return channels, resp, err
 }
 
-// ListGroup lists the group for an category.
+// ListGroup method gets all the groups that belong to a category.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/groups
+// Vimeo API docs: https://developer.vimeo.com/api/reference/categories#get_category_groups
 func (s *CategoriesService) ListGroup(cat string, opt ...CallOption) ([]*Group, *Response, error) {
 	u := fmt.Sprintf("categories/%s/groups", cat)
 	groups, resp, err := listGroup(s.client, u, opt...)
@@ -116,9 +116,9 @@ func (s *CategoriesService) ListGroup(cat string, opt ...CallOption) ([]*Group, 
 	return groups, resp, err
 }
 
-// ListVideo lists the video for an category.
+// ListVideo method gets all the videos that belong to a category.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/videos
+// Vimeo API docs: https://developer.vimeo.com/api/reference/categories#get_category_videos
 func (s *CategoriesService) ListVideo(cat string, opt ...CallOption) ([]*Video, *Response, error) {
 	u := fmt.Sprintf("categories/%s/videos", cat)
 	videos, resp, err := listVideo(s.client, u, opt...)
@@ -126,9 +126,9 @@ func (s *CategoriesService) ListVideo(cat string, opt ...CallOption) ([]*Video, 
 	return videos, resp, err
 }
 
-// GetVideo specific video by category name and video ID.
+// GetVideo method gets a single video from a category. Use it to determine whether the video belongs to the category.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/categories/%7Bcategory%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/categories#check_category_for_video
 func (s *CategoriesService) GetVideo(cat string, vid int, opt ...CallOption) (*Video, *Response, error) {
 	u := fmt.Sprintf("categories/%s/videos/%d", cat, vid)
 	video, resp, err := getVideo(s.client, u, opt...)

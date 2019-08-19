@@ -21,9 +21,9 @@ type Portfolio struct {
 	Sort         string    `json:"sort,omitempty"`
 }
 
-// ListPortfolio lists the portfolio for user.
+// ListPortfolio method gets all the specified user's portfolios.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/portfolios
+// Vimeo API docs: https://developer.vimeo.com/api/reference/portfolios#get_portfolios
 func (s *UsersService) ListPortfolio(uid string, opt ...CallOption) ([]*Portfolio, *Response, error) {
 	var u string
 	if uid == "" {
@@ -54,9 +54,9 @@ func (s *UsersService) ListPortfolio(uid string, opt ...CallOption) ([]*Portfoli
 	return portfolio.Data, resp, err
 }
 
-// GetProtfolio get portfolio by name.
+// GetProtfolio method gets a single portfolio from the specified user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/portfolios/%7Bportfolio_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/portfolios#get_portfolio
 func (s *UsersService) GetProtfolio(uid string, p string, opt ...CallOption) (*Portfolio, *Response, error) {
 	var u string
 	if uid == "" {
@@ -85,9 +85,9 @@ func (s *UsersService) GetProtfolio(uid string, p string, opt ...CallOption) (*P
 	return portf, resp, err
 }
 
-// ProtfolioListVideo lists the video for an portfolio.
+// ProtfolioListVideo method gets all the videos from the specified portfolio.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/portfolios/%7Bportfolio_id%7D/videos
+// Vimeo API docs: https://developer.vimeo.com/api/reference/portfolios#get_portfolio_videos
 func (s *UsersService) ProtfolioListVideo(uid string, p string, opt ...CallOption) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
@@ -101,9 +101,9 @@ func (s *UsersService) ProtfolioListVideo(uid string, p string, opt ...CallOptio
 	return videos, resp, err
 }
 
-// ProtfolioGetVideo get specific video by portfolio name and video ID.
+// ProtfolioGetVideo method gets a single video from the specified portfolio.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/portfolios/%7Bportfolio_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/portfolios#get_portfolio_video
 func (s *UsersService) ProtfolioGetVideo(uid string, p string, vid int, opt ...CallOption) (*Video, *Response, error) {
 	var u string
 	if uid == "" {
@@ -117,9 +117,9 @@ func (s *UsersService) ProtfolioGetVideo(uid string, p string, vid int, opt ...C
 	return video, resp, err
 }
 
-// ProtfolioAddVideo add one video.
+// ProtfolioAddVideo method adds a video to the specified portfolio.
 //
-// Vimeo API docs: hhttps://developer.vimeo.com/api/playground/users/%7Buser_id%7D/portfolios/%7Bportfolio_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/portfolios#add_video_to_portfolio
 func (s *UsersService) ProtfolioAddVideo(uid string, p string, vid int) (*Response, error) {
 	var u string
 	if uid == "" {
@@ -136,9 +136,9 @@ func (s *UsersService) ProtfolioAddVideo(uid string, p string, vid int) (*Respon
 	return s.client.Do(req, nil)
 }
 
-// ProtfolioDeleteVideo delete specific video by portfolio name and video ID.
+// ProtfolioDeleteVideo method removes a video from the specified portfolio.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/portfolios/%7Bportfolio_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/portfolios#delete_video_from_portfolio
 func (s *UsersService) ProtfolioDeleteVideo(uid string, p string, vid int) (*Response, error) {
 	var u string
 	if uid == "" {

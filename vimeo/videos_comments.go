@@ -22,9 +22,9 @@ type CommentRequest struct {
 	Text string `json:"text,omitempty"`
 }
 
-// ListComment lists the comments.
+// ListComment method returns all the comments on the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_comments
 func (s *VideosService) ListComment(vid int, opt ...CallOption) ([]*Comment, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("videos/%d/comments", vid), opt...)
 	if err != nil {
@@ -48,9 +48,9 @@ func (s *VideosService) ListComment(vid int, opt ...CallOption) ([]*Comment, *Re
 	return comments.Data, resp, err
 }
 
-// AddComment add comment.
+// AddComment method adds a comment to the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#create_comment
 func (s *VideosService) AddComment(vid int, r *CommentRequest) (*Comment, *Response, error) {
 	u := fmt.Sprintf("videos/%d/comments", vid)
 	req, err := s.client.NewRequest("POST", u, r)
@@ -67,9 +67,9 @@ func (s *VideosService) AddComment(vid int, r *CommentRequest) (*Comment, *Respo
 	return comment, resp, nil
 }
 
-// GetComment get specific comment by ID.
+// GetComment method returns the specified comment on a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments/%7Bcomment_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_comment
 func (s *VideosService) GetComment(vid int, cid int, opt ...CallOption) (*Comment, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("videos/%d/comments/%d", vid, cid), opt...)
 	if err != nil {
@@ -91,9 +91,9 @@ func (s *VideosService) GetComment(vid int, cid int, opt ...CallOption) (*Commen
 	return comment, resp, err
 }
 
-// EditComment edit specific comment by ID.
+// EditComment method edits the specified comment on a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments/%7Bcomment_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#edit_comment
 func (s *VideosService) EditComment(vid int, cid int, r *CommentRequest) (*Comment, *Response, error) {
 	u := fmt.Sprintf("videos/%d/comments/%d", vid, cid)
 	req, err := s.client.NewRequest("PATCH", u, r)
@@ -110,9 +110,9 @@ func (s *VideosService) EditComment(vid int, cid int, r *CommentRequest) (*Comme
 	return comment, resp, nil
 }
 
-// DeleteComment delete specific comment by name.
+// DeleteComment method deletes the specified comment from a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments/%7Bcomment_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#delete_comment
 func (s *VideosService) DeleteComment(vid int, cid int) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/comments/%d", vid, cid)
 	req, err := s.client.NewRequest("DELETE", u, nil)
@@ -123,9 +123,9 @@ func (s *VideosService) DeleteComment(vid int, cid int) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// ListReplies lists the comment replies.
+// ListReplies method returns all the replies to the specified video comment.
 //
-// https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments/%7Bcomment_id%7D/replies
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_comment_replies
 func (s *VideosService) ListReplies(vid int, cid int, opt ...CallOption) ([]*Comment, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("videos/%d/comments/%d/replies", vid, cid), opt...)
 	if err != nil {
@@ -149,9 +149,9 @@ func (s *VideosService) ListReplies(vid int, cid int, opt ...CallOption) ([]*Com
 	return replies.Data, resp, err
 }
 
-// AddReplies add replies.
+// AddReplies method adds a reply to the specified video comment.
 //
-// https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/comments/%7Bcomment_id%7D/replies
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#create_comment_reply
 func (s *VideosService) AddReplies(vid int, cid int, r *CommentRequest) (*Comment, *Response, error) {
 	u := fmt.Sprintf("videos/%d/comments/%d/replies", vid, cid)
 	req, err := s.client.NewRequest("POST", u, r)

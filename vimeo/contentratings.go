@@ -3,7 +3,7 @@ package vimeo
 // ContentRatingsService handles communication with the content ratings related
 // methods of the Vimeo API.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/endpoints/contentratings
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#content-ratings
 type ContentRatingsService service
 
 type contentRatingList struct {
@@ -15,9 +15,10 @@ type contentRatingList struct {
 type ContentRating struct {
 	Code string `json:"code,omitempty"`
 	Name string `json:"name,omitempty"`
+	URI  string `json:"uri,omitempty"`
 }
 
-// List the content rating.
+// List method returns all available content ratings.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/playground/contentratings
 func (s *ContentRatingsService) List(opt ...CallOption) ([]*ContentRating, *Response, error) {

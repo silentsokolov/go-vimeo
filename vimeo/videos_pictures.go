@@ -54,9 +54,9 @@ func (v Pictures) GetID() int {
 	return ID
 }
 
-// ListPictures lists thumbnails.
+// ListPictures method returns all the thumbnail images of the specified video.
 //
-// https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/pictures
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_video_thumbnails
 func (s *VideosService) ListPictures(vid int, opt ...CallOption) ([]*Pictures, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("videos/%d/pictures", vid), opt...)
 	if err != nil {
@@ -80,9 +80,9 @@ func (s *VideosService) ListPictures(vid int, opt ...CallOption) ([]*Pictures, *
 	return pictures.Data, resp, err
 }
 
-// CreatePictures create a thumbnail.
+// CreatePictures method adds a thumbnail image to the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/pictures
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#create_video_thumbnail
 func (s *VideosService) CreatePictures(vid int, r *PicturesRequest) (*Pictures, *Response, error) {
 	u := fmt.Sprintf("videos/%d/pictures", vid)
 	req, err := s.client.NewRequest("POST", u, r)
@@ -99,9 +99,9 @@ func (s *VideosService) CreatePictures(vid int, r *PicturesRequest) (*Pictures, 
 	return pictures, resp, nil
 }
 
-// GetPictures get one thumbnail.
+// GetPictures method returns a single thumbnail image from the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/pictures
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_video_thumbnail
 func (s *VideosService) GetPictures(vid int, pid int, opt ...CallOption) (*Pictures, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("videos/%d/pictures/%d", vid, pid), opt...)
 	if err != nil {
@@ -123,9 +123,9 @@ func (s *VideosService) GetPictures(vid int, pid int, opt ...CallOption) (*Pictu
 	return pictures, resp, err
 }
 
-// EditPictures edit specific pictures by ID.
+// EditPictures method edits the specified video thumbnail image.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/pictures/%7Bpicture_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#edit_video_thumbnail
 func (s *VideosService) EditPictures(vid int, pid int, r *PicturesRequest) (*Pictures, *Response, error) {
 	u := fmt.Sprintf("videos/%d/pictures/%d", vid, pid)
 	req, err := s.client.NewRequest("PATCH", u, r)
@@ -142,9 +142,9 @@ func (s *VideosService) EditPictures(vid int, pid int, r *PicturesRequest) (*Pic
 	return pictures, resp, nil
 }
 
-// DeletePictures delete specific pictures by ID.
+// DeletePictures method deletes the specified thumbnail image from a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/pictures/%7Bpicture_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#delete_video_thumbnail
 func (s *VideosService) DeletePictures(vid int, pid int) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/pictures/%d", vid, pid)
 	req, err := s.client.NewRequest("DELETE", u, nil)

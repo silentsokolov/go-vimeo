@@ -9,7 +9,7 @@ import (
 // ChannelsService handles communication with the channels related
 // methods of the Vimeo API.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/endpoints/channels
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels
 type ChannelsService service
 
 type dataListChannel struct {
@@ -69,18 +69,18 @@ func listChannel(c *Client, url string, opt ...CallOption) ([]*Channel, *Respons
 	return channels.Data, resp, err
 }
 
-// List lists the channel for an category.
+// List method gets all existing channels.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/channels
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels#get_channels
 func (s *ChannelsService) List(opt ...CallOption) ([]*Channel, *Response, error) {
 	channels, resp, err := listChannel(s.client, "channels", opt...)
 
 	return channels, resp, err
 }
 
-// Create a new channel.
+// Create method creates a new channel.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/channels
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels#create_channel
 func (s *ChannelsService) Create(r *ChannelRequest) (*Channel, *Response, error) {
 	req, err := s.client.NewRequest("POST", "channels", r)
 	if err != nil {
@@ -96,9 +96,9 @@ func (s *ChannelsService) Create(r *ChannelRequest) (*Channel, *Response, error)
 	return channel, resp, nil
 }
 
-// Get specific channel by name.
+// Get method gets a single channel.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels#get_channel
 func (s *ChannelsService) Get(ch string, opt ...CallOption) (*Channel, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("channels/%s", ch), opt...)
 	if err != nil {
@@ -120,9 +120,9 @@ func (s *ChannelsService) Get(ch string, opt ...CallOption) (*Channel, *Response
 	return channel, resp, err
 }
 
-// Edit specific channel by name.
+// Edit method edits the specified channel.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels#edit_channel
 func (s *ChannelsService) Edit(ch string, r *ChannelRequest) (*Channel, *Response, error) {
 	u := fmt.Sprintf("channels/%s", ch)
 	req, err := s.client.NewRequest("PATCH", u, r)
@@ -139,9 +139,9 @@ func (s *ChannelsService) Edit(ch string, r *ChannelRequest) (*Channel, *Respons
 	return channel, resp, nil
 }
 
-// Delete specific channel by name.
+// Delete method deletes the specified channel.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels#delete_channel
 func (s *ChannelsService) Delete(ch string) (*Response, error) {
 	u := fmt.Sprintf("channels/%s", ch)
 	req, err := s.client.NewRequest("DELETE", u, nil)
@@ -152,9 +152,9 @@ func (s *ChannelsService) Delete(ch string) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// ListUser lists the user for an channel.
+// ListUser method gets all the followers of a specific channel.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/users
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels#get_channel_subscribers
 func (s *ChannelsService) ListUser(ch string, opt ...CallOption) ([]*User, *Response, error) {
 	u := fmt.Sprintf("channels/%s/users", ch)
 	users, resp, err := listUser(s.client, u, opt...)
@@ -162,9 +162,9 @@ func (s *ChannelsService) ListUser(ch string, opt ...CallOption) ([]*User, *Resp
 	return users, resp, err
 }
 
-// ListVideo lists the video for an channel.
+// ListVideo method gets all the videos in a specific channel.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/videos
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels#get_channel_videos
 func (s *ChannelsService) ListVideo(ch string, opt ...CallOption) ([]*Video, *Response, error) {
 	u := fmt.Sprintf("channels/%s/videos", ch)
 	videos, resp, err := listVideo(s.client, u, opt...)
@@ -172,9 +172,9 @@ func (s *ChannelsService) ListVideo(ch string, opt ...CallOption) ([]*Video, *Re
 	return videos, resp, err
 }
 
-// GetVideo specific video by channel name and video ID.
+// GetVideo method returns a specific video in a channel. You can use it to determine whether the video is in the channel.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels#get_channel_video
 func (s *ChannelsService) GetVideo(ch string, vid int, opt ...CallOption) (*Video, *Response, error) {
 	u := fmt.Sprintf("channels/%s/videos/%d", ch, vid)
 	video, resp, err := getVideo(s.client, u, opt...)
@@ -182,9 +182,9 @@ func (s *ChannelsService) GetVideo(ch string, vid int, opt ...CallOption) (*Vide
 	return video, resp, err
 }
 
-// AddVideo add video to channel by ID.
+// AddVideo method adds a single video to the specified channel.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels#add_video_to_channel
 func (s *ChannelsService) AddVideo(ch string, vid int) (*Video, *Response, error) {
 	u := fmt.Sprintf("channels/%s/videos/%d", ch, vid)
 	video, resp, err := addVideo(s.client, u)
@@ -192,9 +192,9 @@ func (s *ChannelsService) AddVideo(ch string, vid int) (*Video, *Response, error
 	return video, resp, err
 }
 
-// DeleteVideo specific video by channel name and video ID.
+// DeleteVideo method removes a single video from the channel in question.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/channels/%7Bchannel_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/channels#delete_video_from_channel
 func (s *ChannelsService) DeleteVideo(ch string, vid int) (*Response, error) {
 	u := fmt.Sprintf("channels/%s/videos/%d", ch, vid)
 	resp, err := deleteVideo(s.client, u)

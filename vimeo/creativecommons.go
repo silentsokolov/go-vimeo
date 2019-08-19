@@ -3,7 +3,7 @@ package vimeo
 // CreativeCommonsService handles communication with the creative commons related
 // methods of the Vimeo API.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/endpoints/creativecommons
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#creative-commons
 type CreativeCommonsService service
 
 type creativeCommonList struct {
@@ -15,11 +15,12 @@ type creativeCommonList struct {
 type CreativeCommon struct {
 	Code string `json:"code,omitempty"`
 	Name string `json:"name,omitempty"`
+	URI  string `json:"uri,omitempty"`
 }
 
-// List the creative common.
+// List method returns all available Creative Commons licenses.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/creativecommons
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_cc_licenses
 func (s *CreativeCommonsService) List(opt ...CallOption) ([]*CreativeCommon, *Response, error) {
 	u, err := addOptions("creativecommons", opt...)
 	if err != nil {

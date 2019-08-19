@@ -13,9 +13,9 @@ type Preset struct {
 	Name string `json:"name,omitempty"`
 }
 
-// ListPreset lists the preset for an current user.
+// ListPreset method returns all the embed presets that belong to the specified user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/presets
+// Vimeo API docs: https://developer.vimeo.com/api/reference/embed-presets#get_embed_presets
 func (s *UsersService) ListPreset(uid string, opt ...CallOption) ([]*Preset, *Response, error) {
 	var u string
 	if uid == "" {
@@ -46,9 +46,9 @@ func (s *UsersService) ListPreset(uid string, opt ...CallOption) ([]*Preset, *Re
 	return preset.Data, resp, err
 }
 
-// GetPreset get preset by name.
+// GetPreset method returns a single embed preset that belongs to the specified user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/presets/%7Bpreset_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/embed-presets#get_embed_preset
 func (s *UsersService) GetPreset(uid string, p int, opt ...CallOption) (*Preset, *Response, error) {
 	var u string
 	if uid == "" {
@@ -77,9 +77,9 @@ func (s *UsersService) GetPreset(uid string, p int, opt ...CallOption) (*Preset,
 	return portf, resp, err
 }
 
-// PresetListVideo lists the preset for an preset.
+// PresetListVideo method edits an embed present belonging to the specified user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/presets/%7Bpreset_id%7D/videos
+// Vimeo API docs: https://developer.vimeo.com/api/reference/embed-presets#edit_embed_preset
 func (s *UsersService) PresetListVideo(uid string, p int, opt ...CallOption) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {

@@ -22,9 +22,9 @@ type TextTrackRequest struct {
 	Name     string `json:"name,omitempty"`
 }
 
-// ListTextTrack lists the text tracks.
+// ListTextTrack method returns all the text tracks of the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/texttracks
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_text_tracks
 func (s *VideosService) ListTextTrack(vid int, opt ...CallOption) ([]*TextTrack, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("/videos/%d/texttracks", vid), opt...)
 	if err != nil {
@@ -48,9 +48,9 @@ func (s *VideosService) ListTextTrack(vid int, opt ...CallOption) ([]*TextTrack,
 	return texttracks.Data, resp, err
 }
 
-// AddTextTrack add text tracks.
+// AddTextTrack method adds a text track to the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/texttracks
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#create_text_track
 func (s *VideosService) AddTextTrack(vid int, r *TextTrackRequest) (*TextTrack, *Response, error) {
 	u := fmt.Sprintf("/videos/%d/texttracks", vid)
 	req, err := s.client.NewRequest("POST", u, r)
@@ -68,9 +68,9 @@ func (s *VideosService) AddTextTrack(vid int, r *TextTrackRequest) (*TextTrack, 
 	return textTrack, resp, nil
 }
 
-// GetTextTrack get specific text track by ID.
+// GetTextTrack method returns a single text track from the specified video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/texttracks/%7Btexttrack_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_text_track
 func (s *VideosService) GetTextTrack(vid int, tid int, opt ...CallOption) (*TextTrack, *Response, error) {
 	u, err := addOptions(fmt.Sprintf("videos/%d/texttracks/%d", vid, tid), opt...)
 	if err != nil {
@@ -92,9 +92,9 @@ func (s *VideosService) GetTextTrack(vid int, tid int, opt ...CallOption) (*Text
 	return textTrack, resp, err
 }
 
-// EditTextTrack edit specific text track by ID.
+// EditTextTrack method edits the specified text track.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/texttracks/%7Btexttrack_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#edit_text_track
 func (s *VideosService) EditTextTrack(vid int, tid int, r *TextTrackRequest) (*TextTrack, *Response, error) {
 	u := fmt.Sprintf("videos/%d/texttracks/%d", vid, tid)
 	req, err := s.client.NewRequest("PATCH", u, r)
@@ -111,9 +111,9 @@ func (s *VideosService) EditTextTrack(vid int, tid int, r *TextTrackRequest) (*T
 	return textTrack, resp, nil
 }
 
-// DeleteTextTrack delete specific text track by ID.
+// DeleteTextTrack method deletes the specified text track from a video.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/videos/%7Bvideo_id%7D/texttracks/%7Btexttrack_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/videos#delete_text_track
 func (s *VideosService) DeleteTextTrack(vid int, tid int) (*Response, error) {
 	u := fmt.Sprintf("videos/%d/texttracks/%d", vid, tid)
 	req, err := s.client.NewRequest("DELETE", u, nil)

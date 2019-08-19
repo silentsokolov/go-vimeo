@@ -46,10 +46,10 @@ type AlbumRequest struct {
 	Sort        string `json:"sort,omitempty"`
 }
 
-// ListAlbum lists the album for an current user.
+// ListAlbum method gets all the albums from the specified user's account.
 // Passing the empty string will edit authenticated user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums
+// Vimeo API docs: https://developer.vimeo.com/api/reference/albums#get_albums
 func (s *UsersService) ListAlbum(uid string, opt ...CallOption) ([]*Album, *Response, error) {
 	var u string
 	if uid == "" {
@@ -80,10 +80,10 @@ func (s *UsersService) ListAlbum(uid string, opt ...CallOption) ([]*Album, *Resp
 	return albums.Data, resp, err
 }
 
-// CreateAlbum a new album.
+// CreateAlbum method creates a new album for the specified user.
 // Passing the empty string will edit authenticated user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums
+// Vimeo API docs: https://developer.vimeo.com/api/reference/albums#create_album
 func (s *UsersService) CreateAlbum(uid string, r *AlbumRequest) (*Album, *Response, error) {
 	var u string
 	if uid == "" {
@@ -106,10 +106,10 @@ func (s *UsersService) CreateAlbum(uid string, r *AlbumRequest) (*Album, *Respon
 	return album, resp, nil
 }
 
-// GetAlbum specific album by name.
+// GetAlbum method gets a single album.
 // Passing the empty string will edit authenticated user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/albums#get_album
 func (s *UsersService) GetAlbum(uid string, ab string, opt ...CallOption) (*Album, *Response, error) {
 	var u string
 	if uid == "" {
@@ -138,10 +138,10 @@ func (s *UsersService) GetAlbum(uid string, ab string, opt ...CallOption) (*Albu
 	return album, resp, err
 }
 
-// EditAlbum specific album by name.
+// EditAlbum method edits an album.
 // Passing the empty string will edit authenticated user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/albums#edit_album
 func (s *UsersService) EditAlbum(uid string, ab string, r *AlbumRequest) (*Album, *Response, error) {
 	var u string
 	if uid == "" {
@@ -164,10 +164,10 @@ func (s *UsersService) EditAlbum(uid string, ab string, r *AlbumRequest) (*Album
 	return album, resp, nil
 }
 
-// DeleteAlbum specific album by name.
+// DeleteAlbum method deletes an album from the owner's account.
 // Passing the empty string will edit authenticated user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/albums#delete_album
 func (s *UsersService) DeleteAlbum(uid string, ab string) (*Response, error) {
 	var u string
 	if uid == "" {
@@ -184,10 +184,10 @@ func (s *UsersService) DeleteAlbum(uid string, ab string) (*Response, error) {
 	return s.client.Do(req, nil)
 }
 
-// AlbumListVideo lists the video for an album.
+// AlbumListVideo method gets all the videos from the specified album.
 // Passing the empty string will edit authenticated user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D/videos
+// Vimeo API docs: https://developer.vimeo.com/api/reference/albums#get_album_videos
 func (s *UsersService) AlbumListVideo(uid string, ab string, opt ...CallOption) ([]*Video, *Response, error) {
 	var u string
 	if uid == "" {
@@ -200,10 +200,10 @@ func (s *UsersService) AlbumListVideo(uid string, ab string, opt ...CallOption) 
 	return videos, resp, err
 }
 
-// AlbumGetVideo get specific video by album name and video ID.
+// AlbumGetVideo method gets a single video from an album. You can use this method to determine whether the album contains the specified video.
 // Passing the empty string will edit authenticated user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/albums#get_album_video
 func (s *UsersService) AlbumGetVideo(uid string, ab string, vid int, opt ...CallOption) (*Video, *Response, error) {
 	var u string
 	if uid == "" {
@@ -216,10 +216,10 @@ func (s *UsersService) AlbumGetVideo(uid string, ab string, vid int, opt ...Call
 	return video, resp, err
 }
 
-// AlbumAddVideo add specific video by album name and video ID.
+// AlbumAddVideo method adds a single video to the specified album.
 // Passing the empty string will edit authenticated user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/albums#add_video_to_album
 func (s *UsersService) AlbumAddVideo(uid string, ab string, vid int) (*Video, *Response, error) {
 	var u string
 	if uid == "" {
@@ -232,10 +232,10 @@ func (s *UsersService) AlbumAddVideo(uid string, ab string, vid int) (*Video, *R
 	return video, resp, err
 }
 
-// AlbumDeleteVideo delete specific video by album name and video ID.
+// AlbumDeleteVideo method removes a video from the specified album.
 // Passing the empty string will edit authenticated user.
 //
-// Vimeo API docs: https://developer.vimeo.com/api/playground/users/%7Buser_id%7D/albums/%7Balbum_id%7D/videos/%7Bvideo_id%7D
+// Vimeo API docs: https://developer.vimeo.com/api/reference/albums#remove_video_from_album
 func (s *UsersService) AlbumDeleteVideo(uid string, ab string, vid int) (*Response, error) {
 	var u string
 	if uid == "" {
