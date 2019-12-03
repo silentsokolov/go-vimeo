@@ -206,7 +206,7 @@ type EmbedRequest struct {
 
 // ReviewPageRequest represents a request to edit an video.
 type ReviewPageRequest struct {
-	Active bool `json:"name,active"`
+	Active bool `json:"name,omitempty"`
 }
 
 // VideoRequest represents a request to edit an video.
@@ -280,7 +280,7 @@ func getVideo(c *Client, url string, opt ...CallOption) (*Video, *Response, erro
 	return video, resp, err
 }
 
-func getUploadVideo(c *Client, method string, uri string, reqUpload *UploadVideoRequest) (*Video, *Response, error) {
+func getUploadVideo(c *Client, method string, uri string, reqUpload *UploadVideoRequest) (*Video, *Response, error) { // nolint: unparam
 	req, err := c.NewRequest(method, uri, reqUpload)
 	if err != nil {
 		return nil, nil, err

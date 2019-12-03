@@ -52,7 +52,10 @@ func TestChannelsService_Create(t *testing.T) {
 
 	mux.HandleFunc("/channels", func(w http.ResponseWriter, r *http.Request) {
 		v := &ChannelRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Channels.Create returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {
@@ -108,7 +111,10 @@ func TestChannelsService_Edit(t *testing.T) {
 
 	mux.HandleFunc("/channels/1", func(w http.ResponseWriter, r *http.Request) {
 		v := &ChannelRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Channels.Edit returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "PATCH")
 		if !reflect.DeepEqual(v, input) {

@@ -88,7 +88,10 @@ func TestUsersService_Edit(t *testing.T) {
 
 	mux.HandleFunc("/users/1", func(w http.ResponseWriter, r *http.Request) {
 		v := &UserRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Users.Edit returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "PATCH")
 		if !reflect.DeepEqual(v, input) {
@@ -119,7 +122,10 @@ func TestUsersService_Edit_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me", func(w http.ResponseWriter, r *http.Request) {
 		v := &UserRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Users.Edit returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "PATCH")
 		if !reflect.DeepEqual(v, input) {
@@ -199,7 +205,10 @@ func TestUsersService_CreateAlbum(t *testing.T) {
 
 	mux.HandleFunc("/users/1/albums", func(w http.ResponseWriter, r *http.Request) {
 		v := &AlbumRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Users.CreateAlbum returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {
@@ -231,7 +240,10 @@ func TestUsersService_CreateAlbum_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/albums", func(w http.ResponseWriter, r *http.Request) {
 		v := &AlbumRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Users.CreateAlbum returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {
@@ -307,7 +319,10 @@ func TestUsersService_EditAlbum(t *testing.T) {
 
 	mux.HandleFunc("/users/1/albums/a", func(w http.ResponseWriter, r *http.Request) {
 		v := &AlbumRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Users.EditAlbum returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "PATCH")
 		if !reflect.DeepEqual(v, input) {
@@ -340,7 +355,10 @@ func TestUsersService_EditAlbum_authenticatedUser(t *testing.T) {
 
 	mux.HandleFunc("/me/albums/a", func(w http.ResponseWriter, r *http.Request) {
 		v := &AlbumRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Users.EditAlbum returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "PATCH")
 		if !reflect.DeepEqual(v, input) {

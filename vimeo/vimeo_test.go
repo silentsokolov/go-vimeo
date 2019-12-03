@@ -51,15 +51,13 @@ func testFormURLValues(t *testing.T, r *http.Request, values values) {
 		want.Add(k, v)
 	}
 
-	r.ParseForm()
+	err := r.ParseForm()
+	if err != nil {
+		t.Fatalf("Returned unexpected error: %v", err)
+	}
+
 	if got := r.Form; !reflect.DeepEqual(got, want) {
 		t.Errorf("Request parameters: %v, want %v", got, want)
-	}
-}
-
-func testHeader(t *testing.T, r *http.Request, header string, want string) {
-	if got := r.Header.Get(header); got != want {
-		t.Errorf("Header.Get(%q) returned %q, want %q", header, got, want)
 	}
 }
 
@@ -192,7 +190,10 @@ func TestDo(t *testing.T) {
 	req, _ := client.NewRequest("GET", "/", nil)
 	body := new(T)
 
-	client.Do(req, body)
+	_, err := client.Do(req, body)
+	if err != nil {
+		t.Fatalf("Returned unexpected error: %v", err)
+	}
 
 	want := &T{"v"}
 	if !reflect.DeepEqual(body, want) {

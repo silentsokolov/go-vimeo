@@ -51,7 +51,10 @@ func TestGroupsService_Create(t *testing.T) {
 
 	mux.HandleFunc("/groups", func(w http.ResponseWriter, r *http.Request) {
 		v := &GroupRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Groups.Create returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {

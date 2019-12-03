@@ -71,7 +71,10 @@ func TestVideosService_Edit(t *testing.T) {
 
 	mux.HandleFunc("/videos/1", func(w http.ResponseWriter, r *http.Request) {
 		v := &VideoRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.Edit returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "PATCH")
 		if !reflect.DeepEqual(v, input) {
@@ -187,7 +190,10 @@ func TestVideosService_AddComment(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/comments", func(w http.ResponseWriter, r *http.Request) {
 		v := &CommentRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.AddComment returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {
@@ -218,7 +224,10 @@ func TestVideosService_EditComment(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/comments/1", func(w http.ResponseWriter, r *http.Request) {
 		v := &CommentRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.EditComment returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "PATCH")
 		if !reflect.DeepEqual(v, input) {
@@ -287,7 +296,10 @@ func TestVideosService_AddReplies(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/comments/1/replies", func(w http.ResponseWriter, r *http.Request) {
 		v := &CommentRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.AddReplies returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {
@@ -365,7 +377,10 @@ func TestVideosService_AddCredit(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/credits", func(w http.ResponseWriter, r *http.Request) {
 		v := &CreditRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.AddCredit returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {
@@ -396,7 +411,10 @@ func TestVideosService_EditCredit(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/credits/1", func(w http.ResponseWriter, r *http.Request) {
 		v := &CreditRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.EditCredit returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "PATCH")
 		if !reflect.DeepEqual(v, input) {
@@ -461,7 +479,10 @@ func TestVideosService_CreatePictures(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/pictures", func(w http.ResponseWriter, r *http.Request) {
 		v := &PicturesRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.CreatePictures returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {
@@ -512,7 +533,10 @@ func TestVideosService_EditPictures(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/pictures/1", func(w http.ResponseWriter, r *http.Request) {
 		v := &PicturesRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.EditPictures returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "PATCH")
 		if !reflect.DeepEqual(v, input) {
@@ -803,7 +827,10 @@ func TestVideosService_AddTextTrack(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/texttracks", func(w http.ResponseWriter, r *http.Request) {
 		v := &TextTrackRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.AddTextTrack returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {
@@ -854,7 +881,10 @@ func TestVideosService_EditTextTrack(t *testing.T) {
 
 	mux.HandleFunc("/videos/1/texttracks/1", func(w http.ResponseWriter, r *http.Request) {
 		v := &TextTrackRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.EditTextTrack returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "PATCH")
 		if !reflect.DeepEqual(v, input) {
@@ -926,7 +956,10 @@ func TestVideosService_getUploadVideo(t *testing.T) {
 
 	mux.HandleFunc("/me/videos", func(w http.ResponseWriter, r *http.Request) {
 		v := &UploadVideoRequest{}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.getUploadVideo returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {
@@ -964,7 +997,10 @@ func TestVideosService_uploadVideoByURL(t *testing.T) {
 				Link:     videoURL,
 			},
 		}
-		json.NewDecoder(r.Body).Decode(v)
+		err := json.NewDecoder(r.Body).Decode(v)
+		if err != nil {
+			t.Fatalf("Videos.getUploadVideo returned unexpected error: %v", err)
+		}
 
 		testMethod(t, r, "POST")
 		if !reflect.DeepEqual(v, input) {

@@ -131,7 +131,7 @@ func (c *Client) Do(req *http.Request, v interface{}) (*Response, error) {
 	}
 
 	defer func() {
-		io.CopyN(ioutil.Discard, resp.Body, 512)
+		io.CopyN(ioutil.Discard, resp.Body, 512) // nolint: errcheck
 		resp.Body.Close()
 	}()
 
@@ -299,7 +299,10 @@ func CheckResponse(r *http.Response) error {
 	data, err := ioutil.ReadAll(r.Body)
 
 	if err == nil && data != nil {
-		json.Unmarshal(data, errorResponse)
+		err = json.Unmarshal(data, errorResponse)
+		if err != nil {
+			return err
+		}
 	}
 
 	if r.StatusCode == http.StatusTooManyRequests && r.Header.Get(headerRateRemaining) == "0" {
