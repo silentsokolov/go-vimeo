@@ -43,6 +43,22 @@ type File struct {
 	MD5         string    `json:"md5,omitempty"`
 }
 
+// Download internal object provides access to video information for download
+type Download struct {
+	Quality     string    `json:"quality"`
+	Type        string    `json:"type"`
+	Width       int       `json:"width"`
+	Height      int       `json:"height"`
+	Expires     time.Time `json:"expires"`
+	Link        string    `json:"link"`
+	CreatedTime time.Time `json:"created_time"`
+	Fps         int       `json:"fps"`
+	Size        int       `json:"size"`
+	Md5         string    `json:"md5"`
+	PublicName  string    `json:"public_name"`
+	SizeShort   string    `json:"size_short"`
+}
+
 // App internal object provides access to specific app.
 type App struct {
 	URI  string `json:"uri,omitempty"`
@@ -138,6 +154,7 @@ type Video struct {
 	Categories    []*Category   `json:"categories,omitempty"`
 	User          *User         `json:"user,omitempty"`
 	Files         []*File       `json:"files,omitempty"`
+	Download      []*Download   `json:"download,omitempty"`
 	App           *App          `json:"app,omitempty"`
 	Status        string        `json:"status,omitempty"`
 	ResourceKey   string        `json:"resource_key,omitempty"`
