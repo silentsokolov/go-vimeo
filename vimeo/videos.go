@@ -52,7 +52,7 @@ type Download struct {
 	Expires     time.Time `json:"expires"`
 	Link        string    `json:"link"`
 	CreatedTime time.Time `json:"created_time"`
-	Fps         int       `json:"fps"`
+	Fps         float64   `json:"fps"`
 	Size        int       `json:"size"`
 	Md5         string    `json:"md5"`
 	PublicName  string    `json:"public_name"`
