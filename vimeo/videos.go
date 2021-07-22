@@ -249,8 +249,8 @@ func (v Video) GetID() int {
 // UploadVideoRequest specifies the optional parameters to the
 // uploadVideo method.
 type UploadVideoRequest struct {
-	FileName string  `json:"file_name"`
-	Upload   *Upload `json:"upload,omitempty"`
+	Name   string  `json:"name"`
+	Upload *Upload `json:"upload,omitempty"`
 }
 
 func listVideo(c *Client, url string, opt ...CallOption) ([]*Video, *Response, error) {
@@ -328,7 +328,7 @@ func uploadVideo(c *Client, method string, url string, file *os.File) (*Video, *
 	}
 
 	reqUpload := &UploadVideoRequest{
-		FileName: file.Name(),
+		Name: file.Name(),
 		Upload: &Upload{
 			Approach: "tus",
 			Size:     stat.Size(),
