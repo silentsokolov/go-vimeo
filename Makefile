@@ -17,4 +17,4 @@ fmt:
 
 test:
 	@echo "--> Running tests"
-	@go test -race -coverprofile=coverage.txt -covermode=atomic ./vimeo
+	@go test -race -coverprofile=coverage.out -covermode=atomic ./vimeo
