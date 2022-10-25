@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/silentsokolov/go-vimeo.svg?branch=master)](https://travis-ci.org/silentsokolov/go-vimeo)
+[![build](https://github.com/silentsokolov/go-vimeo/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/silentsokolov/go-vimeo/actions/workflows/build.yml)
 [![GoDoc](https://godoc.org/github.com/silentsokolov/go-vimeo?status.svg)](https://godoc.org/github.com/silentsokolov/go-vimeo/vimeo) [![codecov](https://codecov.io/gh/silentsokolov/go-vimeo/branch/master/graph/badge.svg)](https://codecov.io/gh/silentsokolov/go-vimeo)
 [![Go Report Card](https://goreportcard.com/badge/github.com/silentsokolov/go-vimeo)](https://goreportcard.com/report/github.com/silentsokolov/go-vimeo)
 

@@ -5,7 +5,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -99,7 +99,7 @@ func TestNewRequest(t *testing.T) {
 		t.Errorf("NewRequest URL is %v, want %v", url, testURL)
 	}
 
-	body, _ := ioutil.ReadAll(req.Body)
+	body, _ := io.ReadAll(req.Body)
 	if body := string(body); body != testBodyAsStr {
 		t.Errorf("NewRequest Body is %v, want %v", body, testBodyAsStr)
 	}
@@ -382,7 +382,7 @@ func TestCheckError_statusFail(t *testing.T) {
 	res := &http.Response{
 		Request:    &http.Request{},
 		StatusCode: http.StatusBadRequest,
-		Body:       ioutil.NopCloser(strings.NewReader(`{"error": "Invalid type for field [field]"}`)),
+		Body:       io.NopCloser(strings.NewReader(`{"error": "Invalid type for field [field]"}`)),
 	}
 
 	wantError := &ErrorResponse{
@@ -406,7 +406,7 @@ func TestCheckError_rateLimit(t *testing.T) {
 		Request:    &http.Request{},
 		StatusCode: http.StatusTooManyRequests,
 		Header:     http.Header{},
-		Body:       ioutil.NopCloser(strings.NewReader(`{"error": "Invalid type for field [field]"}`)),
+		Body:       io.NopCloser(strings.NewReader(`{"error": "Invalid type for field [field]"}`)),
 	}
 
 	res.Header.Set(headerRateLimit, "1000")

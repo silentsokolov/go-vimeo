@@ -1,3 +1,3 @@
 module github.com/silentsokolov/go-vimeo
 
-go 1.13
+go 1.16

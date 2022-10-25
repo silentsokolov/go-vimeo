@@ -19,7 +19,7 @@ type Preset struct {
 func (s *UsersService) ListPreset(uid string, opt ...CallOption) ([]*Preset, *Response, error) {
 	var u string
 	if uid == "" {
-		u = fmt.Sprintf("me/presets")
+		u = "me/presets"
 	} else {
 		u = fmt.Sprintf("users/%s/presets", uid)
 	}
