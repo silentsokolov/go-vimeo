@@ -1,6 +1,6 @@
 [![build](https://github.com/silentsokolov/go-vimeo/actions/workflows/build.yaml/badge.svg)](https://github.com/silentsokolov/go-vimeo/actions/workflows/build.yaml)
-[![GoDoc](https://godoc.org/github.com/silentsokolov/go-vimeo?status.svg)](https://godoc.org/github.com/silentsokolov/go-vimeo/vimeo) [![codecov](https://codecov.io/gh/silentsokolov/go-vimeo/branch/master/graph/badge.svg)](https://codecov.io/gh/silentsokolov/go-vimeo)
-[![Go Report Card](https://goreportcard.com/badge/github.com/silentsokolov/go-vimeo)](https://goreportcard.com/report/github.com/silentsokolov/go-vimeo)
+[![GoDoc](https://godoc.org/github.com/silentsokolov/go-vimeo/v2?status.svg)](https://godoc.org/github.com/silentsokolov/go-vimeo/v2/vimeo) [![codecov](https://codecov.io/gh/silentsokolov/go-vimeo/branch/master/graph/badge.svg)](https://codecov.io/gh/silentsokolov/go-vimeo)
+[![Go Report Card](https://goreportcard.com/badge/github.com/silentsokolov/go-vimeo/v2)](https://goreportcard.com/report/github.com/silentsokolov/go-vimeo/v2)
 
 # go-vimeo
 
@@ -9,7 +9,7 @@ go-vimeo is a Go client library for accessing the [Vimeo API](https://developer.
 ## Basic usage ##
 
 ```go
-import "github.com/silentsokolov/go-vimeo/vimeo"
+import "github.com/silentsokolov/go-vimeo/v2/vimeo"
 
 
 func main() {
@@ -27,7 +27,7 @@ The go-vimeo library does not directly handle authentication. Instead, when crea
 ```go
 import (
 	"golang.org/x/oauth2"
-	"github.com/silentsokolov/go-vimeo/vimeo"
+	"github.com/silentsokolov/go-vimeo/v2/vimeo"
 )
 
 func main() {
@@ -112,7 +112,7 @@ import (
 	"os"
 
 	"golang.org/x/oauth2"
-	"github.com/silentsokolov/go-vimeo/vimeo"
+	"github.com/silentsokolov/go-vimeo/v2/vimeo"
 
 	tus "github.com/eventials/go-tus"
 )
