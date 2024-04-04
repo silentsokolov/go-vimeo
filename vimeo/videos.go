@@ -32,6 +32,7 @@ type Stats struct {
 
 // File internal object provides access to video file information
 type File struct {
+	FileID      string    `json:"video_file_id,omitempty"`
 	Quality     string    `json:"quality,omitempty"`
 	Type        string    `json:"type,omitempty"`
 	Width       int       `json:"width,omitempty"`
