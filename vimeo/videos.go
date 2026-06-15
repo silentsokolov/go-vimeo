@@ -409,6 +409,12 @@ func (s *VideosService) List(opt ...CallOption) ([]*Video, *Response, error) {
 	return videos, resp, err
 }
 
+func (s *VideosService) MyList(opt ...CallOption) ([]*Video, *Response, error) {
+	videos, resp, err := listVideo(s.client, "me/videos", opt...)
+
+	return videos, resp, err
+}
+
 // Get method returns a single video.
 //
 // Vimeo API docs: https://developer.vimeo.com/api/reference/videos#get_video
