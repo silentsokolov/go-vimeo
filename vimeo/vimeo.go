@@ -217,14 +217,27 @@ func (r *Response) setPaging(p paginator) {
 // ErrorResponse is a Vimeo error response. This wraps the standard http.Response.
 // Provides access error message returned Vimeo.
 type ErrorResponse struct {
-	Response *http.Response
-	Message  string `json:"error"`
+	Response         *http.Response
+	Message          string `json:"error"`
+	DeveloperMessage string `json:"developer_message"`
+	ErrorCode        int    `json:"error_code"`
+	Link             string `json:"link"`
 }
 
 func (r *ErrorResponse) Error() string {
-	return fmt.Sprintf("%v %v: %d %v",
+	msg := fmt.Sprintf("%v %v: %d %v",
 		r.Response.Request.Method, sanitizeURL(r.Response.Request.URL),
 		r.Response.StatusCode, r.Message)
+	if r.DeveloperMessage != "" {
+		msg += fmt.Sprintf(" | developer_message: %v", r.DeveloperMessage)
+	}
+	if r.ErrorCode != 0 {
+		msg += fmt.Sprintf(" | error_code: %d", r.ErrorCode)
+	}
+	if r.Link != "" {
+		msg += fmt.Sprintf(" | link: %v", r.Link)
+	}
+	return msg
 }
 
 // Rate represents the rate limit for the current client.
